@@ -1,5 +1,5 @@
 #--------------------LOAD PACKAGES--------------
-#install.packages("librarian")
+#install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode)
 
 #---------------------SCRAPE DEBT DATA---------------------

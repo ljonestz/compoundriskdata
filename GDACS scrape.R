@@ -1,5 +1,5 @@
-#Load libraries
-#install.packages("librarian")
+#-------------------Load libraries--------------------
+#install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(lubridate, rvest,dplyr, viridis, tidyverse, countrycode)
 
 #-----------------SCRAPE GDACS SITE------------------
