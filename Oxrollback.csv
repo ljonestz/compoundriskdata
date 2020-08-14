@@ -1,0 +1,181 @@
+"","Country","H_OXrollback_cases_controlled","H_OXrollback_cases_test_and_trace","H_OXrollback_cases_high_vulnerability","H_OXrollback_cases_workplace_prevention","H_OXrollback_cases_manage_imported_cases","H_OXrollback_cases_community_understanding","H_OXrollback_score"
+"1","Dominica",1,0.8,NA,NA,1,NA,0.9
+"2","Fiji",1,1,NA,NA,1,0.7,0.9
+"3","New Zealand",1,0.9,NA,NA,1,0.7,0.9
+"4","Bhutan",1,0.7,NA,NA,1,NA,0.9
+"5","Brunei",1,0.6,NA,NA,1,NA,0.9
+"6","Sierra Leone",0.8,0.7,NA,NA,1,NA,0.8
+"7","Trinidad and Tobago",0.9,0.7,NA,NA,1,0.7,0.8
+"8","Thailand",0.9,0.9,NA,NA,0.8,0.7,0.8
+"9","Macao",1,0.5,NA,NA,0.8,1,0.8
+"10","Sri Lanka",0.9,0.7,NA,NA,1,0.6,0.8
+"11","Guyana",0.8,0.6,NA,NA,1,NA,0.8
+"12","Belize",1,0.5,NA,NA,1,0.7,0.8
+"13","Myanmar",1,0.8,NA,NA,0.8,0.7,0.8
+"14","Mauritius",1,0.5,NA,NA,1,0.7,0.8
+"15","Jordan",0.8,0.7,NA,NA,1,0.7,0.8
+"16","Mali",0.9,0.6,NA,NA,1,0.6,0.8
+"17","Mongolia",1,0.4,NA,NA,1,0.7,0.8
+"18","Cyprus",0.8,0.8,NA,NA,0.8,NA,0.8
+"19","Taiwan",NA,0.8,NA,NA,0.8,NA,0.8
+"20","Malaysia",0.7,0.9,NA,NA,0.8,0.6,0.7
+"21","Vanuatu",NA,0.5,NA,NA,1,NA,0.7
+"22","Togo",0.7,0.7,NA,NA,1,0.6,0.7
+"23","Latvia",0.9,0.9,NA,NA,0.5,0.6,0.7
+"24","Timor-Leste",1,0.7,NA,NA,0.5,NA,0.7
+"25","Greenland",1,0.7,NA,NA,0.5,NA,0.7
+"26","Eritrea",1,0.5,NA,NA,0.8,NA,0.7
+"27","Cape Verde",0.4,0.8,NA,NA,1,0.8,0.7
+"28","Seychelles",1,0.4,NA,NA,0.8,NA,0.7
+"29","Finland",0.8,0.6,NA,NA,0.8,0.7,0.7
+"30","Chad",0.9,0.2,NA,NA,1,NA,0.7
+"31","Tunisia",0.7,0.7,NA,NA,0.8,NA,0.7
+"32","Niger",1,0.2,NA,NA,1,0.6,0.7
+"33","Aruba",1,0.3,NA,NA,0.8,0.7,0.7
+"34","South Sudan",0.7,0.3,NA,NA,1,NA,0.7
+"35","Hungary",0.7,0.7,NA,NA,0.8,0.6,0.7
+"36","Lithuania",0.7,0.9,NA,NA,0.5,0.6,0.7
+"37","Norway",0.6,0.7,NA,NA,0.8,0.6,0.7
+"38","Burkina Faso",0.8,0.3,NA,NA,1,0.5,0.7
+"39","Bermuda",1,0.8,NA,NA,0.2,NA,0.7
+"40","Georgia",0.9,0.4,NA,NA,0.8,0.6,0.7
+"41","Barbados",1,0.7,NA,NA,0.2,0.8,0.7
+"42","Botswana",0.7,0.5,NA,NA,1,0.5,0.7
+"43","Somalia",0.9,0.1,NA,NA,1,NA,0.7
+"44","Hong Kong",0,0.9,NA,NA,1,0.7,0.6
+"45","Iceland",0.9,0.8,NA,NA,0.5,0.4,0.6
+"46","Guam",0.9,0.5,NA,NA,0.5,NA,0.6
+"47","South Korea",0.5,0.9,NA,NA,0.5,0.7,0.6
+"48","Mauritania",0.3,0.6,NA,NA,1,NA,0.6
+"49","Djibouti",0.9,0.8,NA,NA,0.2,NA,0.6
+"50","Slovenia",0.7,0.8,NA,NA,0.5,0.6,0.6
+"51","Rwanda",0.2,0.9,NA,NA,1,0.4,0.6
+"52","Gambia",0.4,0.5,NA,NA,1,NA,0.6
+"53","Uruguay",0.7,0.6,NA,NA,0.5,0.7,0.6
+"54","Australia",0,1,NA,NA,1,0.5,0.6
+"55","Estonia",0.9,0.5,NA,NA,0.5,0.6,0.6
+"56","Uganda",0.8,0.5,NA,NA,0.5,0.7,0.6
+"57","Vietnam",0.5,0.8,NA,NA,0.8,0.4,0.6
+"58","Cambodia",1,0.2,NA,NA,0.5,0.8,0.6
+"59","San Marino",1,0.8,NA,NA,0,NA,0.6
+"60","Morocco",0,0.7,NA,NA,1,0.6,0.6
+"61","El Salvador",0,0.6,NA,NA,1,0.7,0.6
+"62","Colombia",0,0.6,NA,NA,1,0.7,0.6
+"63","India",0,0.6,NA,NA,1,0.7,0.6
+"64","Honduras",0,0.5,NA,NA,1,0.8,0.6
+"65","Jamaica",0.9,0.5,NA,NA,0.2,0.7,0.6
+"66","Azerbaijan",0,0.7,NA,NA,1,NA,0.6
+"67","South Africa",0,0.7,NA,NA,1,0.6,0.6
+"68","Panama",0,0.4,NA,NA,1,0.8,0.6
+"69","Argentina",0,0.5,NA,NA,1,0.8,0.6
+"70","Saudi Arabia",0,0.7,NA,NA,1,0.5,0.6
+"71","Kazakhstan",0,0.8,NA,NA,1,0.5,0.6
+"72","Democratic Republic of Congo",0.2,0.5,NA,NA,1,NA,0.6
+"73","Slovak Republic",0.4,0.8,NA,NA,0.5,0.5,0.6
+"74","Central African Republic",1,0.2,NA,NA,0.5,NA,0.6
+"75","Kuwait",0,0.6,NA,NA,1,0.6,0.6
+"76","Papua New Guinea",0.9,0.3,NA,NA,0.5,0.5,0.5
+"77","Canada",0,0.7,NA,NA,1,0.5,0.5
+"78","Peru",0,0.4,NA,NA,1,0.7,0.5
+"79","Liberia",0.9,0.2,NA,NA,0.5,NA,0.5
+"80","Costa Rica",0,0.3,NA,NA,1,0.8,0.5
+"81","Benin",0.7,0.4,NA,NA,0.5,0.5,0.5
+"82","Kyrgyz Republic",0,0.6,NA,NA,1,0.6,0.5
+"83","Kenya",0,0.7,NA,NA,1,0.4,0.5
+"84","Ireland",0.3,0.7,NA,NA,0.5,0.6,0.5
+"85","Nepal",0,0.6,NA,NA,1,0.5,0.5
+"86","Paraguay",0,0.6,NA,NA,1,0.5,0.5
+"87","Eswatini",0,0.6,NA,NA,1,NA,0.5
+"88","Chile",0,0.5,NA,NA,0.8,0.8,0.5
+"89","Iraq",0,0.6,NA,NA,1,0.5,0.5
+"90","Namibia",0,0.6,NA,NA,1,0.5,0.5
+"91","Angola",0.3,0.2,NA,NA,1,0.6,0.5
+"92","Philippines",0,0.7,NA,NA,0.5,0.8,0.5
+"93","Cuba",0.6,0.7,NA,NA,0.2,NA,0.5
+"94","Ecuador",0,0.4,NA,NA,1,0.6,0.5
+"95","Laos",1,0.3,NA,NA,0.8,0,0.5
+"96","Ghana",0,0.7,NA,NA,1,0.3,0.5
+"97","Solomon Islands",NA,0,NA,NA,1,NA,0.5
+"98","Anguilla",1,NA,NA,NA,NA,0,0.5
+"99","Gibraltar",1,NA,NA,NA,NA,0,0.5
+"100","Denmark",0,0.9,NA,NA,0.8,0.3,0.5
+"101","Madagascar",0,0.5,NA,NA,1,NA,0.5
+"102","Palestine",0,0.5,NA,NA,1,NA,0.5
+"103","Bahrain",0,0.8,NA,NA,0.8,0.4,0.5
+"104","Syria",0.6,0.1,NA,NA,0.8,NA,0.5
+"105","Burundi",0.9,0.3,NA,NA,0.8,0,0.5
+"106","Israel",0,0.5,NA,NA,1,0.4,0.5
+"107","Bolivia",0,0.1,NA,NA,1,0.8,0.5
+"108","Nigeria",0,0.6,NA,NA,1,0.4,0.5
+"109","Guatemala",0,0.2,NA,NA,1,0.7,0.5
+"110","Zimbabwe",0,0.5,NA,NA,1,0.4,0.5
+"111","United Arab Emirates",0,0.9,NA,NA,0.5,0.5,0.5
+"112","Greece",0,0.9,NA,NA,0.8,0.2,0.5
+"113","Portugal",0,0.7,NA,NA,0.8,0.5,0.5
+"114","Lesotho",0.2,0.2,NA,NA,1,NA,0.5
+"115","Gabon",0,0.5,NA,NA,1,0.4,0.5
+"116","Venezuela",0,0.2,NA,NA,1,0.6,0.5
+"117","Yemen",0.8,0,NA,NA,1,0,0.5
+"118","Senegal",0,0.7,NA,NA,0.8,0.4,0.5
+"119","Indonesia",0,0.4,NA,NA,1,0.4,0.5
+"120","United Kingdom",0,0.7,NA,NA,0.5,0.6,0.5
+"121","Netherlands",0,0.7,NA,NA,0.8,0.4,0.5
+"122","Italy",0,0.7,NA,NA,0.8,0.4,0.5
+"123","United States",0,0.6,NA,NA,0.8,0.5,0.5
+"124","Czech Republic",0,0.7,NA,NA,0.8,0.3,0.5
+"125","Malawi",0,0.6,NA,NA,0.8,NA,0.5
+"126","Poland",0,0.7,NA,NA,0.8,0.3,0.5
+"127","Iran",0,0.6,NA,NA,0.8,NA,0.4
+"128","Cameroon",0,0.6,NA,NA,1,0.2,0.4
+"129","Sudan",0,0.6,NA,NA,0.8,NA,0.4
+"130","Germany",0,0.7,NA,NA,0.8,0.3,0.4
+"131","Algeria",0,0.3,NA,NA,1,NA,0.4
+"132","Belgium",0,0.5,NA,NA,0.8,0.5,0.4
+"133","Switzerland",0,0.6,NA,NA,0.8,0.4,0.4
+"134","Qatar",0,0.6,NA,NA,0.8,0.4,0.4
+"135","Brazil",0,0.2,NA,NA,1,0.6,0.4
+"136","Oman",0,0.7,NA,NA,0.5,0.6,0.4
+"137","Singapore",0,0.7,NA,NA,0.5,0.5,0.4
+"138","Sweden",0,0.6,NA,NA,0.8,0.4,0.4
+"139","Guinea",0,0.3,NA,NA,1,NA,0.4
+"140","Japan",0,0.6,NA,NA,0.8,0.4,0.4
+"141","Andorra",0.9,0.3,NA,NA,0.5,0,0.4
+"142","Austria",0,0.8,NA,NA,0.5,0.4,0.4
+"143","Mozambique",0.2,0.6,NA,NA,0.5,0.4,0.4
+"144","Bangladesh",0,0.4,NA,NA,0.8,0.5,0.4
+"145","Dominican Republic",0,0.6,NA,NA,0.5,0.6,0.4
+"146","China",0,0.5,NA,NA,0.8,NA,0.4
+"147","Bulgaria",0,0.6,NA,NA,0.8,0.3,0.4
+"148","Mexico",0,0.3,NA,NA,0.8,0.6,0.4
+"149","Congo",0,0.2,NA,NA,1,NA,0.4
+"150","Suriname",0,0.2,NA,NA,1,NA,0.4
+"151","Haiti",0.5,0.2,NA,NA,0.2,0.6,0.4
+"152","Moldova",0,0.7,NA,NA,0.5,0.4,0.4
+"153","Cote dIvoire	0	0.6			0.8	0.2	0.4
+Lebanon	0	0.6			0.5	0.5	0.4
+Tajikistan	0.1	0.2			0.8	0.4	0.4
+Nicaragua	0.3	0.1			0.5	0.6	0.4
+Bosnia and Herzegovina	0	0.4			0.8	0.3	0.4
+Uzbekistan	0	0.3			0.8		0.4
+Pakistan	0	0.5			0.5	0.4	0.4
+Croatia	0	0.7			0.5	0.2	0.4
+Zambia	0	0.6			0.5	0.3	0.3
+Ethiopia	0	0.5			0.5		0.3
+Russia	0	0.8			0.2	0.3	0.3
+Kosovo	0	0.5			0.5		0.3
+Libya	0	0.2			0.8	0.3	0.3
+Turkey	0	0.7			0.2	0.4	0.3
+Belarus	0	0.8			0.5	0	0.3
+Luxembourg	0	0.9			0	0.4	0.3
+Spain	0	0.5			0.2	0.4	0.3
+Ukraine	0	0.6			0.2	0.3	0.3
+Romania	0	0.6			0.2	0.4	0.3
+Egypt	0	0.7			0	0.4	0.3
+Tanzania	1	0.1			0	0	0.3
+Puerto Rico	0	0.3			0.2	0.5	0.3
+Turkmenistan		0.1			0.8	0	0.3
+Albania	0	0.6			0.5	0	0.3
+France	0	0.7			0	0.4	0.3
+Serbia	0	0.6			0	0.4	0.3
+Afghanistan	0	0.2			0.2	0.3	0.2
+",NA,NA,NA,NA,NA,NA,NA
