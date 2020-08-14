@@ -16,10 +16,12 @@ debttab <- debttab[-1,]
 
 debttab <- debttab %>%
   mutate(Country4 = gsub('[0-9]+', '', Country4),
-         Country = countrycode(Country4, 
+         Countryiso = countrycode(Country4, 
                                origin = 'country.name',
                                destination = 'iso3c', 
                                nomatch = NULL)) %>%
-  filter(Country != c('TOTAL'))
+  filter(Countryiso != c('TOTAL')) 
+
+colnames(debttab) <- gsub('[0-9]+', '', colnames(debttab))
 
 write.csv(debttab, "Debtfile.csv")
