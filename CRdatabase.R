@@ -2,14 +2,16 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr)
 
-#--------------------EXISTING COMPOUND RISK-----------------
+#--------------------FUNCTION TO CALCULATE NORMALISATION SCORES-----------------
 
 #Function to normalise with upper and lower bounds (when high score = low vulnerability)
 normfuncneg <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
                                        ifelse(df[[col1]] <= lowerrisk, 0,
-                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)))
+                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                              )
+                                       )
   df
 }
 
@@ -18,11 +20,13 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
                                        ifelse(df[[col1]] <= lowerrisk, 0,
-                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)))
+                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                              )
+                                       )
   df
 }
 
-#--------------------Create health tab-----------------
+#--------------------HIS Score-----------------
 HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/HIS.csv")
 
 HIS <- HIS %>%
@@ -31,7 +35,7 @@ HIS <- HIS %>%
   
 HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
 
-#-----------------------Oxford rollback score-----------------
+#-----------------------Oxford rollback Score-----------------
 OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/OXrollbackscore.csv")
 
 OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_Oxrollback_score")
@@ -41,7 +45,7 @@ OXrollback <- OXrollback %>%
                                destination = 'iso3c', 
                                nomatch = NULL))
   
-#-------------------------COVID deaths and cases--------------------
+#-------------------------COVID projections--------------------
 covid <- "https://covid19-projections.com/#view-projections"
 covid <- read_html(covid)
 
@@ -61,7 +65,10 @@ colnames(covidworld)[1] <- c("Country")
 #Merge tables
 covidproj <- merge(covideu, covidworld, all=T)
 covidproj <- merge(covidproj, covidus, all=T)
-covidproj$Country <- countrycode(covidproj$Country, origin = 'country.name', destination = 'iso3c', nomatch = NULL)
+covidproj$Country <- countrycode(covidproj$Country, 
+                                 origin = 'country.name', 
+                                 destination = 'iso3c',
+                                 nomatch = NULL)
 
 #Convert to numeric
 covidproj$`Additional Deaths (% of Current Deaths)` <- gsub("%", "", covidproj$`Additional Deaths (% of Current Deaths)`)
@@ -110,14 +117,32 @@ covidgrowth <- covid %>%
   filter(previous2week != "twoweek") %>%
   select(- previous2week, -growthcase, -growthdeath, -meandeaths, -meancase)
 
-#Normalised scores
+#Find name of countries with few cases
+namecase <- covid %>%
+  filter(date== Sys.Date()-1) %>%
+  filter(new_cases_per_million > 10) %>%
+  select(iso_code)
+
+#Function to normalise with upper and lower bounds (when high score = high vulnerability)
+normfuncpos <- function(df,upperrisk, lowerrisk, col1){
+  #Create new column col_name as sum of col1 and col2
+  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
+                                        ifelse(df[[col1]] <= lowerrisk, 0,
+                                               ifelse(df$iso_code %in% namecase, 0,
+                                               ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        )))                                               
+                                        
+  df
+}
+
+#Normalised scores for deaths
 covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
 covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
 
 #Rename columns
 colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
 
-#----------------------------------CREATE HEALTH TAB-------------------------------------------
+#----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
 
 health <- countrylist
