@@ -27,11 +27,19 @@ HIS <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/com
 
 HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
 
+HIS <- HIS %>%
+  rename(Country = H_Country)
+
 #-----------------------Oxford rollback score-----------------
 OXrollback <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Oxrollback.csv", row.names=1)
 
 OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_OXrollback_score")
-
+OXrollback <- OXrollback %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
+  
 #-------------------------COVID deaths and cases--------------------
 covid <- "https://covid19-projections.com/#view-projections"
 covid <- read_html(covid)
@@ -106,12 +114,15 @@ covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
 covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
 
 #Rename columns
-colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
+colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
 
 #----------------------------------CREATE HEALTH TAB-------------------------------------------
+countrylist <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/countrylist.csv")
 
+health <- countrylist
+health <- left_join(HIS, OXrollback, by="Country") %>%
+  left_join(., covidproj,  by="Country") %>% 
+  left_join(., covidgrowth, by="Country")
 
-health <- 
-
-
+write.csv(health, "healthsheet.csv")
 
