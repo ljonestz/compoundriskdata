@@ -23,17 +23,18 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
 }
 
 #--------------------Create health tab-----------------
-HIS <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/HIS.csv")
-
-HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
+HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/HIS.csv")
 
 HIS <- HIS %>%
-  rename(Country = H_Country)
+  rename(Country = H_Country) %>%
+  select(-X)
+  
+HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
 
 #-----------------------Oxford rollback score-----------------
-OXrollback <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/Oxrollback.csv")
+OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/OXrollbackscore.csv")
 
-OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_OXrollback_score")
+OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_Oxrollback_score")
 OXrollback <- OXrollback %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
@@ -117,7 +118,7 @@ covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
 colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
 
 #----------------------------------CREATE HEALTH TAB-------------------------------------------
-countrylist <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/countrylist.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
 
 health <- countrylist
 health <- left_join(HIS, OXrollback, by="Country") %>%
