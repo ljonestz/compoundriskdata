@@ -23,7 +23,7 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
 }
 
 #--------------------Create health tab-----------------
-HIS <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/health.csv", row.names=1)
+HIS <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/HIS.csv")
 
 HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
 
@@ -31,7 +31,7 @@ HIS <- HIS %>%
   rename(Country = H_Country)
 
 #-----------------------Oxford rollback score-----------------
-OXrollback <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Oxrollback.csv", row.names=1)
+OXrollback <- read.csv("https://github.com/ljonestz/compoundriskdata/blob/master/Oxrollback.csv")
 
 OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_OXrollback_score")
 OXrollback <- OXrollback %>%
