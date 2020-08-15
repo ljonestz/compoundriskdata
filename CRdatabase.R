@@ -255,22 +255,32 @@ colnames(debttab) <- debttab[1,]
 debttab <- debttab[-1,] 
 
 debttab <- debttab %>%
-  mutate(Country4 = gsub('[0-9]+', '', Country4),
-         Countryiso = countrycode(Country4, 
+  rename(Country = Country4) %>%
+  mutate(Country = gsub('[0-9]+', '', Country),
+         Country = countrycode(Country, 
                                   origin = 'country.name',
                                   destination = 'iso3c', 
                                   nomatch = NULL)) %>%
-  filter(Countryiso != c('TOTAL')) 
+  filter(Country != c('TOTAL')) 
 
 colnames(debttab) <- gsub('[0-9]+', '', colnames(debttab))
+debttab <- debttab %>%
+  select(Country, `DSSI Participation?`, `Risk of overall debt distress`, `Potential DSSI Savings   (in % of  GDP)`)
+colnames(debttab) <- c('Country', 'D_DSSI', 'D_WB_Overall_debt_distress', 'D_WB_DSSI_Save')
 
+debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_distress == "In distress", 10,
+                                                  ifelse(debttab$D_WB_Overall_debt_distress == "High", 10,
+                                                         ifelse(debttab$D_WB_Overall_debt_distress == "Medium", 7,
+                                                                ifelse(debttab$D_WB_Overall_debt_distress == "Low", 3, NA)
+                                                  )))
 #IMF Debt forecasts
 imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/imfdebt.csv")
 imfdebt <- imfdebt %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
                                destination = 'iso3c', 
-                               nomatch = NULL))
+                               nomatch = NULL)) %>%
+  select(-X)
 
 names <- c("D_IMF_debt2017", "D_IMF_debt2018", "D_IMF_debt2019", 
 "D_IMF_debt2020", "D_IMF_debt2021", "D_IMF_debt2020.2019")
@@ -280,8 +290,15 @@ imfdebt[names] <- lapply(imfdebt[names], function(xx) {
 
 upperrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.95), na.rm=T)
 lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
-fpv <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
+imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
 
+#-------------------------CREATE DEBT SHEET-----------------------------------
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
+
+debtsheet <- countrylist
+debtsheet <- left_join(debttab, imfdebt , by="Country") 
+
+write.csv(debtsheet, "debtsheet.csv")
 
 
 
