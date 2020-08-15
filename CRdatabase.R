@@ -7,11 +7,10 @@ librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, c
 #Function to normalise with upper and lower bounds (when high score = low vulnerability)
 normfuncneg <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
-  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-                                       ifelse(df[[col1]] <= lowerrisk, 0,
-                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
-                                              )
-                                       )
+  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] <= upperrisk, 10,
+                                        ifelse(df[[col1]] >= lowerrisk, 0,
+                                               ifelse(df[[col1]]  > upperrisk & df[[col1]]  < lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        ))
   df
 }
 
@@ -265,10 +264,25 @@ debttab <- debttab %>%
 
 colnames(debttab) <- gsub('[0-9]+', '', colnames(debttab))
 
-#----------------------IMF Debt forecasts--------------
-imfdebt <- read.csv("https://pkgstore.datahub.io/core/imf-weo/values_csv/data/9ff413a778fd38ef165daa1b9754fb67/values_csv.csv")
-imfdebt %>%
-  filter(Indicator == "GGXWDG_NGDP") %>%
-  select(-Indicator) %>%
-  filter(Year > 2017)
+#IMF Debt forecasts
+imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/imfdebt.csv")
+imfdebt <- imfdebt %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
+
+names <- c("D_IMF_debt2017", "D_IMF_debt2018", "D_IMF_debt2019", 
+"D_IMF_debt2020", "D_IMF_debt2021", "D_IMF_debt2020.2019")
+imfdebt[names] <- lapply(imfdebt[names], function(xx) {
+  as.numeric(as.character(xx))
+})
+
+upperrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
+fpv <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
+
+
+
+
 
