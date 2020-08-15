@@ -125,11 +125,10 @@ namecase <- covid %>%
 
 #Function to normalise with upper and lower bounds (when high score = high vulnerability)
 normfuncpos <- function(df,upperrisk, lowerrisk, col1){
-  #Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
                                         ifelse(df[[col1]] <= lowerrisk, 0,
                                                ifelse(df$iso_code %in% namecase, 0,
-                                               ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                                      ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
                                         )))                                               
                                         
   df
@@ -151,4 +150,8 @@ health <- left_join(HIS, OXrollback, by="Country") %>%
   left_join(., covidgrowth, by="Country")
 
 write.csv(health, "healthsheet.csv")
+
+#
+
+
 
