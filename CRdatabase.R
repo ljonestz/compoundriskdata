@@ -19,10 +19,9 @@ normfuncneg <- function(df,upperrisk, lowerrisk, col1){
 normfuncpos <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-                                       ifelse(df[[col1]] <= lowerrisk, 0,
-                                              ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
-                                              )
-                                       )
+                                        ifelse(df[[col1]] <= lowerrisk, 0,
+                                               ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        ))
   df
 }
 
@@ -151,7 +150,125 @@ health <- left_join(HIS, OXrollback, by="Country") %>%
 
 write.csv(health, "healthsheet.csv")
 
-#
+#---------------------------------LOAD FOOD SECURITY DATA---------------------------
+#Proteus Index
+proteus <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/proteus.csv")
+
+proteus <- proteus %>%
+  rename(F_Proteus_Score = Proteus.index) %>%
+  select(-X) %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
+
+upperrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.90))
+lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10))
+proteus <- normfuncpos(proteus,upperrisk, lowerrisk, "F_Proteus_Score") 
+
+#Artemis
+artemis <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/artemis.csv")
+
+upperrisk <- 0.2
+lowerrisk <- 0
+artemis <- normfuncpos(artemis,upperrisk, lowerrisk, "F_Artemis_Score") 
+
+artemis <- artemis %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL)) %>%
+         select(-X)
+
+#FEWSNET
+fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/fewsnet.csv")
+
+fews <- fews %>%
+  select(-X) %>%
+  mutate(F_Fewsnet_Score_norm = case_when(F_Fewsnet_Score == 1 ~ 1,
+                                          F_Fewsnet_Score == 2 ~ 7,
+                                          F_Fewsnet_Score >= 3 ~ 10,
+                                          TRUE ~ NA_real_),
+         Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
+
+#---------------------- Scrape food price data from FAO ---------------------------------
+#Food price volatility
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode)
+
+#Website
+fao <- "https://datalab.review.fao.org/scraped_prices/world.html"
+faoweb <- read_html(fao)
+
+#Scrape table
+faoscrape <- faoweb %>% 
+  html_nodes("td") %>%
+  html_text()
+
+#Create dataframe
+faoprice <- as.data.frame(matrix(faoscrape, ncol=4, byrow=T), stringsAsFactors=T)
+names(faoprice) <- c('Country', "Pc6m", "Pc30d", "Pc7d")
+
+#Convert to numeric
+faoprice[c( "Pc6m", "Pc30d", "Pc7d")] <- lapply(faoprice[c( "Pc6m", "Pc30d", "Pc7d")] , function(xx) {
+  as.numeric(as.character(xx))
+})
+
+#Remove tag 
+faoprice <- faoprice %>% filter(faoprice$Country!="Source: Numbeo.com\n") %>%
+  mutate(Country = countrycode(Country, 
+                                        origin = 'country.name',
+                                        destination = 'iso3c', 
+                                        nomatch = NULL)) %>%
+  rename(F_FAO_6mFPV = Pc6m,
+         F_FAO_30dFPV = Pc30d,
+         F_FAO_7dFPV = Pc7d)
+
+#Normalise scores
+upperrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.05), na.rm=T)
+fpv <- normfuncpos(faoprice,upperrisk, lowerrisk, "F_FAO_6mFPV") 
 
 
+#------------------------CREATE FOOD SECURITY SHEET--------------------
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
+
+foodsecurity <- countrylist
+foodsecurity <- left_join(proteus, fewsnet, by="Country") %>%
+  left_join(., fpv,  by="Country") %>% 
+  left_join(., artemis, by="Country")
+
+write.csv(foodsecurity, "foodsecuritysheet.csv")
+
+#---------------------------LOAD DEBT DATA----------------------------
+#SCRAPE DEBT DATA
+debtweb <- "https://www.worldbank.org/en/topic/debt/brief/covid-19-debt-service-suspension-initiative"
+debt <- read_html(debtweb)
+
+debttab <- debt %>%
+  html_nodes("table") %>%
+  html_table(fill = TRUE)
+
+debttab <- as.data.frame(debttab)
+colnames(debttab) <- debttab[1,]
+debttab <- debttab[-1,] 
+
+debttab <- debttab %>%
+  mutate(Country4 = gsub('[0-9]+', '', Country4),
+         Countryiso = countrycode(Country4, 
+                                  origin = 'country.name',
+                                  destination = 'iso3c', 
+                                  nomatch = NULL)) %>%
+  filter(Countryiso != c('TOTAL')) 
+
+colnames(debttab) <- gsub('[0-9]+', '', colnames(debttab))
+
+#----------------------IMF Debt forecasts--------------
+imfdebt <- read.csv("https://pkgstore.datahub.io/core/imf-weo/values_csv/data/9ff413a778fd38ef165daa1b9754fb67/values_csv.csv")
+imfdebt %>%
+  filter(Indicator == "GGXWDG_NGDP") %>%
+  select(-Indicator) %>%
+  filter(Year > 2017)
 
