@@ -300,6 +300,41 @@ debtsheet <- left_join(debttab, imfdebt , by="Country")
 
 write.csv(debtsheet, "debtsheet.csv")
 
+#--------------------------MACRO DATA---------------------------------------
+macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/macro.csv")
+macro <- macro %>%
+  mutate(M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc,M_Travel_Tourism_perc)), 
+                                                na.rm=T),
+         M_Financial_Resilience_Score = rowMeans(select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)), 
+                                                 na.rm=T)) %>%
+  mutate(M_Economic_and_Financial_score = rowMeans(select(., c(M_Economic_Dependence_Score,M_Financial_Resilience_Score)),
+                                                   na.rm=T)) %>%
+  select(-X)
+upperrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.9), na.rm=T)
+lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm=T)
+macro <- normfuncpos(macro,upperrisk, lowerrisk, "M_Economic_and_Financial_score") 
+
+#GDP forecast
+gdp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/gdp.csv")
+gdp <- gdp %>%
+  select(-X1)
+upperrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.2), na.rm=T)
+lowerrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.95), na.rm=T)
+gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_WB_2019minus2020") 
+upperrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.2), na.rm=T)
+lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm=T)
+gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020") 
+
+#-----------------------------CREATE MACRO SHEET-----------------------------------------
+
+macrosheet <- left_join(macro, gdp, by="Country") 
+
+write.csv(debtsheet, "debtsheet.csv")
+
+
+
+
+
 
 
 
