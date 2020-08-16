@@ -327,10 +327,22 @@ gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020")
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 macrosheet <- left_join(macro, gdp, by="Country") 
-write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
+write.csv(macrosheet, "Indicator_dataset/macrosheet.csv")
 
+#--------------------------------FRAGILITY DATA-----------------------------------------
+fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FSI.csv")
+fsi <- fsi %>% 
+  select(-X) %>%
+  drop_na(Country)
+upperrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.1), na.rm=T)
+lowerrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.9), na.rm=T)
+fsi <- normfuncneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
 
-
+informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_fragility")
+informfragile <- informfragile %>% select(-X)
+upperrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), na.rm=T)
+fsi <- normfuncpos(informfragile,upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score") 
 
 
 
