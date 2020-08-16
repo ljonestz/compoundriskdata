@@ -24,5 +24,4 @@ debttab <- debttab %>%
 
 colnames(debttab) <- gsub('[0-9]+', '', colnames(debttab))
 
-write.csv(debttab, "Indicator_dataset/Debtfile.csv")
-
+write.csv(debttab, "Debtfile.csv")

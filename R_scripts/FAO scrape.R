@@ -27,4 +27,4 @@ faoprice <- faoprice %>% filter(faoprice$Country!="Source: Numbeo.com\n")
 faoprice$Country <- countrycode(faoprice$Country, origin = 'country.name', destination = 'iso3c')
 
 #Save as csv
-write.csv(faoprice, "Indicator_dataset/faoprice.csv")
+write.csv(faoprice, "faoprice.csv")

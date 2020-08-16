@@ -9,8 +9,6 @@ world <- world %>%
   dplyr::mutate(Country = countrycode(Country, origin = 'country.name', destination = 'iso3c'))
 
 #Join datasets
-faoprice <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/faoprice.csv")
-faoprice <- faoprice %>% select(-X)
 worldmap <- inner_join(world, faoprice, by="Country")
 
 #Plot world map
@@ -37,4 +35,4 @@ worldfood <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = gr
 
 worldfood
 
-ggsave("Indicator_maps/worldfood.pdf", worldfood, width=10, height = 10)
+ggsave("worldfood.pdf", worldfood, width=10, height = 10)

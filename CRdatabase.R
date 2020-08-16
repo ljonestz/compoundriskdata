@@ -25,7 +25,7 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
 }
 
 #--------------------HIS Score-----------------
-HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/HIS.csv")
+HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/HIS.csv")
 
 HIS <- HIS %>%
   rename(Country = H_Country) %>%
@@ -34,7 +34,7 @@ HIS <- HIS %>%
 HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
 
 #-----------------------Oxford rollback Score-----------------
-OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/OXrollbackscore.csv")
+OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OXrollbackscore.csv")
 
 OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_Oxrollback_score")
 OXrollback <- OXrollback %>%
@@ -140,18 +140,18 @@ covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
 colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 health <- countrylist
 health <- left_join(HIS, OXrollback, by="Country") %>%
   left_join(., covidproj,  by="Country") %>% 
   left_join(., covidgrowth, by="Country")
 
-write.csv(health, "healthsheet.csv")
+write.csv(health, "Risk_sheets/healthsheet.csv")
 
 #---------------------------------LOAD FOOD SECURITY DATA---------------------------
 #Proteus Index
-proteus <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/proteus.csv")
+proteus <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/proteus.csv")
 
 proteus <- proteus %>%
   rename(F_Proteus_Score = Proteus.index) %>%
@@ -166,7 +166,7 @@ lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10))
 proteus <- normfuncpos(proteus,upperrisk, lowerrisk, "F_Proteus_Score") 
 
 #Artemis
-artemis <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/artemis.csv")
+artemis <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/artemis.csv")
 
 upperrisk <- 0.2
 lowerrisk <- 0
@@ -180,7 +180,7 @@ artemis <- artemis %>%
          select(-X)
 
 #FEWSNET
-fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/fewsnet.csv")
+fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fewsnet.csv")
 
 fews <- fews %>%
   select(-X) %>%
@@ -232,14 +232,14 @@ fpv <- normfuncpos(faoprice,upperrisk, lowerrisk, "F_FAO_6mFPV")
 
 
 #------------------------CREATE FOOD SECURITY SHEET--------------------
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 foodsecurity <- countrylist
 foodsecurity <- left_join(proteus, fewsnet, by="Country") %>%
   left_join(., fpv,  by="Country") %>% 
   left_join(., artemis, by="Country")
 
-write.csv(foodsecurity, "foodsecuritysheet.csv")
+write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 
 #---------------------------LOAD DEBT DATA----------------------------
 #SCRAPE DEBT DATA
@@ -274,7 +274,7 @@ debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_dist
                                                                 ifelse(debttab$D_WB_Overall_debt_distress == "Low", 3, NA)
                                                   )))
 #IMF Debt forecasts
-imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/imfdebt.csv")
+imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imfdebt.csv")
 imfdebt <- imfdebt %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
@@ -293,15 +293,15 @@ lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
 imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/countrylist.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 debtsheet <- countrylist
 debtsheet <- left_join(debttab, imfdebt , by="Country") 
 
-write.csv(debtsheet, "debtsheet.csv")
+write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
 
 #--------------------------MACRO DATA---------------------------------------
-macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/macro.csv")
+macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macro.csv")
 macro <- macro %>%
   mutate(M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc,M_Travel_Tourism_perc)), 
                                                 na.rm=T),
@@ -315,7 +315,7 @@ lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.r
 macro <- normfuncpos(macro,upperrisk, lowerrisk, "M_Economic_and_Financial_score") 
 
 #GDP forecast
-gdp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/gdp.csv")
+gdp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv")
 gdp <- gdp %>%
   select(-X1)
 upperrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.2), na.rm=T)
@@ -326,10 +326,8 @@ lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm=T)
 gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020") 
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
-
 macrosheet <- left_join(macro, gdp, by="Country") 
-
-write.csv(debtsheet, "debtsheet.csv")
+write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 
 
 

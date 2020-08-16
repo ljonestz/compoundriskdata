@@ -9,9 +9,7 @@ world <- world %>%
   dplyr::mutate(Country = countrycode(Country, origin = 'country.name', destination = 'iso3c'))
 
 #Join datasets
-covidproj <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/covidproj.csv")
-covidproj <- covidproj %>% select(-X)
-worldmap <- inner_join(world, covidproj, by="Country")
+worldmap <- full_join(world, covidproj, by="Country")
 
 #ggplot theme
 plain <- theme(
@@ -31,7 +29,7 @@ plain <- theme(
 #Plot different maps
 one <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = log(`Current.Deaths`+1))) +
+  geom_polygon(aes(fill = log(`Current Deaths`+1))) +
   scale_fill_viridis(direction=-1, option="D") + # or direction=1
   ggtitle("COVID current deaths (log)") +
   plain +
@@ -39,7 +37,7 @@ one <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) 
 
 three <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = `Additional.Deaths....of.Current.Deaths.`)) +
+  geom_polygon(aes(fill = `Additional Deaths (% of Current Deaths)`)) +
   scale_fill_viridis(direction=-1, option="D") + # or direction=1
   ggtitle("Additional COVID Deaths by Nov 2020 (as % of Current Deaths)") +
   plain +
@@ -47,7 +45,7 @@ three <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)
 
 two <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = `Projected.Deaths...1M`)) +
+  geom_polygon(aes(fill = `Projected Deaths / 1M`)) +
   scale_fill_viridis(direction=-1, option="D") + # or direction=1
   ggtitle("COVID Projected Deaths by Nov 2020 (per 1M)") +
   plain
@@ -57,4 +55,4 @@ joinmap <- cowplot::plot_grid(one,two,three, align= "v", ncol=1)
 joinmap
 
 #Save map
-ggsave("Indicator_maps/covidmap.pdf", joinmap, width=12, height = 10, units="in")
+ggsave("covidmap.pdf", joinmap, width=12, height = 10, units="in")

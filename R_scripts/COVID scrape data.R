@@ -39,7 +39,7 @@ covidproj[varname] <- lapply(covidproj[varname],function(xx) {
 })
 
 #Write csv
-write.csv(covidproj, "Indicator_dataset/covidproj.csv")
+write.csv(covidproj, "covidproj.csv")
 
 
 
