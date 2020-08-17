@@ -342,9 +342,27 @@ informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundri
 informfragile <- informfragile %>% select(-X)
 upperrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.95), na.rm=T)
 lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), na.rm=T)
-fsi <- normfuncpos(informfragile,upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score") 
+informfragile <- normfuncpos(informfragile,upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score") 
 
+reign <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv")
+reign <- reign %>%
+  filter(year == 2020) %>%
+  select(country, couprisk, month) %>%
+  filter(month %in% (month(Sys.Date())-0:2)) %>%
+  group_by(country) %>%
+  summarise(Fr_REIGN_couprisk3m = mean(couprisk, na.rm=T)) %>%
+  rename(Country = country) %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
+upperrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.05), na.rm=T)
+reign <- normfuncpos(reign,upperrisk, lowerrisk, "Fr_REIGN_couprisk3m") 
 
-
+#-------------------------------------FRAGILITY SHEET--------------------------------------
+fragilitysheet <- full_join(fsi, informfragile , by="Country")  %>%
+  full_join(., reign,  by="Country")
+write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
 
