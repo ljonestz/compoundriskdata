@@ -36,22 +36,41 @@ riskflags <- globalrisk %>%
          EXISTING_RISK_FISCAL = D_WB_Overall_debt_distress_norm,
          EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
          EXISTING_RISK_NATURAL_HAZARDS = NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
-         EXISINTG_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, Fr_FSI_Score_norm, na.rm=T),
-         EMERGING_RISK_COVID_RESPONSE_CAPACITY = D_IMF_debt2020.2019_norm,
-         EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_Fewsnet_Score_norm, F_Artemis_Score_norm, na.rm=T),
+         EXISINTG_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, 
+                                                     Fr_FSI_Score_norm, 
+                                                     na.rm=T),
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(H_Oxrollback_score_norm, 
+                                                      H_Covidgrowth_casesnorm,
+                                                      H_Covidgrowth_deathsnorm,
+                                                      H_Covidproj_Projected_Deaths_._1M_norm, 
+                                                      na.rm=T),
+         EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_Fewsnet_Score_norm,
+                                                                                     F_Artemis_Score_norm, 
+                                                                                     na.rm=T),
                                                  TRUE ~ F_FAO_6mFPV_norm),
-         EMERGING_RISK_CONFLICT = pmax(C_ACLED_event_same_month_difference_perc_norm, C_ACLED_fatal_same_month_difference_perc_norm, na.rm=T),
+         EMERGING_RISK_CONFLICT = pmax(C_ACLED_event_same_month_difference_perc_norm,
+                                       C_ACLED_fatal_same_month_difference_perc_norm,
+                                       na.rm=T),
          EMERGING_RISK_FISCAL = D_IMF_debt2020.2019_norm,
-         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(M_GDP_IMF_2019minus2020_norm, M_GDP_WB_2019minus2020_norm),
-         EMERGING_RISK_NATURAL_HAZARDS = pmax(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm, NH_GDAC_Hazard_Score_Norm, na.rm = T) 
-         
-         
-         
-         ) %>%
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(M_GDP_IMF_2019minus2020_norm,
+                                                              M_GDP_WB_2019minus2020_norm, 
+                                                              na.rm=T),
+         EMERGING_RISK_NATURAL_HAZARDS = pmax(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
+                                              NH_GDAC_Hazard_Score_Norm, 
+                                              NH_INFORM_Crisis_Norm, 
+                                              na.rm = T),
+         EMERGING_RISK_FRAGILITY_INSITUTIONS = pmax(Fr_FSI_2019minus2020_norm, 
+                                                    Fr_REIGN_couprisk3m_norm, 
+                                                    ifelse(NH_INFORM_CRISIS_Type==3, 10, 0),
+                                                    na.rm=T)) %>%
   select(Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
-         EXISTING_RISK_NATURAL_HAZARDS,EXISINTG_RISK_FRAGILITY_INSTITUTIONS)
+         EXISTING_RISK_NATURAL_HAZARDS,EXISINTG_RISK_FRAGILITY_INSTITUTIONS,
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_CONFLICT,
+         EMERGING_RISK_CONFLICT,EMERGING_RISK_FISCAL,
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,EMERGING_RISK_NATURAL_HAZARDS,
+         EMERGING_RISK_FRAGILITY_INSITUTIONS)
 
 
 

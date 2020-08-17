@@ -288,8 +288,8 @@ imfdebt[names] <- lapply(imfdebt[names], function(xx) {
   as.numeric(as.character(xx))
 })
 
-upperrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.95), na.rm=T)
-lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
+upperrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
+lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.95), na.rm=T)
 imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
@@ -621,12 +621,14 @@ informcrisis <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundris
 
 #Add duplicates
 informcrisis <- informcrisis %>%
-  select(-X1, Country, NH_INFORM_Crisis_name, NH_Crisis_Severity_Score, NH_Crisis_Type_Number) %>%
+  select(-X1, Country, NH_INFORM_Crisis_name, NH_INFORM_Crisis_Severity_Score, NH_INFORM_Crisis_Type_Number) %>%
   mutate(Country = strsplit(as.character(Country), ",")) %>%
   unnest() %>% 
   filter(Country != "") %>%
-  select(Country, NH_INFORM_Crisis_name:NH_Crisis_Type_Number) %>%
-  mutate(Country = trimws(Country))
+  select(Country, NH_INFORM_Crisis_name:NH_INFORM_Crisis_Type_Number) %>%
+  mutate(Country = trimws(Country),
+         NH_INFORM_Crisis_Norm = case_when(NH_INFORM_Crisis_Type_Number == 1 ~ 10, 
+                                           TRUE ~ 0)) 
 
 write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
 
