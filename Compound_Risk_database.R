@@ -2,7 +2,7 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr)
 
-#--------------------FUNCTION TO CALCULATE NORMALISATION SCORES-----------------
+#--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 
 #Function to normalise with upper and lower bounds (when high score = low vulnerability)
 normfuncneg <- function(df,upperrisk, lowerrisk, col1){
