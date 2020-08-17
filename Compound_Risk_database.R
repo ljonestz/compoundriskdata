@@ -4,7 +4,7 @@ librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, c
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 
-#Function to normalise with upper and lower bounds (when high score = low vulnerability)
+#Function to normalise with upper and lower bounds (when low score = high vulnerability)
 normfuncneg <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] <= upperrisk, 10,
@@ -452,5 +452,30 @@ write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 #------------------------------CREATE CONFLICT SHEET-------------------------------------------
 conflictsheet <- full_join(gpi, acleddata, by="Country") 
 write.csv(conflictsheet, "Risk_sheets/conflictsheet.csv")
+
+#--------------------------------SOCIO-ECONOMIC DATA and SHEET------------------------------------------
+#Load OCHA database
+ocha <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv")
+ocha <- ocha %>%
+  select(-X1)
+upperrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na.rm=T)
+ocha <- normfuncpos(ocha,upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index") 
+write.csv(ocha, "Risk_sheets/Socioeconomic_sheet.csv")
+
+#-------------------------------NATURAL HAZARDS SHEET------------------------------------------------
+#Load UKMO dataset
+nathaz <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv")
+nathaz <- nathaz %>%
+  select(-X1) %>%
+  rename(Country = NH_UKMO_Country)
+upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.05), na.rm=T)
+nathaz <- normfuncpos(nathaz,upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS") 
+upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.05), na.rm=T)
+nathaz <- normfuncpos(nathaz,upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS") 
+
+
 
   
