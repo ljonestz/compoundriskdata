@@ -1,0 +1,70 @@
+"","Country","NH_INFORM_Crisis_name","NH_INFORM_Crisis_ID","NH_CRISIS_Type","NH_Crisis_Severity_Score","NH_Crisis_Type_Number"
+"1","SDN","Complex crisis in Sudan","SDN001","Complex crisis",4.6,3
+"2","AFG","Complex crisis in Afghanistan","AFG001","Complex crisis",4.5,3
+"3","SOM","Complex crisis in Somalia","SOM001","Complex crisis",4.5,3
+"4","YEM","Conflict in Yemen","YEM001","Complex crisis",4.5,3
+"5","COD","Complex crisis in DRC","COD001","Complex crisis",4.2,3
+"6","SYR","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"7","TUR","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"8","IRQ","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"9","EGY","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"10","JOR","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"11","LBN","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"12","PRK","Complex crisis in DPRK","PRK001","Complex crisis",4.1,3
+"13","LBY","Complex crisis in Libya","LBY001","Multiple crises country",4.1,3
+"14","SSD","Complex crisis in South Sudan","SSD001","Complex crisis",4,3
+"15","VEN","Complex crisis in Venezuela","VEN001","Complex crisis",4,3
+"16","TCD","Complex crisis in Chad","TCD001","Multiple crises country",3.9,3
+"17","ETH","Complex crisis in Ethiopia","ETH001","Complex crisis",3.9,3
+"18","IRQ","Conflict  in Iraq","IRQ002","Conflict",3.9,3
+"19","NGA","Complex crisis in Nigeria","NGA001","Complex crisis",3.9,3
+"20","NGA","Boko Haram crisis in Nigeria","NGA004","Conflict",3.8,3
+"21","NGA","Regional Boko Haram Crisis","REG001","Regional crisis",3.8,3
+"22","NER","Regional Boko Haram Crisis","REG001","Regional crisis",3.8,3
+"23","TCD","Regional Boko Haram Crisis","REG001","Regional crisis",3.8,3
+"24","CMR","Regional Boko Haram Crisis","REG001","Regional crisis",3.8,3
+"25","CAF","Complex crisis in CAR","CAF001","Complex crisis",3.7,3
+"26","IRQ","Multiple crises in Iraq","IRQ001","Multiple crises country",3.7,3
+"27","LSO","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"28","MDG","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"29","MWI","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"30","MOZ","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"31","NAM","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"32","SWZ","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"33","TZA","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"34","ZMB","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"35","ZWE","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"36","MLI","Complex crisis in Mali","MLI001","Complex crisis",3.6,3
+"37","VEN","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"38","BRA","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"39","COL","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"40","ECU","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"41","PER","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"42","TTO","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"43","ERI","Complex crisis in Eritrea","ERI001","Complex crisis",3.5,3
+"44","SDN","Refugees in Sudan","SDN005","International displacement",3.5,3
+"45","COL","Complex crisis in Colombia","COL001","Complex crisis",3.4,3
+"46","PAK","Complex crisis in Pakistan","PAK001","Complex crisis",3.4,3
+"47","PSE","Conflict in Palestine","PSE002","Conflict",3.4,3
+"48","BGD","Rohingya Regional Crisis","REG011","Regional crisis",3.3,3
+"49","MMR","Rohingya Regional Crisis","REG011","Regional crisis",3.3,3
+"50","CMR","Multiple crises in Cameroon","CMR001","Multiple crises country",3.3,3
+"51","CMR","Boko Haram in Cameroon","CMR002","Conflict",3.3,3
+"52","COL","Venezuela displacement in Colombia","COL002","International displacement",3.3,3
+"53","HTI","Complex crisis in Haiti","HTI001","Complex crisis",3.3,3
+"54","UKR","Conflict in Ukraine","UKR002","Conflict",3.3,3
+"55","ZWE","Complex crisis in Zimbabwe","ZWE001","Complex crisis",3.3,3
+"56","KEN","Multiple crisis in Kenya","KEN001","Multiple crises country",3.2,3
+"57","MMR","Multiple crises in Myanmar","MMR001","Multiple crises country",3.2,3
+"58","MMR","Rakhine Conflict","MMR002","Conflict",3.2,3
+"59","NER","Multiple crises in Niger","NER001","Multiple crises country",3.2,3
+"60","TCD","Boko Haram in Chad","TCD003","Conflict",3.1,3
+"61","TCD","CAR refugees in Chad","TCD004","International displacement",3.1,3
+"62","TCD","Darfur refugees in Chad","TCD005","International displacement",3.1,3
+"63","GTM","Complex crisis in Guatemala","GTM001","Complex crisis",3.1,3
+"64","HND","Complex crisis in Honduras","HND001","Complex crisis",3.1,3
+"65","KEN","Drought in Kenya","KEN003","Drought",3.1,1
+"66","LBN","Socioeconomic crisis in Lebanon","LBN004","Political and economic crisis",3.1,3
+"67","NER","Boko Haram in Niger","NER002","Conflict",3.1,3
+"68","BFA","Conflict in Burkina Faso","BFA002","Conflict",3,3
+"69","IRN","Afghan Refugees in Iran","IRN004","International displacement",3,3

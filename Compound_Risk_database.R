@@ -616,8 +616,23 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
+#INFORM CRISIS TRACKER
+informcrisis <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv")
+
+#Add duplicates
+informcrisis <- informcrisis %>%
+  select(-X1, Country, NH_INFORM_Crisis_name, NH_Crisis_Severity_Score, NH_Crisis_Type_Number) %>%
+  mutate(Country = strsplit(as.character(Country), ",")) %>%
+  unnest() %>% 
+  filter(Country != "") %>%
+  select(Country, NH_INFORM_Crisis_name:NH_Crisis_Type_Number) %>%
+  mutate(Country = trimws(Country))
+
+write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
+
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
-nathazardfull <- full_join(nathaz, gdac, by="Country") 
+nathazardfull <- full_join(nathaz, gdac, by="Country") %>%
+  full_join(., informcrisis)
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 
 
