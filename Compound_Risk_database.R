@@ -337,13 +337,18 @@ fsi <- fsi %>%
 upperrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.1), na.rm=T)
 lowerrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.9), na.rm=T)
 fsi <- normfuncneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
+upperrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.1), na.rm=T)
+lowerrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.9), na.rm=T)
+fsi <- normfuncneg(fsi,upperrisk, lowerrisk, "Fr_FSI_Score") 
 
+#INFORM
 informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_fragility")
 informfragile <- informfragile %>% select(-X)
 upperrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.95), na.rm=T)
 lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), na.rm=T)
 informfragile <- normfuncpos(informfragile,upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score") 
 
+#REIGN
 reign <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv")
 reign <- reign %>%
   filter(year == 2020) %>%

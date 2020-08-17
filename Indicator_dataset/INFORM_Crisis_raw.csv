@@ -1,0 +1,48 @@
+"","Countryname","Country","NH_INFORM_Crisis_name","NH_INFORM_Crisis_ID","NH_CRISIS_Type","NH_Crisis_Severity_Score","NH_Crisis_Type_Number"
+"1","Sudan","SDN","Complex crisis in Sudan","SDN001","Complex crisis",4.6,3
+"2","Afghanistan","AFG","Complex crisis in Afghanistan","AFG001","Complex crisis",4.5,3
+"3","Somalia","SOM","Complex crisis in Somalia","SOM001","Complex crisis",4.5,3
+"4","Yemen","YEM","Conflict in Yemen","YEM001","Complex crisis",4.5,3
+"5","DRC","COD","Complex crisis in DRC","COD001","Complex crisis",4.2,3
+"6","Syria, Turkey, Iraq, Egypt, Jordan, Lebanon","SYR, TUR, IRQ, EGY, JOR, LBN","Syrian Regional Crisis","REG004","Regional crisis",4.2,3
+"7","DPRK","PRK","Complex crisis in DPRK","PRK001","Complex crisis",4.1,3
+"8","Libya","LBY","Complex crisis in Libya","LBY001","Multiple crises country",4.1,3
+"9","South Sudan","SSD","Complex crisis in South Sudan","SSD001","Complex crisis",4,3
+"10","Venezuela","VEN","Complex crisis in Venezuela","VEN001","Complex crisis",4,3
+"11","Chad","TCD","Complex crisis in Chad","TCD001","Multiple crises country",3.9,3
+"12","Ethiopia","ETH","Complex crisis in Ethiopia","ETH001","Complex crisis",3.9,3
+"13","Iraq","IRQ","Conflict  in Iraq","IRQ002","Conflict",3.9,3
+"14","Nigeria","NGA","Complex crisis in Nigeria","NGA001","Complex crisis",3.9,3
+"15","Nigeria","NGA","Boko Haram crisis in Nigeria","NGA004","Conflict",3.8,3
+"16","Nigeria, Niger, Chad, Cameroon","NGA, NER, TCD, CMR","Regional Boko Haram Crisis","REG001","Regional crisis",3.8,3
+"17","CAR","CAF","Complex crisis in CAR","CAF001","Complex crisis",3.7,3
+"18","Iraq","IRQ","Multiple crises in Iraq","IRQ001","Multiple crises country",3.7,3
+"19","Lesotho,Madagascar,Malawi,Mozambique,Namibia,Swaziland,Tanzania,Zambia,Zimbabwe","LSO, MDG, MWI, MOZ, NAM, SWZ, TZA, ZMB, ZWE","Southern Africa Regional Food Security Crisis","REG012","Regional crisis",3.7,3
+"20","Mali","MLI","Complex crisis in Mali","MLI001","Complex crisis",3.6,3
+"21","Venezuela, Brazil, Colombia, Ecuador, Peru, Trinidad and Tobago","VEN, BRA, COL, ECU, PER, TTO","Venezuela Regional Crisis","REG002","Regional crisis",3.6,3
+"22","Eritrea","ERI","Complex crisis in Eritrea","ERI001","Complex crisis",3.5,3
+"23","Sudan","SDN","Refugees in Sudan","SDN005","International displacement",3.5,3
+"24","Colombia","COL","Complex crisis in Colombia","COL001","Complex crisis",3.4,3
+"25","Pakistan","PAK","Complex crisis in Pakistan","PAK001","Complex crisis",3.4,3
+"26","Palestine","PSE","Conflict in Palestine","PSE002","Conflict",3.4,3
+"27","Bangladesh, Myanmar","BGD, MMR","Rohingya Regional Crisis","REG011","Regional crisis",3.3,3
+"28","Cameroon","CMR","Multiple crises in Cameroon","CMR001","Multiple crises country",3.3,3
+"29","Cameroon","CMR","Boko Haram in Cameroon","CMR002","Conflict",3.3,3
+"30","Colombia","COL","Venezuela displacement in Colombia","COL002","International displacement",3.3,3
+"31","Haiti","HTI","Complex crisis in Haiti","HTI001","Complex crisis",3.3,3
+"32","Ukraine","UKR","Conflict in Ukraine","UKR002","Conflict",3.3,3
+"33","Zimbabwe","ZWE","Complex crisis in Zimbabwe","ZWE001","Complex crisis",3.3,3
+"34","Kenya","KEN","Multiple crisis in Kenya","KEN001","Multiple crises country",3.2,3
+"35","Myanmar","MMR","Multiple crises in Myanmar","MMR001","Multiple crises country",3.2,3
+"36","Myanmar","MMR","Rakhine Conflict","MMR002","Conflict",3.2,3
+"37","Niger","NER","Multiple crises in Niger","NER001","Multiple crises country",3.2,3
+"38","Chad","TCD","Boko Haram in Chad","TCD003","Conflict",3.1,3
+"39","Chad","TCD","CAR refugees in Chad","TCD004","International displacement",3.1,3
+"40","Chad","TCD","Darfur refugees in Chad","TCD005","International displacement",3.1,3
+"41","Guatemala","GTM","Complex crisis in Guatemala","GTM001","Complex crisis",3.1,3
+"42","Honduras","HND","Complex crisis in Honduras","HND001","Complex crisis",3.1,3
+"43","Kenya","KEN","Drought in Kenya","KEN003","Drought",3.1,1
+"44","Lebanon","LBN","Socioeconomic crisis in Lebanon","LBN004","Political and economic crisis",3.1,3
+"45","Niger","NER","Boko Haram in Niger","NER002","Conflict",3.1,3
+"46","Burkina Faso","BFA","Conflict in Burkina Faso","BFA002","Conflict",3,3
+"47","Iran","IRN","Afghan Refugees in Iran","IRN004","International displacement",3,3
