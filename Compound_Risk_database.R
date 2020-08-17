@@ -368,13 +368,18 @@ write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 #-------------------------------------CONFLICT DATA-----------------------------
 #Load GPI data
 gpi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/GPI.csv")
-gpi <- gpi %>% select(-X)
+gpi <- gpi %>% 
+  select(-X) %>%
+  mutate(Country = countrycode(Country, 
+                               origin = 'country.name',
+                               destination = 'iso3c', 
+                               nomatch = NULL))
 upperrisk <- quantile(gpi$C_GPI_Score, probs = c(0.90))
 lowerrisk <- quantile(gpi$C_GPI_Score, probs = c(0.10))
 gpi <- normfuncpos(gpi, upperrisk, lowerrisk, "C_GPI_Score")
 
 #Load ACLED data  
-acled <- read_csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/fragiledata.csv")
+acled <- read_csv("~/Google Drive/PhD/R code/Compound Risk/ACLEDraw.csv")
 
 #summarise deaths
 fatal <- acled %>%
@@ -413,7 +418,8 @@ event <- acled %>%
 
 #Join deaths and events
 acledjoin <- full_join(fatal, event, by="iso3")
-acledjoin <- acledjoin %>% rename(County = iso3)
+acledjoin <- acledjoin %>% 
+  rename(Country = iso3)
 
 #Normalise fatalities
 aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
@@ -442,5 +448,9 @@ acleddata <- aclednorm(acleddata, 60, 0, "C_ACLED_event_month_annual_difference_
 acleddata <- aclednorm(acleddata, 300, 0, "C_ACLED_event_month_threeyear_difference_perc", "C_ACLED_event_last30d")
 
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
+
+#------------------------------CREATE CONFLICT SHEET-------------------------------------------
+conflictsheet <- full_join(gpi, acleddata, by="Country") 
+write.csv(conflictsheet, "Risk_sheets/conflictsheet.csv")
 
   
