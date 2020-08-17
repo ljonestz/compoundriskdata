@@ -122,7 +122,7 @@ namecase <- covid %>%
   select(iso_code)
 
 #Function to normalise with upper and lower bounds (when high score = high vulnerability)
-normfuncpos <- function(df,upperrisk, lowerrisk, col1){
+normfuncposcovid <- function(df,upperrisk, lowerrisk, col1){
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
                                         ifelse(df[[col1]] <= lowerrisk, 0,
                                                ifelse(df$iso_code %in% namecase, 0,
@@ -133,8 +133,8 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
 }
 
 #Normalised scores for deaths
-covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
-covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
+covidgrowth <- normfuncposcovid(covidgrowth, 150, 0, "growthratedeaths")
+covidgrowth <- normfuncposcovid(covidgrowth, 150, 0, "growthratecases")
 
 #Rename columns
 colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
@@ -270,7 +270,7 @@ colnames(debttab) <- c('Country', 'D_DSSI', 'D_WB_Overall_debt_distress', 'D_WB_
 
 debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_distress == "In distress", 10,
                                                   ifelse(debttab$D_WB_Overall_debt_distress == "High", 10,
-                                                         ifelse(debttab$D_WB_Overall_debt_distress == "Medium", 7,
+                                                         ifelse(debttab$D_WB_Overall_debt_distress == "Moderate", 7,
                                                                 ifelse(debttab$D_WB_Overall_debt_distress == "Low", 3, NA)
                                                   )))
 #IMF Debt forecasts
