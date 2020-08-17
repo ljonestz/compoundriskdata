@@ -31,7 +31,7 @@ HIS <- HIS %>%
   rename(Country = H_Country) %>%
   select(-X)
   
-HIS <- normfuncneg(HIS, 50, 20, "H_HIS_Score")
+HIS <- normfuncneg(HIS, 20, 50, "H_HIS_Score")
 
 #-----------------------Oxford rollback Score-----------------
 OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OXrollbackscore.csv")
