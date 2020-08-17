@@ -235,7 +235,7 @@ fpv <- normfuncpos(faoprice,upperrisk, lowerrisk, "F_FAO_6mFPV")
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 foodsecurity <- countrylist
-foodsecurity <- left_join(proteus, fewsnet, by="Country") %>%
+foodsecurity <- left_join(proteus, fews, by="Country") %>%
   left_join(., fpv,  by="Country") %>% 
   left_join(., artemis, by="Country")
 
@@ -365,4 +365,82 @@ fragilitysheet <- full_join(fsi, informfragile , by="Country")  %>%
   full_join(., reign,  by="Country")
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
+#-------------------------------------CONFLICT DATA-----------------------------
+#Load GPI data
+gpi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/GPI.csv")
+gpi <- gpi %>% select(-X)
+upperrisk <- quantile(gpi$C_GPI_Score, probs = c(0.90))
+lowerrisk <- quantile(gpi$C_GPI_Score, probs = c(0.10))
+gpi <- normfuncpos(gpi, upperrisk, lowerrisk, "C_GPI_Score")
 
+#Load ACLED data  
+acled <- read_csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/fragiledata.csv")
+
+#summarise deaths
+fatal <- acled %>%
+  select(iso3, fatalities, event_date, event_type) %>%
+  mutate(event_date = as.Date(parse_date_time(acled$event_date, orders = "dmy"))) %>%
+  group_by(iso3, event_date) %>%
+  tally(fatalities) %>%
+  summarise(C_ACLED_fatal_last30d = sum(n[event_date >= Sys.Date()-30]),
+            C_ACLED_fatal_oneyear30d = sum(n[event_date >= Sys.Date()-395 & event_date <= Sys.Date()-365]),
+            C_ACLED_fatal_oneyearmonthlyav = sum(n[event_date >= Sys.Date()-365], na.rm=T)/12,
+            C_ACLED_fatal_threeyearmonthlyav = sum(n[event_date >= Sys.Date()-1095], na.rm=T)/36,
+            C_ACLED_fatal_same_month_difference = C_ACLED_fatal_last30d - C_ACLED_fatal_oneyear30d,
+            C_ACLED_fatal_month_annual_difference = C_ACLED_fatal_last30d - C_ACLED_fatal_oneyearmonthlyav,
+            C_ACLED_fatal_month_threeyear_difference = C_ACLED_fatal_last30d - C_ACLED_fatal_threeyearmonthlyav,
+            C_ACLED_fatal_same_month_difference_perc = ((C_ACLED_fatal_last30d - C_ACLED_fatal_oneyear30d) / C_ACLED_fatal_oneyear30d) * 100,
+            C_ACLED_fatal_month_annual_difference_perc = ((C_ACLED_fatal_last30d - C_ACLED_fatal_oneyearmonthlyav) / C_ACLED_fatal_oneyearmonthlyav) *100,
+            C_ACLED_fatal_month_threeyear_difference_perc = ((C_ACLED_fatal_last30d - C_ACLED_fatal_threeyearmonthlyav) / C_ACLED_fatal_threeyearmonthlyav)*100)
+
+#summarise events
+event <- acled %>%
+  select(iso3, fatalities, event_date, event_type, event_id_cnty) %>%
+  mutate(event_date = as.Date(parse_date_time(acled$event_date, orders = "dmy"))) %>%
+  group_by(iso3, event_date) %>%
+  count(event_id_cnty) %>%
+  group_by(iso3) %>%
+  summarise(C_ACLED_event_last30d = sum(n[event_date >= Sys.Date()-30]),
+            C_ACLED_event_oneyear30d = sum(n[event_date >= Sys.Date()-395 & event_date <= Sys.Date()-365]),
+            C_ACLED_event_oneyearmonthlyav = sum(n[event_date >= Sys.Date()-365], na.rm=T)/12,
+            C_ACLED_event_threeyearmonthlyav = sum(n[event_date >= Sys.Date()-1095], na.rm=T)/36,
+            C_ACLED_event_same_month_difference = C_ACLED_event_last30d - C_ACLED_event_oneyear30d,
+            C_ACLED_event_month_annual_difference = C_ACLED_event_last30d - C_ACLED_event_oneyearmonthlyav,
+            C_ACLED_event_month_threeyear_difference = C_ACLED_event_last30d - C_ACLED_event_threeyearmonthlyav,
+            C_ACLED_event_same_month_difference_perc = ((C_ACLED_event_last30d - C_ACLED_event_oneyear30d) / C_ACLED_event_oneyear30d) * 100,
+            C_ACLED_event_month_annual_difference_perc = ((C_ACLED_event_last30d - C_ACLED_event_oneyearmonthlyav) / C_ACLED_event_oneyearmonthlyav) *100,
+            C_ACLED_event_month_threeyear_difference_perc = ((C_ACLED_event_last30d - C_ACLED_event_threeyearmonthlyav) / C_ACLED_event_threeyearmonthlyav)*100)
+
+#Join deaths and events
+acledjoin <- full_join(fatal, event, by="iso3")
+acledjoin <- acledjoin %>% rename(County = iso3)
+
+#Normalise fatalities
+aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
+  #Create new column col_name as sum of col1 and col2
+  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 5, 0,
+                                               ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        ))
+  df
+}
+acleddata <- aclednorm(acledjoin, 200, 0, "C_ACLED_fatal_same_month_difference_perc", "C_ACLED_fatal_last30d")
+acleddata <- aclednorm(acleddata, 60, 0, "C_ACLED_fatal_month_annual_difference_perc", "C_ACLED_fatal_last30d")
+acleddata <- aclednorm(acleddata, 200, 0, "C_ACLED_fatal_month_threeyear_difference_perc", "C_ACLED_fatal_last30d")
+
+#Normalise events
+aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
+  #Create new column col_name as sum of col1 and col2
+  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 25, 0,
+                                               ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        ))
+  df
+}
+acleddata <- aclednorm(acleddata, 500, 0, "C_ACLED_event_same_month_difference_perc", "C_ACLED_event_last30d")
+acleddata <- aclednorm(acleddata, 60, 0, "C_ACLED_event_month_annual_difference_perc", "C_ACLED_event_last30d")
+acleddata <- aclednorm(acleddata, 300, 0, "C_ACLED_event_month_threeyear_difference_perc", "C_ACLED_event_last30d")
+
+write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
+
+  
