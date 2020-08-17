@@ -327,7 +327,7 @@ gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020")
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 macrosheet <- left_join(macro, gdp, by="Country") 
-write.csv(macrosheet, "Indicator_dataset/macrosheet.csv")
+write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 
 #--------------------------------FRAGILITY DATA-----------------------------------------
 fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FSI.csv")

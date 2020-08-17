@@ -1,6 +1,6 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
@@ -28,6 +28,7 @@ write.csv(globalrisk, "Risk_sheets/Global_compound_risk_database.csv")
 #-----------------------------------CREATE A FLAG SUMMARY SHEET---------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
+#Add existing and emerging risk scores
 riskflags <- globalrisk %>%
   mutate(EXISTING_RISK_COVID_RESPONSE_CAPACITY = H_HIS_Score_norm,
          EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
@@ -36,7 +37,7 @@ riskflags <- globalrisk %>%
          EXISTING_RISK_FISCAL = D_WB_Overall_debt_distress_norm,
          EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
          EXISTING_RISK_NATURAL_HAZARDS = NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
-         EXISINTG_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, 
+         EXISTING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, 
                                                      Fr_FSI_Score_norm, 
                                                      na.rm=T),
          EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(H_Oxrollback_score_norm, 
@@ -59,20 +60,59 @@ riskflags <- globalrisk %>%
                                               NH_GDAC_Hazard_Score_Norm, 
                                               NH_INFORM_Crisis_Norm, 
                                               na.rm = T),
-         EMERGING_RISK_FRAGILITY_INSITUTIONS = pmax(Fr_FSI_2019minus2020_norm, 
+         EMERGING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_FSI_2019minus2020_norm, 
                                                     Fr_REIGN_couprisk3m_norm, 
                                                     ifelse(NH_INFORM_CRISIS_Type==3, 10, 0),
                                                     na.rm=T)) %>%
   select(Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
-         EXISTING_RISK_NATURAL_HAZARDS,EXISINTG_RISK_FRAGILITY_INSTITUTIONS,
+         EXISTING_RISK_NATURAL_HAZARDS,EXISTING_RISK_FRAGILITY_INSTITUTIONS,
          EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_CONFLICT,
          EMERGING_RISK_CONFLICT,EMERGING_RISK_FISCAL,
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,EMERGING_RISK_NATURAL_HAZARDS,
-         EMERGING_RISK_FRAGILITY_INSITUTIONS)
+         EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
+#Create tertiary risk flags
+vars <- c("EXISTING_RISK_COVID_RESPONSE_CAPACITY", "EXISTING_RISK_FOOD_SECURITY", 
+          "EXISTING_RISK_CONFLICT", "EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
+          "EXISTING_RISK_FISCAL", "EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY", 
+          "EXISTING_RISK_NATURAL_HAZARDS", "EXISTING_RISK_FRAGILITY_INSTITUTIONS", 
+          "EMERGING_RISK_COVID_RESPONSE_CAPACITY", "EMERGING_RISK_CONFLICT", 
+          "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
+          "EMERGING_RISK_NATURAL_HAZARDS", "EMERGING_RISK_FRAGILITY_INSTITUTIONS")
 
+riskflags[paste0(vars, "_RISKLEVEL")] <- lapply(riskflags[vars], function(tt){
+  ifelse(tt >= 0 & tt < 7, "Low risk",
+         ifelse(tt >= 7 & tt < 10, "Medium risk",
+                ifelse(tt == 10, "High risk",
+                       NA)
+                )
+         )
+})
 
-
-
+#Calculate total compound risk scores
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE <- row_count(riskflags, 
+                                                          EXISTING_RISK_COVID_RESPONSE_CAPACITY:EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+                                                          count=10,
+                                                          append = F)
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE <- row_count(riskflags, 
+                                                          EMERGING_RISK_CONFLICT:EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+                                                          count=10,
+                                                          append = F)
+riskflags$medium_risk_existing <- as.numeric(unlist(row_count(riskflags, 
+                                   EMERGING_RISK_CONFLICT_RISKLEVEL:EMERGING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
+                                   count="Medium risk",
+                                   append = F)))
+riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags, 
+                                   EMERGING_RISK_CONFLICT_RISKLEVEL:EMERGING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
+                                   count="Medium risk",
+                                   append = F)))
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing/2)
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging/2)
+riskflags <- riskflags %>% select(-medium_risk_emerging, -medium_risk_existing)
+         
+#----------------------------CRATE SUMMARY SHEET----------------------------------------------------
+write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flags_Sheet.csv")
+         
+         
