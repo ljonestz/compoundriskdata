@@ -114,5 +114,5 @@ riskflags <- riskflags %>% select(-medium_risk_emerging, -medium_risk_existing)
          
 #----------------------------CRATE SUMMARY SHEET----------------------------------------------------
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flags_Sheet.csv")
-         
+
          
