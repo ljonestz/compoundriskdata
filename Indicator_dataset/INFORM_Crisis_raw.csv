@@ -1,4 +1,4 @@
-"","Countryname","Country","NH_INFORM_Crisis_name","NH_INFORM_Crisis_ID","NH_CRISIS_Type","NH_Crisis_Severity_Score","NH_Crisis_Type_Number"
+"","Countryname","Country","NH_INFORM_Crisis_name","NH_INFORM_Crisis_ID","NH_INFORM_CRISIS_Type","NH_INFORM_Crisis_Severity_Score","NH_INFORM_Crisis_Type_Number"
 "1","Sudan","SDN","Complex crisis in Sudan","SDN001","Complex crisis",4.6,3
 "2","Afghanistan","AFG","Complex crisis in Afghanistan","AFG001","Complex crisis",4.5,3
 "3","Somalia","SOM","Complex crisis in Somalia","SOM001","Complex crisis",4.5,3
