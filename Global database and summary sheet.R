@@ -1,6 +1,6 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc, xlsx)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
