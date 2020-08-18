@@ -13,13 +13,13 @@ Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/comp
 Socioeconomic_sheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
 
 #Join datasets
-globalrisk <- full_join(healthsheet, foodsecurity, by="Country") %>%
-  left_join(., conflictsheet,  by="Country") %>% 
-  left_join(., debtsheet, by="Country") %>% 
-  left_join(., fragilitysheet, by="Country") %>% 
-  left_join(., macrosheet, by="Country") %>% 
-  left_join(., Naturalhazardsheet, by="Country") %>% 
-  left_join(., Socioeconomic_sheet, by="Country") %>%
+globalrisk <- full_join(healthsheet, foodsecurity, by=c("Countryname", "Country")) %>%
+  left_join(., conflictsheet,  by=c("Countryname", "Country")) %>% 
+  left_join(., debtsheet, by=c("Countryname", "Country")) %>% 
+  left_join(., fragilitysheet, by=c("Countryname", "Country")) %>% 
+  left_join(., macrosheet, by=c("Countryname", "Country")) %>% 
+  left_join(., Naturalhazardsheet, by=c("Countryname", "Country")) %>% 
+  left_join(., Socioeconomic_sheet,by=c( "Country")) %>%
   select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
@@ -118,15 +118,93 @@ riskflags <- riskflags %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
 
-#Write as a csv file
-write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flags_Sheet.csv")
+#-----------------------------Create reliability score------------------------------------------
+#Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
+reliabilitysheet <- globalrisk %>%
+  mutate(RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY = case_when(is.na(H_HIS_Score_norm) ~ 1,
+                                                                             TRUE ~ 0),
+         RELIABILITY_EXISTING_FOOD_SECURITY = case_when(is.na(F_Proteus_Score_norm) ~ 1,
+                                                              TRUE ~ 0),
+         RELIABILITY_EXISTING_CONFLICT = case_when(is.na(C_GPI_Score_norm) ~ 1,
+                                                         TRUE ~ 0),
+         RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID = case_when(is.na(M_Economic_and_Financial_score_norm) ~ 1,
+                                                                                TRUE ~ 0),
+         RELIABILITY_EXISTING_FISCAL = case_when(is.na(D_WB_Overall_debt_distress_norm) ~ 1,
+                                                       TRUE ~ 0),
+         RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY = case_when(is.na(S_OCHA_Covid.vulnerability.index_norm) ~ 1,
+                                                                            TRUE ~ 0),                                                                                     
+         RELIABILITY_EXISTING_NATURAL_HAZARDS = case_when(is.na(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm)~1,
+                                                          TRUE ~ 0),
+         RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
+                                                                       select(Fr_INFORM_Fragility_Score_norm, 
+                                                                              Fr_FSI_Score_norm)))/2,
+         RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
+                                                                        select(H_Oxrollback_score_norm,
+                                                                               H_Covidgrowth_casesnorm, 
+                                                                               H_Covidgrowth_deathsnorm, 
+                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/4,
+         RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
+                                                              select(F_Fewsnet_Score_norm,
+                                                                     F_Artemis_Score_norm, 
+                                                                     F_FAO_6mFPV_norm)))/3,
+         RELIABILITY_EMERGING_CONFLICT = rowSums(is.na(globalrisk %>%
+                                                         select(C_ACLED_event_same_month_difference_perc_norm, 
+                                                                C_ACLED_fatal_same_month_difference_perc_norm)))/2,
+         RELIABILITY_EMERGING_FISCAL = case_when(is.na(D_IMF_debt2020.2019_norm) ~ 1,
+                                                 TRUE ~ 0),
+         RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
+                                                                                select(M_GDP_IMF_2019minus2020_norm,
+                                                                                       M_GDP_WB_2019minus2020_norm)))/2,
+         RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
+                                                                select(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm, 
+                                                                       NH_GDAC_Hazard_Score_Norm, 
+                                                                       NH_INFORM_Crisis_Norm)))/3,
+         RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
+                                                                       select(Fr_FSI_2019minus2020_norm, 
+                                                                              Fr_REIGN_couprisk3m_norm, 
+                                                                              NH_INFORM_CRISIS_Type)))/3) 
+#Create total reliability variabiles
+reliabilitysheet <- reliabilitysheet %>%
+  mutate(RELIABILITY_SCORE_EXISITNG_RISK = rowMeans(select(., starts_with("RELIABILITY_EXISTING"))),
+         RELIABILITY_SCORE_EMERGING_RISK = rowMeans(select(., starts_with("RELIABILITY_EMERGING")))) %>%
+  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY,RELIABILITY_EXISTING_FOOD_SECURITY,
+         RELIABILITY_EXISTING_CONFLICT, RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID,
+         RELIABILITY_EXISTING_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
+         RELIABILITY_EXISTING_NATURAL_HAZARDS,RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
+         RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY,RELIABILITY_EMERGING_FOOD_SECURITY, RELIABILITY_EMERGING_CONFLICT,
+         RELIABILITY_EMERGING_CONFLICT,RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
+         RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS) 
+
+#Write as a csv file for the reliability sheet
+write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
+
+#Combine the reliability sheet with the global database and write as csv
+reliable <- reliabilitysheet %>%
+  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+
+globalrisk <- full_join(globalrisk, reliable, by = c("Countryname", "Country"))
+
+write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
+
+#Combine the reliability sheet with the summary risk flag sheet
+reliable <- reliabilitysheet %>%
+  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+
+riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
+
+write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets")
 
 #----------------------------CRATE SUMMARY EXCEL FILE----------------------------------------------------
+#Add blank columns to riskflags dataset
+riskflagsblank <- riskflags %>%
+  add_column(" " = NA, .after = "Country") %>%
+  add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS") %>%
+  add_column("   " = NA, .after = "TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM") 
+  
 #Create Excel
 crxls <- createWorkbook()
-
 addWorksheet(crxls, "riskflags", tabColour = "lightgrey")
-writeData(crxls, "riskflags", riskflags, colNames = TRUE)
+writeData(crxls, "riskflags", riskflagsblank, colNames = TRUE)
 addWorksheet(crxls, "conflictsheet", tabColour = "red")
 writeData(crxls, "conflictsheet", conflictsheet, colNames = TRUE)
 addWorksheet(crxls, "debtsheet", tabColour = "lightblue")
@@ -143,6 +221,8 @@ addWorksheet(crxls, "Naturalhazardsheet", tabColour = "brown")
 writeData(crxls, "Naturalhazardsheet", Naturalhazardsheet, colNames = TRUE)
 addWorksheet(crxls, "Socioeconomic_sheet", tabColour = "lightblue")
 writeData(crxls, "Socioeconomic_sheet", Socioeconomic_sheet, colNames = TRUE)
+addWorksheet(crxls, "Reliability_sheet", tabColour = "grey")
+writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 
 #Colour and stlye sheets
 Map(function(number, tab){
@@ -155,13 +235,8 @@ headerStyle <- createStyle(
   fgFill = "#001933",
   border = "TopBottom", 
   borderColour = "white", 
-  wrapText = TRUE
-)
-
-setColWidths(crxls, 
-             sheet = number,
-             cols = 1:50, 
-             widths = 22
+  wrapText = TRUE,
+  textRotation = 90
 )
 
 addStyle(crxls, 
@@ -172,8 +247,7 @@ addStyle(crxls,
          gridExpand = TRUE
 )
 
-
-bodyStyle <- createStyle(fgFill = "whitesmoke", 
+bodyStyle <- createStyle(fgFill = "white", 
                          border = "TopBottomLeftRight",
                          borderColour = "white",
                          halign = "center"
@@ -187,14 +261,15 @@ addStyle(crxls,
          gridExpand = TRUE
 )
 
-setColWidths(crxls, 1, cols = 1, widths = 21) ## set column width for row names column
+setColWidths(crxls, number, cols = 1, widths = 10) ## set column width for row names column
+setRowHeights(crxls, number, rows = 1, heights =  150) ## set column width for row names column
 
 modifyBaseFont(crxls, 
-               fontSize = 10,
+               fontSize = 12,
                fontColour = "black", 
                fontName = "Arial"
 )
-}, c(1:9))
+}, c(1:10))
 
 #Set specific style for the risk tab sheet
 headerStyle <- createStyle(
@@ -206,14 +281,15 @@ headerStyle <- createStyle(
   fgFill = "lightslategray",
   border = "TopBottom", 
   borderColour = "white", 
-  wrapText = TRUE
+  wrapText = TRUE,
+  textRotation = 90
 )
 
 addStyle(crxls, 
          sheet = 1, 
          headerStyle, 
          rows = 1, 
-         cols = 3:10, 
+         cols = 4:11, 
          gridExpand = TRUE
 )
 
@@ -226,28 +302,57 @@ headerStyle <- createStyle(
   fgFill = "sandybrown",
   border = "TopBottom", 
   borderColour = "white", 
-  wrapText = TRUE
+  wrapText = TRUE,
+  textRotation = 90
 )
 
 addStyle(crxls, 
          sheet = 1, 
          headerStyle, 
          rows = 1, 
-         cols = 11:17, 
+         cols = 12:18, 
          gridExpand = TRUE
 )
 
-#Conditional formatting colours
+headerStyle2 <- createStyle(
+  fontSize = 10, 
+  fontColour = "black",
+  textDecoration = "bold", 
+  halign = "center", 
+  valign = "center",
+  fgFill = "white",
+  border = "TopBottom", 
+  borderColour = "white", 
+  wrapText = TRUE,
+  textRotation = 90
+)
+
+addStyle(crxls, 
+         sheet = 1, 
+         headerStyle2, 
+         rows = 1, 
+         cols = c(3, 19, 24, 27:50),
+         gridExpand = TRUE
+)
+
+setColWidths(crxls, 1, cols = 1, widths = 10) ## set column width for row names column
+setRowHeights(crxls, 1, rows = 1, heights =  150) ## set column width for row names column
+
+#Conditional formatting colours for main sheet
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
 negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
-#Conditional Cell Formatting
-conditionalFormatting(crxls, "riskflags", cols=1:17, rows=1:191, rule="==10", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:17, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:17, rows=1:191, type = "between", rule=c(0, 6.99), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:17, rows=1:191, rule = '=""', style = naStyle)
+#Conditional Cell Formatting for main sheet
+conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, rule="==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, type = "between", rule=c(0, 6.999), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, type = "between", rule=c(2/3, 1), style = negStyle)
+conditionalFormatting(crxls, "riskflags",cols=25:26, rows=1:191, type = "between", rule=c(1/3, 0.665), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, type = "between", rule=c(0, 0.332), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, rule = '=""', style = naStyle)
 
 #Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow){
@@ -290,8 +395,21 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
 
+#Conditional formatting colours
+posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
+medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
+negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
+naStyle <- createStyle(fontColour = "white", bgFill = "white")
+
+#Conditional Cell Formatting
+conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule="==1", style = negStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0.700, 0.999), style = medStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0, 0.6999), style = posStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule = '=""', style = naStyle)
+
 #DatabarsconditionalFormatting
-conditionalFormatting(crxls, "riskflags", cols = 18:22, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "riskflags", cols = 20:23, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 
 #Insert Global Maps
 #install.packages("librarian")     #Run if librarian is not already installed
@@ -321,6 +439,7 @@ plain <- theme(
   text = element_text(colour = "lightgrey")
 )
 
+#Draw map one
 map <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
@@ -329,6 +448,7 @@ map <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) 
   plain +
   labs(fill = "Total # of risks")
 
+#Draw map two
 map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
@@ -337,20 +457,16 @@ map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group))
   plain +
   labs(fill = "Total # of risks")
 
+#Join the maps and print to the system
 jointmap <- cowplot::plot_grid(map, map2, ncol = 1, align = c("hv"))
-  
 print(jointmap)
 
 #Insert plot into the worksheet
-insertPlot(crxls, 1, xy = c("V", 5), width = 11.5, height =9.5, fileType = "png", units = "in")
+insertPlot(crxls, 1, xy = c("AA", 5), width = 11.5, height =9.5, fileType = "png", units = "in")
 
+#Save the final worksheet
 saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Monitor.xlsx", overwrite = TRUE)
 
-riskflags <- globalrisk %>%
-mutate(ttt = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_Fewsnet_Score_norm,
-                                                                            F_Artemis_Score_norm, 
-                                                                            na.rm=T),
-                                        TRUE ~ F_FAO_6mFPV_norm))
 
 
   
