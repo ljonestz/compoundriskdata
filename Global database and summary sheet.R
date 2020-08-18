@@ -112,16 +112,21 @@ riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
                                    append = F)))
 riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing/2)))
 riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging/2)))
+
+#Drop teritiary rates (may want to reinstate in the future)
 riskflags <- riskflags %>% 
-  select(-medium_risk_emerging, -medium_risk_existing) %>%
+  select(-medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
-         
-#----------------------------CRATE SUMMARY SHEET----------------------------------------------------
+
+#Write as a csv file
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flags_Sheet.csv")
+
+#----------------------------CRATE SUMMARY EXCEL FILE----------------------------------------------------
 
 #Create Excel
 crxls <- createWorkbook()
+
 addWorksheet(crxls, "riskflags", tabColour = "lightgrey")
 writeData(crxls, "riskflags", riskflags, colNames = TRUE)
 addWorksheet(crxls, "conflictsheet", tabColour = "red")
@@ -164,7 +169,7 @@ addStyle(crxls,
          sheet = number, 
          headerStyle, 
          rows = 1, 
-         cols = 1:50, 
+         cols = 1:19, 
          gridExpand = TRUE)
 
 bodyStyle <- createStyle(fgFill = "whitesmoke", 
@@ -176,7 +181,7 @@ addStyle(crxls,
          sheet = number, 
          bodyStyle, 
          rows = 2:200, 
-         cols = 1:50, 
+         cols = 1:19, 
          gridExpand = TRUE)
 
 setColWidths(crxls, 1, cols = 1, widths = 21) ## set column width for row names column
@@ -190,17 +195,13 @@ modifyBaseFont(crxls,
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
 negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
-naStyle <- createStyle(fontColour = "gainsboro", bgFill = "gainsboro")
+naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 #Conditional Cell Formatting
 conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule="==10", style = negStyle)
 conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
 conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(0, 6.99), style = posStyle)
 conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="High risk", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule = "Medium risk",  style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="Low risk", style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, rule = '=""', style = naStyle)
 
 #Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow){
@@ -242,7 +243,7 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Cris
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
 
 #Save the Excel sheet
-saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Flags_Sheet.xlsx", overwrite = TRUE)
+saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Monitor.xlsx", overwrite = TRUE)
 
 
 

@@ -36,7 +36,10 @@ HIS <- normfuncneg(HIS, 20, 50, "H_HIS_Score")
 #-----------------------Oxford rollback Score-----------------
 OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OXrollbackscore.csv")
 
-OXrollback <- normfuncneg(OXrollback, 0.3, 0.8, "H_Oxrollback_score")
+upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm=T)
+lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm=T)
+OXrollback <- normfuncneg(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
+
 OXrollback <- OXrollback %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
@@ -281,6 +284,7 @@ debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_dist
                                                   )))
 #IMF Debt forecasts
 imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imfdebt.csv")
+
 imfdebt <- imfdebt %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
@@ -290,13 +294,12 @@ imfdebt <- imfdebt %>%
 
 names <- c("D_IMF_debt2017", "D_IMF_debt2018", "D_IMF_debt2019", 
 "D_IMF_debt2020", "D_IMF_debt2021", "D_IMF_debt2020.2019")
+
 imfdebt[names] <- lapply(imfdebt[names], function(xx) {
   as.numeric(as.character(xx))
 })
 
-upperrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.05), na.rm=T)
-lowerrisk <- quantile(imfdebt$D_IMF_debt2020.2019, probs = c(0.95), na.rm=T)
-imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019") 
+imfdebt <- normfuncneg(imfdebt,-5, 0, "D_IMF_debt2020.2019") 
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -377,8 +380,10 @@ reign <- reign %>%
                                origin = 'country.name',
                                destination = 'iso3c', 
                                nomatch = NULL))
+
 upperrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.95), na.rm=T)
 lowerrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.05), na.rm=T)
+
 reign <- normfuncpos(reign,upperrisk, lowerrisk, "Fr_REIGN_couprisk3m") 
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
@@ -458,9 +463,9 @@ aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
                                         ))
   df
 }
-acleddata <- aclednorm(acledjoin, 200, 0, "C_ACLED_fatal_same_month_difference_perc", "C_ACLED_fatal_last30d")
-acleddata <- aclednorm(acleddata, 60, 0, "C_ACLED_fatal_month_annual_difference_perc", "C_ACLED_fatal_last30d")
-acleddata <- aclednorm(acleddata, 200, 0, "C_ACLED_fatal_month_threeyear_difference_perc", "C_ACLED_fatal_last30d")
+acleddata <- aclednorm(acledjoin, 50, -100, "C_ACLED_fatal_same_month_difference_perc", "C_ACLED_fatal_last30d")
+acleddata <- aclednorm(acleddata, 50, -100, "C_ACLED_fatal_month_annual_difference_perc", "C_ACLED_fatal_last30d")
+acleddata <- aclednorm(acleddata, 100, 0, "C_ACLED_fatal_month_threeyear_difference_perc", "C_ACLED_fatal_last30d")
 
 #Normalise events
 aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
@@ -471,9 +476,9 @@ aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
                                         ))
   df
 }
-acleddata <- aclednorm(acleddata, 500, 0, "C_ACLED_event_same_month_difference_perc", "C_ACLED_event_last30d")
-acleddata <- aclednorm(acleddata, 60, 0, "C_ACLED_event_month_annual_difference_perc", "C_ACLED_event_last30d")
-acleddata <- aclednorm(acleddata, 300, 0, "C_ACLED_event_month_threeyear_difference_perc", "C_ACLED_event_last30d")
+acleddata <- aclednorm(acleddata, 150, -100, "C_ACLED_event_same_month_difference_perc", "C_ACLED_event_last30d")
+acleddata <- aclednorm(acleddata, 150, -100, "C_ACLED_event_month_annual_difference_perc", "C_ACLED_event_last30d")
+acleddata <- aclednorm(acleddata, 150, -100, "C_ACLED_event_month_threeyear_difference_perc", "C_ACLED_event_last30d")
 
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 
@@ -672,6 +677,8 @@ countrylist <- countrylist %>%
 nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
   left_join(., gdac, by="Country") %>%
   left_join(., informcrisis) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country) %>%
   arrange(Country)
 
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
