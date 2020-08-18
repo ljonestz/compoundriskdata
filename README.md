@@ -4,11 +4,11 @@ A compilation of data sources, ingestion scripts and aggregation processes used 
 
 ## Main scripts and data architecture
 
-Individual indicator datasets are stored in the 'Indicator_dataset' folder, with many of the source materials compiled using scripts in the main repository
+Individual indicator datasets are stored in the 'Indicator_dataset' folder, with many of the source materials compiled using scripts in the main repository (e.g. 'GDACS scrape.r', 'FAO scrape.r', 'COVID scrape data.r', 'Debt scrape.r') 
 
-'Coumpound_Risk_database.r' is used to compile the various indicator datasets into the eight risk component datasets. These can be found as .csv files in the 'Risk_sheets' folder.
+'Coumpound_Risk_database.r' is used to compile the various indicator datasets  the eight seperate risk component datasets. These can each be found as .csv files in the 'Risk_sheets' folder.
 
-'Global database and summary sheet.r' takes the various risk component datasets and aggregates them into a summary sheet of country-level compound risk scores. This can be found in the 'Risk_sheets" folder as 'Compound_Risk_Flags_Sheet.csv'
+'Global database and summary sheet.r' takes the various risk component datasets and aggregates them into a summary sheet of country-level compound risk scores. This can be found as 'Compound_Risk_Flags_Sheet.csv' in the 'Risk_sheets" folder 
 
 ## Main Outcome file
 
