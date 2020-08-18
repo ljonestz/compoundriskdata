@@ -12,6 +12,6 @@ Individual indicator datasets are stored in the 'Indicator_dataset' folder, with
 
 ## Main Outcome file
 
-Alongside the individual datasets, the primary output is the 'Global_compound_risk_database.csv' file. A replica dataset is also produced as an .xls file, with conditional formatting outlined in 'Global database and summary sheet.r'
+Alongside the individual datasets, the primary output is the 'Global_compound_risk_database.csv' file. A replica full dataset of the Compound Risk Monitor is produced as an .xls file as 'Global_compound_risk_database.xls', with conditional formatting outlined in 'Global database and summary sheet.r'
 
 
