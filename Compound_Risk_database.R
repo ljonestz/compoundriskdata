@@ -1,6 +1,6 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, openxsls)
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 
@@ -145,7 +145,8 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 health <- countrylist
 health <- left_join(HIS, OXrollback, by="Country") %>%
   left_join(., covidproj,  by="Country") %>% 
-  left_join(., covidgrowth, by="Country")
+  left_join(., covidgrowth, by="Country") %>%
+  arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
 
@@ -237,7 +238,8 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 foodsecurity <- countrylist
 foodsecurity <- left_join(proteus, fews, by="Country") %>%
   left_join(., fpv,  by="Country") %>% 
-  left_join(., artemis, by="Country")
+  left_join(., artemis, by="Country") %>%
+  arrange(Country)
 
 write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 
@@ -296,7 +298,8 @@ imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019")
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 debtsheet <- countrylist
-debtsheet <- left_join(debttab, imfdebt , by="Country") 
+debtsheet <- left_join(debttab, imfdebt , by="Country") %>%
+  arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
 
@@ -326,7 +329,9 @@ lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm=T)
 gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020") 
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
-macrosheet <- left_join(macro, gdp, by="Country") 
+macrosheet <- left_join(macro, gdp, by="Country") %>%
+  arrange(Country)
+
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 
 #--------------------------------FRAGILITY DATA-----------------------------------------
@@ -367,7 +372,9 @@ reign <- normfuncpos(reign,upperrisk, lowerrisk, "Fr_REIGN_couprisk3m")
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
 fragilitysheet <- full_join(fsi, informfragile , by="Country")  %>%
-  full_join(., reign,  by="Country")
+  full_join(., reign,  by="Country") %>%
+  arrange(Country)
+
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
 #-------------------------------------CONFLICT DATA-----------------------------
@@ -455,14 +462,18 @@ acleddata <- aclednorm(acleddata, 300, 0, "C_ACLED_event_month_threeyear_differe
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 
 #------------------------------CREATE CONFLICT SHEET-------------------------------------------
-conflictsheet <- full_join(gpi, acleddata, by="Country") 
+conflictsheet <- full_join(gpi, acleddata, by="Country") %>%
+  arrange(Country) 
+
 write.csv(conflictsheet, "Risk_sheets/conflictsheet.csv")
 
 #--------------------------------SOCIO-ECONOMIC DATA and SHEET------------------------------------------
 #Load OCHA database
 ocha <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv")
 ocha <- ocha %>%
-  select(-X1)
+  select(-X1) %>%
+  arrange(Country)
+
 upperrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.95), na.rm=T)
 lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na.rm=T)
 ocha <- normfuncpos(ocha,upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index") 
@@ -634,7 +645,9 @@ write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
 
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 nathazardfull <- full_join(nathaz, gdac, by="Country") %>%
-  full_join(., informcrisis)
+  full_join(., informcrisis) %>%
+  arrange(Country)
+
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 
 
