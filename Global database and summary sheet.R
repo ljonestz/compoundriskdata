@@ -144,21 +144,53 @@ writeData(crxls, "Socioeconomic_sheet", Socioeconomic_sheet, colNames = TRUE)
 #Colour and stlye sheets
 Map(function(number, tab){
 headerStyle <- createStyle(
-  fontSize = 10, fontColour = "#FFFFFF",textDecoration = "bold", halign = "center", valign = "center",
-  fgFill = "#001933", border = "TopBottom", borderColour = "white", wrapText = TRUE
+  fontSize = 10, 
+  fontColour = "#FFFFFF",
+  textDecoration = "bold", 
+  halign = "center", 
+  valign = "center",
+  fgFill = "#001933",
+  border = "TopBottom", 
+  borderColour = "white", 
+  wrapText = TRUE
 )
-setColWidths(crxls, sheet = number, cols = 1:50, widths = 22)
-addStyle(crxls, sheet = number, headerStyle, rows = 1, cols = 1:50, gridExpand = TRUE)
-bodyStyle <- createStyle(fgFill = "whitesmoke", border = "TopBottomLeftRight", borderColour = "white", halign = "center")
-addStyle(crxls, sheet = number, bodyStyle, rows = 2:200, cols = 1:50, gridExpand = TRUE)
+
+setColWidths(crxls, 
+             sheet = number,
+             cols = 1:50, 
+             widths = 22)
+
+addStyle(crxls, 
+         sheet = number, 
+         headerStyle, 
+         rows = 1, 
+         cols = 1:50, 
+         gridExpand = TRUE)
+
+bodyStyle <- createStyle(fgFill = "whitesmoke", 
+                         border = "TopBottomLeftRight",
+                         borderColour = "white",
+                         halign = "center")
+
+addStyle(crxls, 
+         sheet = number, 
+         bodyStyle, 
+         rows = 2:200, 
+         cols = 1:50, 
+         gridExpand = TRUE)
+
 setColWidths(crxls, 1, cols = 1, widths = 21) ## set column width for row names column
-modifyBaseFont(crxls, fontSize = 10, fontColour = "black", fontName = "Arial")
+
+modifyBaseFont(crxls, 
+               fontSize = 10,
+               fontColour = "black", 
+               fontName = "Arial")
 }, c(1:9))
 
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
 negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
-naStyle <- createStyle(fontColour = "whitesmoke", bgFill = "whitesmoke")
+naStyle <- createStyle(fontColour = "gainsboro", bgFill = "gainsboro")
 
 #Conditional Cell Formatting
 conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule="==10", style = negStyle)
@@ -168,14 +200,19 @@ conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule = '=""', s
 conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="High risk", style = negStyle)
 conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule = "Medium risk",  style = medStyle)
 conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="Low risk", style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, rule = '=""', style = naStyle)
 
 #Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow){
 
-  posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
-  medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
-  negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
-  naStyle <- createStyle(fontColour = "whitesmoke", bgFill = "whitesmoke")
+  posStyle <- createStyle(fontColour = "#006100", 
+                          bgFill = "#C6EFCE")
+  medStyle <- createStyle(fontColour = "#CC6600",
+                          bgFill = "#FFE5CC")
+  negStyle <- createStyle(fontColour = "#9C0006",
+                          bgFill = "#FFC7CE")
+  naStyle <- createStyle(fontColour = "gainsboro", 
+                         bgFill = "gainsboro")
   
   conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, rule="==10", style = negStyle)
   conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
@@ -198,7 +235,7 @@ cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_no
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
