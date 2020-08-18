@@ -141,9 +141,11 @@ colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgr
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
 
-health <- countrylist
-health <- left_join(HIS, OXrollback, by="Country") %>%
+health <- left_join(countrylist, HIS, by="Country") %>%
+  left_join(., OXrollback, by="Country") %>%
   left_join(., covidproj,  by="Country") %>% 
   left_join(., covidgrowth, by="Country") %>%
   arrange(Country)
@@ -234,9 +236,11 @@ fpv <- normfuncpos(faoprice,upperrisk, lowerrisk, "F_FAO_6mFPV")
 
 #------------------------CREATE FOOD SECURITY SHEET--------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
 
-foodsecurity <- countrylist
-foodsecurity <- left_join(proteus, fews, by="Country") %>%
+foodsecurity <- left_join(countrylist, proteus, by="Country") %>% 
+  left_join(., fews, by="Country") %>%
   left_join(., fpv,  by="Country") %>% 
   left_join(., artemis, by="Country") %>%
   arrange(Country)
@@ -296,9 +300,11 @@ imfdebt <- normfuncneg(imfdebt,upperrisk, lowerrisk, "D_IMF_debt2020.2019")
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
 
-debtsheet <- countrylist
-debtsheet <- left_join(debttab, imfdebt , by="Country") %>%
+debtsheet <- left_join(countrylist, debttab, by="Country") %>%
+  left_join(debttab, imfdebt , by="Country") %>%
   arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
@@ -329,7 +335,12 @@ lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm=T)
 gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020") 
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
-macrosheet <- left_join(macro, gdp, by="Country") %>%
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
+
+macrosheet <- left_join(countrylist, macro, by="Country") %>%
+  left_join(., gdp, by="Country") %>%
   arrange(Country)
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
@@ -371,8 +382,13 @@ lowerrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.05), na.rm=T)
 reign <- normfuncpos(reign,upperrisk, lowerrisk, "Fr_REIGN_couprisk3m") 
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
-fragilitysheet <- full_join(fsi, informfragile , by="Country")  %>%
-  full_join(., reign,  by="Country") %>%
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
+
+fragilitysheet <- left_join(countrylist, fsi, by="Country")  %>%
+  left_join(., informfragile , by="Country")  %>%
+  left_join(., reign,  by="Country") %>%
   arrange(Country)
 
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
@@ -462,7 +478,12 @@ acleddata <- aclednorm(acleddata, 300, 0, "C_ACLED_event_month_threeyear_differe
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 
 #------------------------------CREATE CONFLICT SHEET-------------------------------------------
-conflictsheet <- full_join(gpi, acleddata, by="Country") %>%
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
+
+conflictsheet <- left_join(countrylist, gpi, by="Country") %>%
+  left_join(., acleddata, by="Country") %>%
   arrange(Country) 
 
 write.csv(conflictsheet, "Risk_sheets/conflictsheet.csv")
@@ -644,8 +665,13 @@ informcrisis <- informcrisis %>%
 write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
 
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
-nathazardfull <- full_join(nathaz, gdac, by="Country") %>%
-  full_join(., informcrisis) %>%
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X)
+
+nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
+  left_join(., gdac, by="Country") %>%
+  left_join(., informcrisis) %>%
   arrange(Country)
 
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
