@@ -307,7 +307,7 @@ countrylist <- countrylist %>%
   select(-X)
 
 debtsheet <- left_join(countrylist, debttab, by="Country") %>%
-  left_join(debttab, imfdebt , by="Country") %>%
+  left_join(., imfdebt , by="Country") %>%
   arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")

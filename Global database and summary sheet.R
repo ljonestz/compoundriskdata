@@ -163,38 +163,93 @@ headerStyle <- createStyle(
 setColWidths(crxls, 
              sheet = number,
              cols = 1:50, 
-             widths = 22)
+             widths = 22
+)
 
 addStyle(crxls, 
          sheet = number, 
          headerStyle, 
          rows = 1, 
          cols = 1:50, 
-         gridExpand = TRUE)
+         gridExpand = TRUE
+)
+
 
 bodyStyle <- createStyle(fgFill = "whitesmoke", 
                          border = "TopBottomLeftRight",
                          borderColour = "white",
-                         halign = "center")
+                         halign = "center"
+)
+
+addStyle(crxls, 
+         sheet = number, 
+         bodyStyle, 
+         rows = 2:191, 
+         cols = 1:50, 
+         gridExpand = TRUE
+)
 
 setColWidths(crxls, 1, cols = 1, widths = 21) ## set column width for row names column
 
 modifyBaseFont(crxls, 
                fontSize = 10,
                fontColour = "black", 
-               fontName = "Arial")
+               fontName = "Arial"
+)
 }, c(1:9))
 
+#Set specific style for the risk tab sheet
+headerStyle <- createStyle(
+  fontSize = 10, 
+  fontColour = "white",
+  textDecoration = "bold", 
+  halign = "center", 
+  valign = "center",
+  fgFill = "lightslategray",
+  border = "TopBottom", 
+  borderColour = "white", 
+  wrapText = TRUE
+)
+
+addStyle(crxls, 
+         sheet = 1, 
+         headerStyle, 
+         rows = 1, 
+         cols = 2:9, 
+         gridExpand = TRUE
+)
+
+headerStyle <- createStyle(
+  fontSize = 10, 
+  fontColour = "black",
+  textDecoration = "bold", 
+  halign = "center", 
+  valign = "center",
+  fgFill = "sandybrown",
+  border = "TopBottom", 
+  borderColour = "white", 
+  wrapText = TRUE
+)
+
+addStyle(crxls, 
+         sheet = 1, 
+         headerStyle, 
+         rows = 1, 
+         cols = 10:15, 
+         gridExpand = TRUE
+)
+
+#Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
 negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 #Conditional Cell Formatting
-conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule="==10", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(0, 6.99), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:191, rule="==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:191, type = "between", rule=c(0, 6.99), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:191, rule = '=""', style = naStyle)
 
 #Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow){
@@ -205,13 +260,13 @@ cond <- function(sheet, numhigh, numlow){
                           bgFill = "#FFE5CC")
   negStyle <- createStyle(fontColour = "#9C0006",
                           bgFill = "#FFC7CE")
-  naStyle <- createStyle(fontColour = "gainsboro", 
-                         bgFill = "gainsboro")
+  naStyle <- createStyle(fontColour = "white", 
+                         bgFill = "white")
   
-  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, rule="==10", style = negStyle)
-  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
-  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, type = "between", rule=c(0, 6.99), style = posStyle)
-  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, rule = '=""', style = naStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:191, rule="==10", style = negStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:191, type = "between", rule=c(0, 6.9999), style = posStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:191, rule = '=""', style = naStyle)
 }
 
 #Conditional formatting of specific cells
