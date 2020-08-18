@@ -20,7 +20,9 @@ globalrisk <- full_join(healthsheet, foodsecurity, by="Country") %>%
   left_join(., macrosheet, by="Country") %>% 
   left_join(., Naturalhazardsheet, by="Country") %>% 
   left_join(., Socioeconomic_sheet, by="Country") %>%
-  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y)
+  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country)
 
 #Write as csv
 write.csv(globalrisk, "Risk_sheets/Global_compound_risk_database.csv")
@@ -110,7 +112,10 @@ riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
                                    append = F)))
 riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing/2)))
 riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging/2)))
-riskflags <- riskflags %>% select(-medium_risk_emerging, -medium_risk_existing)
+riskflags <- riskflags %>% 
+  select(-medium_risk_emerging, -medium_risk_existing) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country)
          
 #----------------------------CRATE SUMMARY SHEET----------------------------------------------------
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flags_Sheet.csv")
@@ -139,16 +144,67 @@ writeData(crxls, "Socioeconomic_sheet", Socioeconomic_sheet, colNames = TRUE)
 #Colour and stlye sheets
 Map(function(number, tab){
 headerStyle <- createStyle(
-  fontSize = 14, fontColour = "#FFFFFF",textDecoration = "bold", halign = "center",
-  fgFill = "darkblue", border = "TopBottom", borderColour = "white"
+  fontSize = 10, fontColour = "#FFFFFF",textDecoration = "bold", halign = "center", valign = "center",
+  fgFill = "#001933", border = "TopBottom", borderColour = "white", wrapText = TRUE
 )
+setColWidths(crxls, sheet = number, cols = 1:50, widths = 22)
 addStyle(crxls, sheet = number, headerStyle, rows = 1, cols = 1:50, gridExpand = TRUE)
-bodyStyle <- createStyle(border = "TopBottom", borderColour = "white", halign = "center")
-addStyle(crxls, sheet = number, bodyStyle, rows = 2:50, cols = 1:250, gridExpand = TRUE)
+bodyStyle <- createStyle(fgFill = "whitesmoke", border = "TopBottomLeftRight", borderColour = "white", halign = "center")
+addStyle(crxls, sheet = number, bodyStyle, rows = 2:200, cols = 1:50, gridExpand = TRUE)
 setColWidths(crxls, 1, cols = 1, widths = 21) ## set column width for row names column
-modifyBaseFont(crxls, fontSize = 12, fontColour = "black", fontName = "Arial")
+modifyBaseFont(crxls, fontSize = 10, fontColour = "black", fontName = "Arial")
 }, c(1:9))
 
+posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
+medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
+negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
+naStyle <- createStyle(fontColour = "whitesmoke", bgFill = "whitesmoke")
+
+#Conditional Cell Formatting
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule="==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, type = "between", rule=c(0, 6.99), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:15, rows=1:200, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="High risk", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule = "Medium risk",  style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=1:30, rows=1:200, type="Contains", rule="Low risk", style = posStyle)
+
+#Function for the remaining tabs
+cond <- function(sheet, numhigh, numlow){
+
+  posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
+  medStyle <- createStyle(fontColour = "#CC6600", bgFill = "#FFE5CC")
+  negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
+  naStyle <- createStyle(fontColour = "whitesmoke", bgFill = "whitesmoke")
+  
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, rule="==10", style = negStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, type = "between", rule=c(7.00, 9.99), style = medStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, type = "between", rule=c(0, 6.99), style = posStyle)
+  conditionalFormatting(crxls, sheet, cols=numhigh:numlow, rows=1:200, rule = '=""', style = naStyle)
+}
+
+#Conditional formatting of specific cells
+cond("conflictsheet", which(colnames(conflictsheet) == "C_GPI_Score_norm"), which(colnames(conflictsheet) == "C_GPI_Score_norm"))
+cond("conflictsheet", which(colnames(conflictsheet) == "C_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(conflictsheet) == "C_ACLED_event_month_threeyear_difference_perc_norm"))
+cond("debtsheet", which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"), which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"))
+cond("debtsheet", which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"), which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"), which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"), which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"), which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
+
+#Save the Excel sheet
 saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Flags_Sheet.xlsx", overwrite = TRUE)
 
 
