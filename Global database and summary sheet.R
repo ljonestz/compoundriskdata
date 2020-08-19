@@ -192,7 +192,7 @@ reliable <- reliabilitysheet %>%
 
 riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
 
-write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets")
+write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 
 #----------------------------CRATE SUMMARY EXCEL FILE----------------------------------------------------
 #Add blank columns to riskflags dataset
