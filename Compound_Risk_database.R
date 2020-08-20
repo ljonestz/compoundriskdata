@@ -203,6 +203,53 @@ fews <- fews %>%
                                destination = 'iso3c', 
                                nomatch = NULL))
 
+#FEWSNET Population adjusted
+fewswb <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fewswb.csv")
+
+#Calculate country totals
+fewsg <- fewswb %>%
+  select(-X1) %>%
+  group_by(country, year_month) %>%
+  mutate(countrypop = sum(pop)) %>%
+  ungroup()
+  
+#Caluclate proportion and number of people in IPC class 
+fewspop <- fewsg %>%
+  group_by(country, year_month) %>%
+  mutate(countryproportion = (pop / countrypop) * 100,
+         ipc3plusabs = case_when(fews_proj_med >=3 ~ pop,
+                                 TRUE ~ NA_real_),
+         ipc3plusperc = case_when(fews_proj_med >=3 ~ countryproportion,
+                                 TRUE ~ NA_real_),
+         ipc4plusabs = case_when(fews_proj_med >= 4 ~ pop,
+                                 TRUE ~ NA_real_),
+         ipc4plusperc = case_when(fews_proj_med >= 4 ~ countryproportion,
+                                 TRUE ~ NA_real_))
+
+#Functions to calculate absolute and geometric growth rates
+pctabs <- function(x) x-lag(x)
+pctperc <- function(x) x-lag(x)/lag(x)
+
+#Summarise country totals per FEWS round in last round of FEWS
+fewssum <- fewspop %>%
+  filter(year_month == "2020_06" | year_month == "2020_02") %>%
+  group_by(country, year_month) %>%
+  mutate(totalipc3plusabs = sum(ipc3plusabs, na.rm=T),
+         totalipc3plusperc = sum(ipc3plusperc, na.rm=T),
+         totalipc4plusabs = sum(ipc3plusabs, na.rm=T),
+         totalipc4plusperc = sum(ipc3plusperc, na.rm=T)) %>%
+  distinct(country, year_month, .keep_all = TRUE) %>%
+  select(-ipc3plusabs, -ipc3plusperc, -ipc4plusabs, -ipc4plusperc, -admin_name, -pop) %>%
+  group_by(country) %>%
+  mutate(pctchangeipc3 = pctabs(totalipc3plusperc),
+         pctchangeipc4 = pctperc(totalipc4plusperc),
+         fshighrisk = case_when((totalipc3plusabs >= 5000000 | totalipc3plusperc >= 20) & pctchangeipc3 >= 5  ~ "high risk",
+                                totalipc4plusperc >= 2.5  & pctchangeipc4 >= 10  ~ "high risk",
+                                TRUE ~ "Not high risk")) %>%
+  select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
+         -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted) %>%
+  filter(year_month == "2020_06")
+  
 #---------------------- Scrape food price data from FAO ---------------------------------
 #Food price volatility
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode)
