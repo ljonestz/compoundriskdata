@@ -217,37 +217,56 @@ fewsg <- fewswb %>%
 fewspop <- fewsg %>%
   group_by(country, year_month) %>%
   mutate(countryproportion = (pop / countrypop) * 100,
-         ipc3plusabs = case_when(fews_proj_med >=3 ~ pop,
+         ipc3plusabsfor = case_when(fews_proj_med_adjusted >=3 ~ pop,
                                  TRUE ~ NA_real_),
-         ipc3plusperc = case_when(fews_proj_med >=3 ~ countryproportion,
+         ipc3pluspercfor = case_when(fews_proj_med_adjusted >=3 ~ countryproportion,
                                  TRUE ~ NA_real_),
-         ipc4plusabs = case_when(fews_proj_med >= 4 ~ pop,
+         ipc4plusabsfor = case_when(fews_proj_med_adjusted >= 4 ~ pop,
                                  TRUE ~ NA_real_),
-         ipc4plusperc = case_when(fews_proj_med >= 4 ~ countryproportion,
-                                 TRUE ~ NA_real_))
+         ipc4pluspercfor = case_when(fews_proj_med_adjusted >= 4 ~ countryproportion,
+                                 TRUE ~ NA_real_),
+         ipc3plusabsnow = case_when(fews_ipc_adjusted >=3 ~ pop,
+                                 TRUE ~ NA_real_),
+         ipc3pluspercnow = case_when(fews_ipc_adjusted >=3 ~ countryproportion,
+                                  TRUE ~ NA_real_),
+         ipc4plusabsnow = case_when(fews_ipc_adjusted >= 4 ~ pop,
+                                    TRUE ~ NA_real_),
+         ipc4pluspercnow = case_when(fews_ipc_adjusted >= 4 ~ countryproportion,
+                                     TRUE ~ NA_real_))
 
 #Functions to calculate absolute and geometric growth rates
 pctabs <- function(x) x-lag(x)
 pctperc <- function(x) x-lag(x)/lag(x)
 
-#Summarise country totals per FEWS round in last round of FEWS
+#Summarise country totals per in last round of FEWS
 fewssum <- fewspop %>%
   filter(year_month == "2020_06" | year_month == "2020_02") %>%
   group_by(country, year_month) %>%
-  mutate(totalipc3plusabs = sum(ipc3plusabs, na.rm=T),
-         totalipc3plusperc = sum(ipc3plusperc, na.rm=T),
-         totalipc4plusabs = sum(ipc3plusabs, na.rm=T),
-         totalipc4plusperc = sum(ipc3plusperc, na.rm=T)) %>%
+  mutate(totalipc3plusabsfor = sum(ipc3plusabsfor, na.rm=T),
+         totalipc3pluspercfor = sum(ipc3pluspercfor, na.rm=T),
+         totalipc4plusabsfor = sum(ipc4plusabsfor, na.rm=T),
+         totalipc4pluspercfor = sum(ipc4pluspercfor, na.rm=T),
+         totalipc3plusabsnow = sum(ipc3plusabsnow, na.rm=T),
+         totalipc3pluspercnow = sum(ipc3pluspercnow, na.rm=T),
+         totalipc4plusabsnow = sum(ipc4plusabsnow, na.rm=T),
+         totalipc4pluspercnow = sum(ipc4pluspercnow, na.rm=T)) %>%
   distinct(country, year_month, .keep_all = TRUE) %>%
-  select(-ipc3plusabs, -ipc3plusperc, -ipc4plusabs, -ipc4plusperc, -admin_name, -pop) %>%
+  select(-ipc3plusabsfor, -ipc3pluspercfor, -ipc4plusabsfor, -ipc4pluspercfor, 
+         -ipc3plusabsnow, -ipc3pluspercnow, -ipc4plusabsnow, -ipc4pluspercnow,
+         -admin_name, -pop) %>%
   group_by(country) %>%
-  mutate(pctchangeipc3 = pctabs(totalipc3plusperc),
-         pctchangeipc4 = pctperc(totalipc4plusperc),
-         fshighrisk = case_when((totalipc3plusabs >= 5000000 | totalipc3plusperc >= 20) & pctchangeipc3 >= 5  ~ "high risk",
-                                totalipc4plusperc >= 2.5  & pctchangeipc4 >= 10  ~ "high risk",
+  mutate(pctchangeipc3for = pctabs(totalipc3pluspercfor),
+         pctchangeipc4for = pctperc(totalipc4pluspercfor),
+         pctchangeipc3now = pctabs(totalipc3pluspercnow),
+         pctchangeipc4now = pctperc(totalipc4pluspercnow),
+         diffactfor = totalipc3pluspercfor - totalipc3pluspercnow,
+         fshighrisk = case_when((totalipc3plusabsfor >= 5000000 | totalipc3pluspercfor >= 20) & pctchangeipc3for >= 5  ~ "High risk",
+                                (totalipc3plusabsnow >= 5000000 | totalipc3pluspercnow >= 20) & pctchangeipc3now >= 5  ~ "High risk",
+                                totalipc4pluspercfor >= 2.5  & pctchangeipc4for >= 10  ~ "High risk",
+                                totalipc4pluspercnow >= 2.5  & pctchangeipc4now >= 10  ~ "High risk",
                                 TRUE ~ "Not high risk")) %>%
   select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
-         -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted) %>%
+         -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
   filter(year_month == "2020_06")
   
 #---------------------- Scrape food price data from FAO ---------------------------------
