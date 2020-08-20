@@ -176,7 +176,7 @@ lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm=T)
 proteus <- normfuncpos(proteus,upperrisk, lowerrisk, "F_Proteus_Score") 
 
 #Artemis
-artemis <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/artemis.csv")
+artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/artemis.csv")
 
 upperrisk <- 0.2
 lowerrisk <- 0
@@ -187,7 +187,7 @@ artemis <- artemis %>%
                                origin = 'country.name',
                                destination = 'iso3c', 
                                nomatch = NULL)) %>%
-         select(-X)
+  select(-X)
 
 #FEWSNET
 fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fewsnet.csv")
