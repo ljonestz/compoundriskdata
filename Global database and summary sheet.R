@@ -1,12 +1,13 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
 healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv")
 foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv")
 debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv")
+conflictsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/conflictsheet.csv")
 fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv")
 macrosheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
 Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
@@ -20,7 +21,7 @@ globalrisk <- full_join(healthsheet, foodsecurity, by=c("Countryname", "Country"
   left_join(., macrosheet, by=c("Countryname", "Country")) %>% 
   left_join(., Naturalhazardsheet, by=c("Countryname", "Country")) %>% 
   left_join(., Socioeconomic_sheet,by=c( "Country")) %>%
-  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y) %>%
+  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, X.x.x.x.x, X.y.y.y.y) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
 
@@ -112,6 +113,18 @@ riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
 riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing/2)))
 riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging/2)))
 
+#Alternative combined risk scores
+names <- c("EMERGING_RISK_CONFLICT", "EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID")
+riskflags[paste0(names,"_plus1")] <- lapply(riskflags[names], function(xx){ifelse(xx==0, xx+1, xx)})
+
+riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_CONFLICT_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_FISCAL_plus1")], na.rm=T)
+riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
+
+riskflags <- riskflags %>% 
+  select(-EMERGING_RISK_CONFLICT_plus1 ,-EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1 ,
+           -EMERGING_RISK_FISCAL_plus1, -EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1)
+
+
 #Drop teritiary rates (may want to reinstate in the future)
 riskflags <- riskflags %>% 
   select(-medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))) %>%
@@ -192,6 +205,7 @@ reliable <- reliabilitysheet %>%
 
 riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
 
+#Write csv file
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 
 #----------------------------CRATE SUMMARY EXCEL FILE----------------------------------------------------
