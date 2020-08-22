@@ -1,0 +1,337 @@
+#------------------Global plots -------------------------
+#install.packages("librarian")     #Run if librarian is not already installed
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
+                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot)
+
+#Loading world database
+world <- map_data("world")
+world <- world %>%
+  dplyr::rename(Country = region) %>%
+  dplyr::mutate(Country = countrycode(Country, origin = 'country.name', destination = 'iso3c'))
+
+#Join datasets with risk flags
+worldmap <- inner_join(world, riskflags, by="Country")
+
+#Map theme
+plain <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank(),
+  plot.title = element_text(hjust = 0.5),
+  panel.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F"),
+  plot.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F") , 
+  legend.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F"),
+  text = element_text(colour = "lightgrey")
+)
+
+#Draw map one
+map <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette ="Blues", direction = 1) + # or direction=1
+  ggtitle("Total Existing Compound Risk Score") +
+  plain +
+  labs(fill = "Total # of risks")
+
+#Draw map two
+map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette ="Reds", direction = 1) + # or direction=1
+  ggtitle("Total Emerging Compound Risk Score") +
+  plain +
+  labs(fill = "Total # of risks")
+
+#Save maps
+ggsave("Plots/globalmapone.pdf", map, width = 8, height = 12)
+ggsave("Plots/globalmaptwo.pdf", map2, width = 8, height = 12)
+
+#--------------Correlations of all source indicators that feed into the compound risk monitor--------
+#Subset data
+vars <- globalrisk %>%
+  select(S_OCHA_Covid.vulnerability.index_norm, H_Oxrollback_score_norm, H_Covidgrowth_casesnorm,
+         H_Covidgrowth_deathsnorm, H_HIS_Score_norm,F_Proteus_Score_norm, F_Fewsnet_Score_norm, 
+         F_Artemis_Score_norm,F_FAO_6mFPV_norm, C_GPI_Score_norm, C_ACLED_event_same_month_difference_perc_norm,
+         C_ACLED_fatal_same_month_difference_perc_norm,D_WB_Overall_debt_distress_norm,  D_IMF_debt2020.2019_norm,
+         M_Economic_and_Financial_score_norm, M_GDP_IMF_2019minus2020_norm, M_GDP_WB_2019minus2020_norm,
+         NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,NH_GDAC_Hazard_Score_Norm, Fr_INFORM_Fragility_Score_norm, Fr_FSI_Score_norm,
+         Fr_FSI_2019minus2020_norm, Fr_REIGN_couprisk3m_norm)
+
+colnames(vars) <- c("S_VI", "H_OX", "H_CGN","H_CGD", "H_HIS_norm", "F_PS", "F_FS", "F_AS","F_FPV", 
+                    "C_GPI", "C_AE",'C_AF',"D_WBD",  'D_IMFD',"M_EFS", 'M_IMFG', "M_WBG",
+                    "NH_UKMO", "NH_GDAC", "Fr_IFS", 'Fr_FSI', "Fr_FSID", "Fr_RE")
+
+#Datasets for the small sector plots
+varsone <- vars %>%
+  select(H_OX, H_CGN,H_CGD, H_HIS_norm,)
+
+varstwo <- vars %>%
+  select(F_FS, F_AS,F_FPV)
+
+varsthree <- vars %>%
+  select( Fr_IFS, Fr_FSI, Fr_FSID, Fr_RE)
+
+varsfour <- vars %>%
+  select(C_GPI, C_AE, C_AF)
+
+#Correlations
+corr <- round(cor(vars, na.rm=T, use='pairwise.complete.obs'), 1)
+corrone <- round(cor(varsone, na.rm=T, use='pairwise.complete.obs'), 1)
+corrtwo <- round(cor(varstwo, na.rm=T, use='pairwise.complete.obs'), 1)
+corrthree <- round(cor(varsthree, na.rm=T, use='pairwise.complete.obs'), 1)
+corrfour <- round(cor(varsfour, na.rm=T, use='pairwise.complete.obs'), 1)
+
+#Pvalues
+p.mat <- cor_pmat(vars, na.rm=T, use='pairwise.complete.obs') 
+p.matone <- cor_pmat(varsone, na.rm=T, use='pairwise.complete.obs') 
+p.mattwo <- cor_pmat(varstwo, na.rm=T, use='pairwise.complete.obs') 
+p.matthree <- cor_pmat(varsthree, na.rm=T, use='pairwise.complete.obs') 
+p.matfour <- cor_pmat(varsfour, na.rm=T, use='pairwise.complete.obs') 
+
+#Plots
+plot <- ggcorrplot(corr, 
+           hc.order = FALSE,
+           type = "lower", 
+           p.mat = p.mat,
+           outline.col = "white",
+           colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(plot.margin=unit(c(1,1,1, -0.5),"cm"), 
+        legend.position = "bottom",
+        legend.text = element_text(size = 14),
+        legend.key.width = unit(3, "cm"),
+        legend.title = element_blank())
+
+plotone <- ggcorrplot(corrone,
+                   type = "lower", 
+                   p.mat = p.matone,
+                   outline.col = "white",
+                   colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(legend.position = "none",
+        plot.margin=unit(c(1,-0.5,1, 1),"cm"))
+
+plottwo <- ggcorrplot(corrtwo, 
+                   hc.order = FALSE,
+                   type = "lower", 
+                   p.mat = p.mattwo,
+                   outline.col = "white",
+                   colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(legend.position = "none",
+        plot.margin=unit(c(1,-0.5,1, 1),"cm"))
+
+plotthree <- ggcorrplot(corrthree, 
+                   hc.order = FALSE,
+                   type = "lower", 
+                   p.mat = p.matthree,
+                   outline.col = "white",
+                   colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(legend.position = "none", 
+        plot.margin=unit(c(1,-0.5,1, 1),"cm"))
+
+plotfour <- ggcorrplot(corrfour, 
+                        hc.order = FALSE,
+                        type = "lower", 
+                        p.mat = p.matfour,
+                        outline.col = "white",
+                        colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(legend.position = "none",
+        plot.margin=unit(c(1,-0.5 ,1, 1),"cm"))
+
+#Join and save
+col <- grid.arrange(plotone, plottwo, plotthree, plotfour, ncol=1,  heights = c(1.5, 1.2, 1.5, 1.2))
+colone <- plot_grid(col, plot,  ncol=2, rel_widths = c(1,5), rel_heights=c(6,2), align = "h")
+ggsave("Plots/corrplot.pdf", colone, width = 12, height = 10, units="in")
+
+#------------------------------Comparison between different overall risk scores--------------------
+#Subset dataset
+rankco <- riskflags %>%
+  select(Countryname, EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL, EMERGING_RISK_CONFLICT) 
+rankco$sign <- ifelse(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL - rankco$EMERGING_RISK_CONFLICT > 0, "red" ,
+                      "green")
+#Country labels
+left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT), sep=", ")
+right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL),sep=", ")
+subset <- c(77, 32,188, 34, 106,22,74, 80, 118,156)
+left_label[-subset] <- " "
+right_label[-subset] <- " "
+
+theme_set(theme_classic())
+
+#First plot
+one <- ggplot(rankco) + 
+  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_CONFLICT`, yend=`EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL`, col=sign), size=.75, show.legend=F) + 
+  geom_vline(xintercept=1, linetype="dashed", size=.1) + 
+  geom_vline(xintercept=2, linetype="dashed", size=.1) +
+  scale_color_manual(labels = c("Up", "Down"), 
+                     values = c("green"="#00ba38", "red"="#f8766d")) +
+  labs(x="", y="") +
+  xlim(.5, 2.5) + ylim(0,10.3) +
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_CONFLICT, x=rep(1, NROW(rankco)), hjust=1.1, size=4) + 
+  geom_text(label=right_label, y=rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
+  geom_text(label="Single", x=0.8, y=10.3, size= 5)  +
+  geom_text(label="Multiple", x=2, y=10.3, hjust=-0.1, size=5) +
+  theme(panel.background = element_blank(), 
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        panel.border = element_blank(),
+        line = element_blank(),
+        axis.text = element_blank(),
+        plot.margin=unit(c(1,-0.5 ,1, 1),"cm"),
+        title = element_text(size = 20, hjust = 0.5, face = "bold")) +
+  ggtitle("Conflict risk")
+
+#Second subset for fragility and institutions
+rankco <- riskflags %>%
+  select(Countryname, EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL, EMERGING_RISK_FRAGILITY_INSTITUTIONS) 
+rankco$sign <- ifelse(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL - rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS > 0, "red" ,
+                      "green")
+left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS), sep=", ")
+right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL),sep=", ")
+subset <- c( 8, 179, 157, 79,  147, 176, 160, 49)
+left_label[-subset] <- " "
+right_label[-subset] <- " "
+
+#Plot second 
+theme_set(theme_classic())
+two <- ggplot(rankco) + 
+  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_FRAGILITY_INSTITUTIONS`, yend=`EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL`, col=sign), size=.75, show.legend=F) + 
+  geom_vline(xintercept=1, linetype="dashed", size=.1) + 
+  geom_vline(xintercept=2, linetype="dashed", size=.1) +
+  scale_color_manual(labels = c("Up", "Down"), 
+                     values = c("green"="#00ba38", "red"="#f8766d")) +
+  labs(x="", y="") +
+  xlim(.5, 2.5) + ylim(0,10.3) +
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
+  geom_text(label=right_label, y=rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
+  geom_text(label="Single", x=0.8, y=10.3, size=5)  +
+  geom_text(label="Multiple", x=2, y=10.3, hjust=-0.1, size=5) +
+  theme(panel.background = element_blank(), 
+        panel.grid = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank(),
+        panel.border = element_blank(),
+        plot.margin = unit(c(1,2,1,2), "cm"),
+        line = element_blank(),
+        axis.text = element_blank(),
+        title = element_text(size = 20, hjust = 0.5, face = "bold")) +
+  ggtitle("Fragility and Institutional risk")
+
+#Join and save
+together <- cowplot::plot_grid(one, two, ncol=2)
+ggsave("Plots/rankplot.pdf", together, width = 18, height = 10)
+
+#--------------Correlation plots-----------------------------------
+theme_set(theme_classic())
+
+one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  geom_count() +
+  geom_smooth(method="lm") +
+  xlab("Risk score with max value flags") +
+  ylab("Risk score with max and medium flags") +
+  ggtitle("Existing Compound Risk") +
+  theme(axis.text = element_text(size=14),
+        axis.title = element_text(size=18),
+        title = element_text(size = 20, hjust = 0.5, face = "bold"))
+
+two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  geom_count() +
+  geom_smooth(method="lm") +
+  xlab("Risk score with max value flags") +
+  ylab("Risk score with max and medium flags") +
+  ggtitle("Emerging Compound Risk") +
+  theme(axis.text = element_text(size=14),
+        axis.title = element_text(size=18),
+        title = element_text(size = 20, hjust = 0.5, face = "bold"))
+
+join <- cowplot::plot_grid(one, two, ncol=2)
+ggsave("Plots/compareriskscore.pdf", join, width = 12, height = 6)
+
+#--------------------Reliability test ------------------------------
+one <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  xlab("Emerging risk score") +
+  ylab("Reliability Score")  +
+  theme(axis.text = element_text(size=14),
+        axis.title = element_text(size=18))
+
+two <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK)) +
+  geom_point() +
+  geom_smooth(method="lm") +
+  xlab("Existing risk score") +
+  ylab("")  +
+  theme(axis.text = element_text(size=14),
+        axis.title = element_text(size=18))
+
+rel <- cowplot::plot_grid(one, two, align="h")
+ggsave("Plots/reliabilescore.pdf", rel, width = 12, height = 6)
+
+#------------------Comparison between current and future risk----------------------------------
+#Correlations of all source indicators that feed into the compound risk monitor
+rvar <- riskflags %>%
+  select(EXISTING_RISK_COVID_RESPONSE_CAPACITY, EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_CONFLICT,
+         EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
+         EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY, 
+         EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS, 
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY, 
+         EMERGING_RISK_CONFLICT, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL, 
+         EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS)
+
+colnames(rvar) <- c("EX_Covid", "EX_FoodS", "EX_Conflict", "EX_Macro", "EX_Fiscal", "EX_Socio", "EX_Natural", "EX_Fragile",
+"EM_Covid", "EM_FoodS", "EM_Conflict", "EM_Macro", "EM_Fiscal",  "EM_Natural", "EM_Fragile")
+
+#Calculate correlations
+rcorr <- round(cor(rvar, na.rm=T, use='pairwise.complete.obs'), 1)
+rp.mat <- cor_pmat(rvar, na.rm=T, use='pairwise.complete.obs') 
+
+#Plot
+plot <- ggcorrplot(rcorr, 
+                   hc.order = FALSE, 
+                   p.mat = rp.mat,
+                   outline.col = "white",
+                   colors = c("#6D9EC1", "white", "#E46726")) +
+  theme(plot.margin=unit(c(1,1,1, -0.5),"cm"), 
+        legend.position = "bottom",
+        legend.text = element_text(size = 14),
+        legend.key.width = unit(3, "cm"),
+        legend.title = element_blank())
+
+ggsave("Plots/Riskcorr.pdf", plot, width = 10, height = 10)
+  
+#----------------Compare emerging and existing risk------------------------------------
+comb <- riskflags %>%
+  select(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM) %>%
+  arrange(TOTAL_EXISTING_COMPOUND_RISK_SCORE)
+
+#Pick labels to show subset of countries
+a <- 1:190
+tennum <- a[c(seq(1, length(a), 30), 190)]
+countrylab <- as.character(comb$Countryname)
+countrylab[-tennum] <- ""
+
+#Plot
+ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, y=reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE), group=Countryname)) + 
+  geom_dumbbell(color="#a3c4dc", 
+                size=0.75, 
+                colour_xend = "darkred") + 
+  scale_y_discrete(labels = countrylab) +
+  ylab("Country (note: only a subset of countries labelled)") +
+  xlab("Change in risk score") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) 
+
+ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
+  
+
+
+
+
+
+
+
+
+
