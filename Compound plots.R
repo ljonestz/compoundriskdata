@@ -1,8 +1,17 @@
-#------------------Global plots -------------------------
+#------------------------SCRIPT TO PRODUCE COMPARISON PLOTS-------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
-                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot, ggExtra)
+                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot,
+                 ggExtra, ggrepel)
 
+#Load themes
+theme_set(theme_classic(base_size = 16))
+ggthemr("fresh")
+
+#Convert to continents
+riskflags$Continent <- countrycode(riskflags$Country, origin = 'iso3c', destination = '')
+
+#------------------Global plots -------------------------
 #Loading world database
 world <- map_data("world")
 world <- world %>%
@@ -226,47 +235,69 @@ ggsave("Plots/rankplot.pdf", together, width = 18, height = 10)
 #--------------Correlation plots-----------------------------------
 theme_set(theme_classic())
 
-one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, color=Continent)) +
   geom_count() +
-  geom_smooth(method="lm") +
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
   xlab("Risk score with max value flags") +
   ylab("Risk score with max and medium flags") +
   ggtitle("Existing Compound Risk") +
   theme(axis.text = element_text(size=14),
-        axis.title = element_text(size=18),
-        title = element_text(size = 20, hjust = 0.5, face = "bold"))
+        axis.title = element_text(size=16),
+        legend.text = element_text(size = 14),
+        title = element_text(size = 16, hjust = 0.5, face = "bold")) +
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(5),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 3)
+#Add histogram
+one <- ggMarginal(one, type = "histogram", fill="transparent")
 
-two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, color= Continent)) +
   geom_count() +
-  geom_smooth(method="lm") +
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6) +
   xlab("Risk score with max value flags") +
   ylab("Risk score with max and medium flags") +
   ggtitle("Emerging Compound Risk") +
   theme(axis.text = element_text(size=14),
-        axis.title = element_text(size=18),
-        title = element_text(size = 20, hjust = 0.5, face = "bold"))
+        axis.title = element_text(size=16),
+        legend.text = element_text(size = 14),
+        title = element_text(size = 16, hjust = 0.5, face = "bold")) +
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(5),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 3)
+
+two <- ggMarginal(two, type = "histogram", fill="transparent")
 
 join <- cowplot::plot_grid(one, two, ncol=2)
-ggsave("Plots/compareriskscore.pdf", join, width = 12, height = 6)
+ggsave("Plots/compareriskscore.pdf", join, width = 15, height = 6)
 
 #--------------------Reliability test ------------------------------
-one <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK)) +
+one <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
   geom_point() +
-  geom_smooth(method="lm") +
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6) +
   xlab("Emerging risk score") +
-  ylab("Reliability Score")  +
-  theme(axis.text = element_text(size=14),
-        axis.title = element_text(size=18))
-
-two <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK)) +
-  geom_point() +
-  geom_smooth(method="lm") +
-  xlab("Existing risk score") +
   ylab("")  +
   theme(axis.text = element_text(size=14),
-        axis.title = element_text(size=18))
+        axis.title = element_text(size=18)) 
+#Add histogram
+one <- ggMarginal(one, type = "histogram", fill="transparent")
 
-rel <- cowplot::plot_grid(one, two, align="h")
+two <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
+  geom_point() +
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6) +
+  xlab("Existing risk score") +
+  ylab("Reliability Score")  +
+  theme(axis.text = element_text(size=14),
+        axis.title = element_text(size=18)) 
+
+two <- ggMarginal(two, type = "histogram", fill="transparent")
+
+rel <- cowplot::plot_grid(two, one, align="h")
 ggsave("Plots/reliabilescore.pdf", rel, width = 12, height = 6)
 
 #------------------Comparison between current and future risk----------------------------------
@@ -328,57 +359,81 @@ ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
   
 #--------------Comparing max and geometric averages----------------------------------------
 #Plot each graph
-one <- ggplot(riskflags, aes(EMERGING_RISK_FRAGILITY_INSTITUTIONS, EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV)) +
-  geom_count() + 
+one <- ggplot(riskflags, aes(EMERGING_RISK_FRAGILITY_INSTITUTIONS, EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV, color = Continent)) +
+  geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
   ggtitle("Fragility and Institutions") +
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_smooth(method="lm")
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(2),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 5)
 #Add histograms
 one <- ggMarginal(one, type = "histogram", fill="transparent")
 
-two <- ggplot(riskflags, aes(EMERGING_RISK_CONFLICT, EMERGING_RISK_CONFLICT_AV)) +
-  geom_count() + 
+two <- ggplot(riskflags, aes(EMERGING_RISK_CONFLICT, EMERGING_RISK_CONFLICT_AV, color = Continent)) +
+  geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
   ggtitle("Conflict") +
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_smooth(method="lm")
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(2),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 5)
 
 two <- ggMarginal(two, type = "histogram", fill="transparent")
 
-three <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID , EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV )) +
-  geom_count() + 
+three <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID , EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV, color = Continent)) +
+  geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
   ggtitle("Macroeconomic risk") +
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_smooth(method="lm")
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(2),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 5)
 
 three <- ggMarginal(three, type = "histogram", fill="transparent")
 
-four <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY , EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV )) +
-  geom_count() + 
+four <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY , EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV, color = Continent)) +
+  geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
   ggtitle("COVID response capacity") +
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_smooth(method="lm")
+  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
+  ggrepel::geom_text_repel(data = riskflags  %>%
+                             sample_n(2),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 5,
+                           box.padding = 5)
 
 four <- ggMarginal(four, type = "histogram", fill="transparent")
 
 #Merge graphs and save
 comp <- plot_grid(one, two, three, four, nrow=2)
-ggsave("compareriskcalcs.pdf", comp)
+ggsave("Plots/compareriskcalcs.pdf", comp, width = 14, height = 10)
 
 
 
