@@ -65,7 +65,7 @@ riskflags <- globalrisk %>%
                                               na.rm = T),
          EMERGING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_FSI_2019minus2020_norm, 
                                                     Fr_REIGN_couprisk3m_norm, 
-                                                    ifelse(NH_INFORM_CRISIS_Type==3, 10, 0),
+                                                    ifelse(EXISTING_RISK_FRAGILITY_INSTITUTIONAL >=5 & NH_INFORM_CRISIS_Type==3, 10, 0),
                                                     na.rm=T)) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,

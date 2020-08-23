@@ -372,7 +372,7 @@ fsinormneg <- function(df,upperrisk, lowerrisk, col1){
                                         ))
   df
 }
-test <- fsinormneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
+fsi <- fsinormneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
 
 
 #INFORM
