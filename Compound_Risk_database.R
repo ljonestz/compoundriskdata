@@ -3,7 +3,6 @@
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, openxsls)
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
-
 #Function to normalise with upper and lower bounds (when low score = high vulnerability)
 normfuncneg <- function(df,upperrisk, lowerrisk, col1){
   #Create new column col_name as sum of col1 and col2
@@ -357,12 +356,24 @@ fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/mas
 fsi <- fsi %>% 
   select(-X) %>%
   drop_na(Country)
+
+upperrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.9), na.rm=T)
+lowerrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.1), na.rm=T)
+fsi <- normfuncpos(fsi,upperrisk, lowerrisk, "Fr_FSI_Score") 
+
 upperrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.1), na.rm=T)
 lowerrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.9), na.rm=T)
-fsi <- normfuncneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
-upperrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.1), na.rm=T)
-lowerrisk <- quantile(fsi$Fr_FSI_Score , probs = c(0.9), na.rm=T)
-fsi <- normfuncneg(fsi,upperrisk, lowerrisk, "Fr_FSI_Score") 
+#Specific normalisation
+fsinormneg <- function(df,upperrisk, lowerrisk, col1){
+  #Create new column col_name as sum of col1 and col2
+  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] <= upperrisk, 10,
+                                        ifelse(df[[col1]] >= lowerrisk | df$Fr_FSI_Score_norm == 0, 0,
+                                               ifelse(df[[col1]]  > upperrisk & df[[col1]]  < lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
+                                        ))
+  df
+}
+test <- fsinormneg(fsi,upperrisk, lowerrisk, "Fr_FSI_2019minus2020") 
+
 
 #INFORM
 informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_fragility")

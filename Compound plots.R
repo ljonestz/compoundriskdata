@@ -358,22 +358,27 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
 ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
   
 #--------------Comparing max and geometric averages----------------------------------------
+#Set theme
+gtheme <- theme(axis.ticks = element_blank(),
+      axis.title = element_text(size = 20, hjust = 0.5),
+      axis.text = element_text(size=16),
+      legend.text = element_text(size=16),
+      title = element_text(size=18, face = "bold" ))
+
 #Plot each graph
 one <- ggplot(riskflags, aes(EMERGING_RISK_FRAGILITY_INSTITUTIONS, EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV, color = Continent)) +
   geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
-  ggtitle("Fragility and Institutions") +
-  theme(axis.ticks = element_blank(),
-        axis.title = element_text(size = 20, hjust = 0.5),
-        axis.text = element_text(size=16)) +
+  ggtitle("a) Fragility and Institutions") +
+gtheme +
   geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
   ggrepel::geom_text_repel(data = riskflags  %>%
-                             sample_n(2),
+                             filter(Countryname=="Sudan" | Countryname=="Turkey"),
                            aes(label = Countryname),
                            arrow = arrow(length = unit(0.01, 'npc')),
                            size = 5,
-                           box.padding = 5)
+                           box.padding = 7)
 #Add histograms
 one <- ggMarginal(one, type = "histogram", fill="transparent")
 
@@ -381,17 +386,15 @@ two <- ggplot(riskflags, aes(EMERGING_RISK_CONFLICT, EMERGING_RISK_CONFLICT_AV, 
   geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
-  ggtitle("Conflict") +
-  theme(axis.ticks = element_blank(),
-        axis.title = element_text(size = 20, hjust = 0.5),
-        axis.text = element_text(size=16)) +
+  ggtitle("b) Conflict") +
+gtheme +
   geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
   ggrepel::geom_text_repel(data = riskflags  %>%
                              sample_n(2),
                            aes(label = Countryname),
                            arrow = arrow(length = unit(0.01, 'npc')),
                            size = 5,
-                           box.padding = 5)
+                           box.padding = 7)
 
 two <- ggMarginal(two, type = "histogram", fill="transparent")
 
@@ -399,17 +402,15 @@ three <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID , E
   geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
-  ggtitle("Macroeconomic risk") +
-  theme(axis.ticks = element_blank(),
-        axis.title = element_text(size = 20, hjust = 0.5),
-        axis.text = element_text(size=16)) +
+  ggtitle("c) Macroeconomic risk") +
+  gtheme +
   geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
   ggrepel::geom_text_repel(data = riskflags  %>%
                              sample_n(2),
                            aes(label = Countryname),
                            arrow = arrow(length = unit(0.01, 'npc')),
                            size = 5,
-                           box.padding = 5)
+                           box.padding = 7)
 
 three <- ggMarginal(three, type = "histogram", fill="transparent")
 
@@ -417,17 +418,15 @@ four <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY , EMERGING_R
   geom_count(alpha = 0.7) + 
   xlab("Max value") +
   ylab("Geometric mean") +
-  ggtitle("COVID response capacity") +
-  theme(axis.ticks = element_blank(),
-        axis.title = element_text(size = 20, hjust = 0.5),
-        axis.text = element_text(size=16)) +
+  ggtitle("d) COVID response") +
+  gtheme +
   geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
   ggrepel::geom_text_repel(data = riskflags  %>%
-                             sample_n(2),
+                             filter(Countryname=="Italy" | Countryname=="Benin"),
                            aes(label = Countryname),
                            arrow = arrow(length = unit(0.01, 'npc')),
                            size = 5,
-                           box.padding = 5)
+                           box.padding = 7)
 
 four <- ggMarginal(four, type = "histogram", fill="transparent")
 
