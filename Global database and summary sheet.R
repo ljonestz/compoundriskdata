@@ -1,6 +1,6 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
@@ -113,6 +113,13 @@ riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
 riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing/2)))
 riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging/2)))
 
+#Drop teritiary rates (may want to reinstate in the future)
+riskflags <- riskflags %>% 
+  select(-medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country)
+
+#--------------------------------CREATE DATABASE OF ALTERNATIVE RISK SCORES------------------------------------------------------
 #Alternative combined risk scores
 names <- c("EMERGING_RISK_CONFLICT", "EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID")
 riskflags[paste0(names,"_plus1")] <- lapply(riskflags[names], function(xx){ifelse(xx==0, xx+1, xx)})
@@ -120,18 +127,41 @@ riskflags[paste0(names,"_plus1")] <- lapply(riskflags[names], function(xx){ifels
 riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_CONFLICT_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_FISCAL_plus1")], na.rm=T)
 riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
 
+#remove unnecessary variables                                                     
 riskflags <- riskflags %>% 
   select(-EMERGING_RISK_CONFLICT_plus1 ,-EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1 ,
            -EMERGING_RISK_FISCAL_plus1, -EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1)
 
+#Alternativ combined total scores
+altflag <- globalrisk
+names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm", 
+           "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", 
+           "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm", 
+           "F_FAO_6mFPV_norm", "C_GPI_Score_norm", "C_ACLED_event_same_month_difference_perc_norm", 
+           "C_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm", 
+           "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", 
+           "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm", 
+           "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", 
+           "Fr_INFORM_Fragility_Score_norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm", 
+           "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm")
 
-#Drop teritiary rates (may want to reinstate in the future)
-riskflags <- riskflags %>% 
-  select(-medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))) %>%
-  distinct(Country, .keep_all = TRUE) %>%
-  drop_na(Country)
+altflag[paste0(names,"_plus1")] <- lapply(altflag[names], function(xx){ifelse(xx==0, xx+1, xx)})
 
-#-----------------------------Create reliability score------------------------------------------
+#Calculate alternative variables
+altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV <- geometricmeanRow(altflag[c("H_Oxrollback_score_norm_plus1", 
+                                                                                "H_Covidgrowth_casesnorm_plus1",
+                                                                                "H_Covidgrowth_deathsnorm_plus1",
+                                                                                "H_Covidproj_Projected_Deaths_._1M_norm_plus1")], na.rm=T)
+altflag$EMERGING_RISK_CONFLICT_AV = geometricmeanRow(altflag[c("C_ACLED_event_same_month_difference_perc_norm_plus1",
+                                                            "C_ACLED_fatal_same_month_difference_perc_norm_plus1")], na.rm=T)
+altflag$EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmeanRow(altflag[c("M_GDP_IMF_2019minus2020_norm_plus1",
+                                                                                      "M_GDP_WB_2019minus2020_norm_plus1")], na.rm=T)
+altflag$EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV <- ifelse(is.na(altflag$NH_INFORM_CRISIS_Type) | altflag$NH_INFORM_CRISIS_Type != "Complex crisis", geometricmeanRow(altflag[c("Fr_FSI_2019minus2020_norm_plus1", 
+                                                                                                                                                                               "Fr_REIGN_couprisk3m_norm_plus1")], na.rm=T), 10)
+#Merge datasets to include alt variables
+riskflags <- inner_join(riskflags, altflag, by=c("Country", "Countryname"), keep=F)
+
+#-----------------------------CREATE RELIABILITY SCORES------------------------------------------
 #Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
 reliabilitysheet <- globalrisk %>%
   mutate(RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY = case_when(is.na(H_HIS_Score_norm) ~ 1,
@@ -197,6 +227,7 @@ reliable <- reliabilitysheet %>%
 
 globalrisk <- full_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
+#Save database of all risk indicators (+ reliability scores)
 write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
 
 #Combine the reliability sheet with the summary risk flag sheet
@@ -205,12 +236,23 @@ reliable <- reliabilitysheet %>%
 
 riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
 
-#Write csv file
+#Write csv file of all risk flags (+reliability scores)
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 
 #----------------------------CRATE SUMMARY EXCEL FILE----------------------------------------------------
+#Select relevant variables
+riskset <- riskflags %>%
+  select(Countryname, Country, EXISTING_RISK_COVID_RESPONSE_CAPACITY, 
+         EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
+         EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY, 
+         EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS, 
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY, 
+         EMERGING_RISK_CONFLICT, EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
+         EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,TOTAL_EXISTING_COMPOUND_RISK_SCORE,   TOTAL_EMERGING_COMPOUND_RISK_SCORE,TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, 
+         TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+
 #Add blank columns to riskflags dataset
-riskflagsblank <- riskflags %>%
+riskflagsblank <- riskset %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS") %>%
   add_column("   " = NA, .after = "TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM") 

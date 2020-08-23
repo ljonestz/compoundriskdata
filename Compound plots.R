@@ -1,7 +1,7 @@
 #------------------Global plots -------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
-                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot)
+                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot, ggExtra)
 
 #Loading world database
 world <- map_data("world")
@@ -326,8 +326,59 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
 
 ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
   
+#--------------Comparing max and geometric averages----------------------------------------
+#Plot each graph
+one <- ggplot(riskflags, aes(EMERGING_RISK_FRAGILITY_INSTITUTIONS, EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV)) +
+  geom_count() + 
+  xlab("Max value") +
+  ylab("Geometric mean") +
+  ggtitle("Fragility and Institutions") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) +
+  geom_smooth(method="lm")
+#Add histograms
+one <- ggMarginal(one, type = "histogram", fill="transparent")
 
+two <- ggplot(riskflags, aes(EMERGING_RISK_CONFLICT, EMERGING_RISK_CONFLICT_AV)) +
+  geom_count() + 
+  xlab("Max value") +
+  ylab("Geometric mean") +
+  ggtitle("Conflict") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) +
+  geom_smooth(method="lm")
 
+two <- ggMarginal(two, type = "histogram", fill="transparent")
+
+three <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID , EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV )) +
+  geom_count() + 
+  xlab("Max value") +
+  ylab("Geometric mean") +
+  ggtitle("Macroeconomic risk") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) +
+  geom_smooth(method="lm")
+
+three <- ggMarginal(three, type = "histogram", fill="transparent")
+
+four <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY , EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV )) +
+  geom_count() + 
+  xlab("Max value") +
+  ylab("Geometric mean") +
+  ggtitle("COVID response capacity") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) +
+  geom_smooth(method="lm")
+
+four <- ggMarginal(four, type = "histogram", fill="transparent")
+
+#Merge graphs and save
+comp <- plot_grid(one, two, three, four, nrow=2)
+ggsave("compareriskcalcs.pdf", comp)
 
 
 
