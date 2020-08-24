@@ -2,7 +2,7 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
                  countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot,
-                 ggExtra, ggrepel)
+                 ggExtra, ggrepel, knitr, kableExtra)
 
 #Load themes
 theme_set(theme_classic(base_size = 16))
@@ -434,9 +434,27 @@ four <- ggMarginal(four, type = "histogram", fill="transparent")
 comp <- plot_grid(one, two, three, four, nrow=2)
 ggsave("Plots/compareriskcalcs.pdf", comp, width = 14, height = 10)
 
+#-------Ranking exercise--------------------
+#Function to create top 20 ranked countries
+names <- colnames(riskflags[3:17])
+rankcountry <- lapply(riskflags[names], function(xx){
+  paste(riskflags$Countryname[order(-xx)][1:30], round(xx[order(-xx)][1:30], 1))
+})
 
+#Combine list
+rankcountry <- bind_rows(rankcountry)
 
+#Draw table for existing risks
+rankcountry %>%
+  select(contains("EXISTING")) %>%
+  kable %>%
+  kable_styling() %>%
+  save_kable(file = "Plots/top20countriesexisting.html", self_contained = T)
 
-
-
+#Draw table for emerging risks
+rankcountry %>%
+  select(contains("EMERGING")) %>%
+  kable %>%
+  kable_styling() %>%
+  save_kable(file = "Plots/top20countriesemerging.html", self_contained = T)
 
