@@ -458,3 +458,49 @@ rankcountry %>%
   kable_styling() %>%
   save_kable(file = "Plots/top20countriesemerging.html", self_contained = T)
 
+
+#---------------------Slope graph--------------------------------
+li <- riskflags[c(1, 10:16)]
+
+colnames(li) <- c("Country", "EM_FR", "EM_COVID", 
+                  "EM_FS", "EM_C", "EM_FISC", 
+                  "EM_MACRO", "EM_NH"
+)
+
+countries <- c("Afghanistan", "Algeria", "Nigeria", "Ghana", "Serbia", "Tunisia")
+
+li <- li %>%
+  filter(Country %in% countries)
+
+longli <- gather(li, key="risk", value = "new", -Country)
+longli$new <- round(longli$new, 1)
+
+slope <- ggplot(data = longli, aes(x = risk, y = new, group = Country)) +
+  geom_line(aes(color = Country, alpha = 1), size = 1) +
+  geom_text_repel(data = longli %>% filter(risk == "EM_C"), 
+                  aes(label = Country) , 
+                  hjust = "left", 
+                  fontface = "bold", 
+                  size = 4, 
+                  nudge_x = -.45, 
+                  direction = "y") +
+  geom_text_repel(data = longli %>% filter(risk == "EM_NH"), 
+                  aes(label = Country) , 
+                  hjust = "right", 
+                  fontface = "bold", 
+                  size = 4, 
+                  nudge_x = .5, 
+                  direction = "y")  +
+  geom_label(aes(label = new), 
+             size = 3.5, 
+             label.padding = unit(0.05, "lines"), 
+             label.size = 0.0,
+             alpha = 0.6) +
+  MySpecial +
+  labs(title = "Emering risk scores across countries")
+
+ggsave("Plots/slopeg.pdf", slope, width = 11.5, height = 6)
+
+
+
+
