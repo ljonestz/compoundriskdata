@@ -23,7 +23,7 @@ globalrisk <- left_join(countrylist, healthsheet, by=c("Countryname", "Country")
   left_join(., macrosheet, by=c("Countryname", "Country")) %>% 
   left_join(., Naturalhazardsheet, by=c("Countryname", "Country")) %>% 
   left_join(., Socioeconomic_sheet,by=c( "Country")) %>%
-  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, X.x.x.x.x, X.y.y.y.y) %>%
+  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
 
@@ -48,6 +48,7 @@ riskflags <- globalrisk %>%
          EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(H_Oxrollback_score_norm, 
                                                       H_Covidgrowth_casesnorm,
                                                       H_Covidgrowth_deathsnorm,
+                                                      H_new_cases_smoothed_per_million_norm,
                                                       H_Covidproj_Projected_Deaths_._1M_norm, 
                                                       na.rm=T),
          EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_Fewsnet_Score_norm,
@@ -138,7 +139,7 @@ riskflags <- riskflags %>%
 #Alternativ combined total scores
 altflag <- globalrisk
 names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm", 
-           "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", 
+           "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm","H_new_cases_smoothed_per_million_norm", 
            "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm", 
            "F_FAO_6mFPV_norm", "C_GPI_Score_norm", "C_ACLED_event_same_month_difference_perc_norm", 
            "C_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm", 
@@ -154,6 +155,7 @@ altflag[paste0(names,"_plus1")] <- lapply(altflag[names], function(xx){ifelse(xx
 altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV <- geometricmeanRow(altflag[c("H_Oxrollback_score_norm_plus1", 
                                                                                 "H_Covidgrowth_casesnorm_plus1",
                                                                                 "H_Covidgrowth_deathsnorm_plus1",
+                                                                               "H_new_cases_smoothed_per_million_norm_plus1",
                                                                                 "H_Covidproj_Projected_Deaths_._1M_norm_plus1")], na.rm=T)
 altflag$EMERGING_RISK_CONFLICT_AV = geometricmeanRow(altflag[c("C_ACLED_event_same_month_difference_perc_norm_plus1",
                                                             "C_ACLED_fatal_same_month_difference_perc_norm_plus1")], na.rm=T)
@@ -180,7 +182,15 @@ riskflags <- riskflags %>%
          EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ = case_when(!is.na(EXISTING_RISK_FRAGILITY_INSTITUTIONS) ~ sqrt(EXISTING_RISK_FRAGILITY_INSTITUTIONS * EMERGING_RISK_FRAGILITY_INSTITUTIONS),
                                                                                                             TRUE ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 )
-         
+
+#Calculate total emerging risk scores for SQ
+sqnam <- c("EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ", 
+  "EMERGING_RISK_CONFLICT_SQ", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", 
+  "EMERGING_RISK_FISCAL_SQ", "EMERGING_RISK_NATURAL_HAZARDS_SQ", 
+  "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ")
+
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >=7)
+
 #-----------------------------CREATE RELIABILITY SCORES------------------------------------------
 #Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
 reliabilitysheet <- globalrisk %>%
@@ -205,7 +215,8 @@ reliabilitysheet <- globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,
                                                                                H_Covidgrowth_casesnorm, 
                                                                                H_Covidgrowth_deathsnorm, 
-                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/4,
+                                                                               H_new_cases_smoothed_per_million_norm,
+                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/5,
          RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
                                                               select(F_Fewsnet_Score_norm,
                                                                      F_Artemis_Score_norm, 
@@ -236,8 +247,9 @@ reliabilitysheet <- reliabilitysheet %>%
          RELIABILITY_EXISTING_NATURAL_HAZARDS,RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY,RELIABILITY_EMERGING_FOOD_SECURITY, RELIABILITY_EMERGING_CONFLICT,
          RELIABILITY_EMERGING_CONFLICT,RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
-         RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS) 
-
+         RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS) %>%
+  arrange(Country)
+  
 #Write as a csv file for the reliability sheet
 write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 
@@ -245,7 +257,7 @@ write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 reliable <- reliabilitysheet %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
-globalrisk <- full_join(globalrisk, reliable, by = c("Countryname", "Country"))
+globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
 #Save database of all risk indicators (+ reliability scores)
 write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
@@ -254,7 +266,7 @@ write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
 reliable <- reliabilitysheet %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
-riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
+riskflags <- left_join(riskflags, reliable, by = c("Countryname", "Country"))
 
 #Write csv file of all risk flags (+reliability scores)
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
@@ -302,8 +314,16 @@ writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 
 #Insert alternative flag sheet
 addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "purple")
+#Select relevant variables
 alt <- riskflags %>%
-  select(Countryname, Country, contains("SQ"), contains("_AV"))
+  select(Countryname, Country, contains("_AV"), contains("SQ")) %>%
+  arrange(Country)
+#Add blank columns
+alt <- alt %>%
+  add_column(" " = NA, .after = "Country") %>%
+  add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV") %>%
+  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
+#Writesheet
 writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
 
 #Colour and stlye sheets
@@ -469,6 +489,7 @@ cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_no
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"), which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
@@ -476,8 +497,6 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
-cond("Alternativeflag_sheet", which(colnames(alt) == "EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ"), which(colnames(alt) == "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV"))
-
 
 #Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
@@ -490,10 +509,15 @@ conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule="=
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0.700, 0.999), style = medStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0, 0.6999), style = posStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, rule = '=""', style = naStyle)
 
 #DatabarsconditionalFormatting
 conditionalFormatting(crxls, "riskflags", cols = 20:23, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=17, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 
 #Insert Global Maps
 #install.packages("librarian")     #Run if librarian is not already installed
