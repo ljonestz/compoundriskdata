@@ -4,13 +4,14 @@ A compilation of data sources, ingestion scripts and aggregation processes used 
 
 ## Main scripts and data architecture
 
-Individual indicator datasets are stored as separate files in the **Indicator_dataset** folder, with many of the source materials generated using scripts in the main repository (e.g. 'GDACS scrape.r', 'FAO scrape.r', 'COVID scrape data.r', 'Debt scrape.r'). 
-
-Alongside this, **Coumpound_Risk_database.r** is used to compile datasets for each of the indicators that feed into the eight seperate risk component sheets. Many of the ingestion commands described above also feature as part of the script and automatically generate real-time risk information. The script saves each of the individual source indicators as separate .csv files saved in the **Indicator_dataset** folder. In addition, eight summary files compiling all source indicators that feed into each respective risk component are generated and saved in the **Risk_sheets** folder. Note: a number of errors are thrown out when the Natural Hazards sheet is created - though these should not be consequential to the results.
+**Coumpound_Risk_database.r** is used to compile datasets for each of the indicators that feed into the eight seperate risk component sheets. Many of the ingestion commands described above also feature as part of the script and automatically generate real-time risk information. The script saves each of the individual source indicators as separate .csv files saved in the **Indicator_dataset** folder. In addition, eight summary files compiling all source indicators that feed into each respective risk component are generated and saved in the **Risk_sheets** folder. Note: a number of errors are thrown out when the Natural Hazards sheet is created - though these should not be consequential to the results.
 
 **Global database and summary sheet.R** takes inputs from each of the risk components sheets and calculates overall risk scores (both for the eight risk components as well as a total compound risk score for each country). In addition, a series of alternative risk calculations and reliability scores are generated for comparison. Lastly, the script is used to generate a summary Excel file designed to mimic the original CRM database.
 
 **Compound Plots.r** generates a series of comparative plots and visuals that are subsequently saved to the **Plots** folder.
+
+Alongside the above, separate scirpts are included in the main folder and can be used to scrape and generate source datasets (e.g. 'GDACS scrape.r', 'FAO scrape.r', 'COVID scrape data.r', 'Debt scrape.r'). *Note: many of these of these are included in the Coumpound_Risk_database.r script already and do not need to be run in advance.*
+
 
 ## Outcome databases
 
