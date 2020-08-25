@@ -1,4 +1,4 @@
-# Summary
+# Replicating and running the Compound Risk Monitor
 
 A compilation of data sources, ingestion scripts and aggregation processes used to compile the Compound Risk Monitor.
 
@@ -46,4 +46,8 @@ SQ_ -> Geometric average scores.
 TOTAL_ -> Total risk scores.  
 EMERGING_ -> Emerging risk scores.  
 EXISTING_ -> Existing risk scores.  
+
+## Sequence to generate CRM outputs
+
+To replicate the databases and plots used int he Compound Risk Monitor start by running the **Coumpound_Risk_database.r**. This will generate all necessary indicator datasets and risk sheets. Then run **Global database and summary sheet.R** that calculates component and overall risk scores for each country. Lastly, run **Compound Plots.r** to generate summary plots and comparison graphs.
 
