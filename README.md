@@ -50,5 +50,5 @@ EXISTING_ -> Existing risk scores.
 
 ## Sequence in generating CRM outputs
 
-To replicate the databases and plots used int he Compound Risk Monitor start by running the **Coumpound_Risk_database.r**. This will generate all necessary indicator datasets and risk sheets. Then run **Global database and summary sheet.R** that calculates component and overall risk scores for each country. Lastly, run **Compound Plots.r** to generate summary plots and comparison graphs.
+To replicate the databases and plots used in the Compound Risk Monitor start by running **Coumpound_Risk_database.r**. This will generate all necessary indicator datasets and risk sheets. Then run **Global database and summary sheet.R** to calculate component and overall risk scores for each country. Lastly, run **Compound Plots.r** to generate summary plots and comparison graphs.
 
