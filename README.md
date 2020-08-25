@@ -30,20 +30,20 @@ In addition, separate csv files are generated for each of the each risk componen
 
 All source indicators used in the Compound Risk Monitor are labelled according to the eight separate risk categories. Short tags are included at the start of the variable label, with the indicator description immediately thereafter. For example, F_ is assigned to all food security indicators, meaning that that the FEWSNET score is classified as: F_Fewsnet_score). 
 
-Labels are classified as follows:
+### Labels are classified as follows:
 
-C_, Conflict
-D_, Debt
-FR_, Fragility and Institutions
-H_, Health / COVID Response Capacity 
-F_, Food Security
-M_, Macro-economic vulnerability
-NH_, Natural Hazards
-S_, Socioeconomic vulnerability
-RELIABILITY_, Reliability scores
-AV_, Average scores
-SQ_, Geometric average scores
-TOTAL_, Total risk scores
-EMERGING_, Emerging risk scores
-EXISTING_, Existing risk scores
+C_, Conflict.  
+D_, Debt. 
+FR_, Fragility and Institutions. 
+H_, Health / COVID Response Capacity. 
+F_, Food Security. 
+M_, Macro-economic vulnerability. 
+NH_, Natural Hazards. 
+S_, Socioeconomic vulnerability. 
+RELIABILITY_, Reliability scores. 
+AV_, Average scores. 
+SQ_, Geometric average scores. 
+TOTAL_, Total risk scores. 
+EMERGING_, Emerging risk scores. 
+EXISTING_, Existing risk scores. 
 
