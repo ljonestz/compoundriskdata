@@ -1,4 +1,4 @@
-#--------------------LOAD PACKAGES--------------
+#--------------------LOAD PACKAGES-----------------------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, countrycode, clipr, openxsls)
 
@@ -30,7 +30,7 @@ HIS <- HIS %>%
   rename(Country = H_Country) %>%
   select(-X)
   
-HIS <- normfuncneg(HIS, 20, 50, "H_HIS_Score")
+HIS <- normfuncneg(HIS, 20, 70, "H_HIS_Score")
 
 #-----------------------Oxford rollback Score-----------------
 OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OXrollbackscore.csv")
@@ -100,7 +100,7 @@ covidweb <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/maste
 
 covid <- covidweb %>%
   mutate(date = as.Date(date)) %>%
-  filter(date > Sys.Date( ) - 28)
+  filter(date > Sys.Date( ) - 28) 
 
 #bi-weekly growth rate for covid deaths and cases
 covidgrowth <- covid %>%
@@ -121,29 +121,27 @@ covidgrowth <- covid %>%
   filter(previous2week != "twoweek") %>%
   select(- previous2week, -growthcase, -growthdeath, -meandeaths, -meancase)
 
-#Find name of countries with few cases
-namecase <- covid %>%
-  filter(date== Sys.Date()-1) %>%
-  filter(new_cases_per_million < 2) %>%
-  select(iso_code)
-
-#Function to normalise with upper and lower bounds (when high score = high vulnerability)
-normfuncposcovid <- function(df,upperrisk, lowerrisk, col1){
-  df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-                                        ifelse(df[[col1]] <= lowerrisk, 0,
-                                               ifelse(df$iso_code %in% namecase, 0,
-                                                      ifelse(df[[col1]]  < upperrisk & df[[col1]]  > lowerrisk,  10 - (upperrisk - df[[col1]] )/(upperrisk - lowerrisk)*10, NA)
-                                        )))                                               
-                                        
-  df
-}
-
 #Normalised scores for deaths
-covidgrowth <- normfuncposcovid(covidgrowth, 150, 0, "growthratedeaths")
-covidgrowth <- normfuncposcovid(covidgrowth, 150, 0, "growthratecases")
+covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
+covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratecases")
 
 #Rename columns
-colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases", "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
+colnames(covidgrowth) <- c("Country", "H_Covidgrowth_biweeklydeaths", "H_Covidgrowth_biweeklycases",
+                           "H_Covidgrowth_deathsnorm", "H_Covidgrowth_casesnorm")
+
+#Varibles on number of cases
+covidcurrent <- covid %>%
+  filter(date== Sys.Date()-1) %>%
+  select(iso_code, new_cases_smoothed_per_million, new_deaths_smoothed_per_million) %>%
+  rename(Country = iso_code)
+
+covidcurrent <-  normfuncpos(covidcurrent, 50, 0, "new_cases_smoothed_per_million")
+covidcurrent <-  normfuncpos(covidcurrent, 2, 0, "new_deaths_smoothed_per_million")
+
+#Rename columns
+colnames(covidcurrent) <- c("Country", "H_new_cases_smoothed_per_million", "H_new_deaths_smoothed_per_million", 
+                            "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm"
+)
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -154,6 +152,7 @@ health <- left_join(countrylist, HIS, by="Country") %>%
   left_join(., OXrollback, by="Country") %>%
   left_join(., covidproj,  by="Country") %>% 
   left_join(., covidgrowth, by="Country") %>%
+  left_join(., covidcurrent, by="Country") %>%
   arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
@@ -712,20 +711,6 @@ nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 
 
-
-
-aclednorm <- function(df,upperrisk, lowerrisk, col1, number){
-  #Create new column col_name as sum of col1 and col2
-  var <- ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 5, 0, df[[col1]])
-  df[[paste0(col1, "_norm")]] <- ifelse(var >= upperrisk, 10,
-                                        ifelse(var  < upperrisk & var > lowerrisk,  10 - (upperrisk - var )/(upperrisk - lowerrisk)*10, NA)
-  )
-  df
-}
-acleddata <- aclednorm(acledjoin, 400, 0, "C_ACLED_fatal_same_month_difference_perc", "C_ACLED_fatal_last30d")
-
-
-transform <- acleddata$C_ACLED_fatal_same_month_difference_perc
 
 
 
