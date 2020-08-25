@@ -524,11 +524,10 @@ diffs <- riskflags %>%
          EMERGING_RISK_CONFLICT_diff = EMERGING_RISK_CONFLICT_SQ - EMERGING_RISK_CONFLICT,
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_diff  = EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ - EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EMERGING_RISK_FISCAL_diff = EMERGING_RISK_FISCAL_SQ - EMERGING_RISK_FISCAL,
-         EMERGING_RISK_NATURAL_HAZARDS_diff = EMERGING_RISK_NATURAL_HAZARDS_SQ - EMERGING_RISK_NATURAL_HAZARDS,
          EMERGING_RISK_FRAGILITY_INSTITUTIONS_diff = EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ - EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
 diffs <- diffs %>% select(contains("diff")) %>% select(contains("EMERGING"))
-colnames(diffs) <- c("EM_COV", "EM_FS", "EM_C", "EM_MACRO", "EM_FIS", "EM_NH", "EM_FRAG" )
+colnames(diffs) <- c("EM_COV", "EM_FS", "EM_C", "EM_MACRO", "EM_FIS",  "EM_FRAG" )
                                               
 #Draw plots
 plots <- list()
@@ -551,12 +550,9 @@ for (i in seq_along(nm)) {
 #Arrange the plots
 n <- length(plots) 
 nCol <- floor(sqrt(n))
-up <- do.call("grid.arrange", c(plots[1:6], ncol=nCol))
-blank <- grid.rect(gp=gpar(col="white"))
-down <- grid.arrange(blank, plots[[7]], blank, widths = c(1/3, 1, 1/3))
-diffscores <- grid.arrange(up, down, heights=c(3,1))
+up <- do.call("grid.arrange", c(plots, ncol=nCol))
 
-ggsave("Plots/diffscores.pdf", diffscores, height = 12, width = 10)
+ggsave("Plots/diffscores.pdf", up, height = 12, width = 10)
 
 #----------------Table with biggest differences between risk flags as sqrt and max ----------------
 #Function to create top 20 ranked countries
