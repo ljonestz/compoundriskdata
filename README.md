@@ -34,16 +34,16 @@ All source indicators used in the Compound Risk Monitor are labelled according t
 
 C_, Conflict.  
 D_, Debt.  
-FR_, Fragility and Institutions. 
-H_, Health / COVID Response Capacity. 
-F_, Food Security. 
-M_, Macro-economic vulnerability. 
-NH_, Natural Hazards. 
-S_, Socioeconomic vulnerability. 
-RELIABILITY_, Reliability scores. 
-AV_, Average scores. 
-SQ_, Geometric average scores. 
-TOTAL_, Total risk scores. 
-EMERGING_, Emerging risk scores. 
-EXISTING_, Existing risk scores. 
+FR_, Fragility and Institutions.  
+H_, Health / COVID Response Capacity.  
+F_, Food Security.  
+M_, Macro-economic vulnerability.  
+NH_, Natural Hazards.  
+S_, Socioeconomic vulnerability.  
+RELIABILITY_, Reliability scores.  
+AV_, Average scores.  
+SQ_, Geometric average scores.  
+TOTAL_, Total risk scores.  
+EMERGING_, Emerging risk scores.  
+EXISTING_, Existing risk scores.  
 
