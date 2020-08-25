@@ -33,7 +33,7 @@ All source indicators used in the Compound Risk Monitor are labelled according t
 ### Labels are classified as follows:
 
 C_, Conflict.  
-D_, Debt. 
+D_, Debt.  
 FR_, Fragility and Institutions. 
 H_, Health / COVID Response Capacity. 
 F_, Food Security. 
