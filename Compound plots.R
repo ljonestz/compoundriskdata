@@ -159,7 +159,8 @@ rankco$sign <- ifelse(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL - rankco$EM
 #Country labels
 left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT), sep=", ")
 right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL),sep=", ")
-subset <- c(77, 32,188, 34, 106,22,74, 80, 118,156)
+#Find one from each integer
+subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_CONFLICT, 0) ==xx)[1]}))
 left_label[-subset] <- " "
 right_label[-subset] <- " "
 
@@ -174,7 +175,7 @@ one <- ggplot(rankco) +
                      values = c("green"="#00ba38", "red"="#f8766d")) +
   labs(x="", y="") +
   xlim(.5, 2.5) + ylim(0,10.3) +
-  geom_text(label=left_label, y=rankco$EMERGING_RISK_CONFLICT, x=rep(1, NROW(rankco)), hjust=1.1, size=4) + 
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_CONFLICT, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
   geom_text(label=right_label, y=rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
   geom_text(label="Single", x=0.8, y=10.3, size= 5)  +
   geom_text(label="Multiple", x=2, y=10.3, hjust=-0.1, size=5) +
@@ -196,7 +197,8 @@ rankco$sign <- ifelse(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSION
                       "green")
 left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS), sep=", ")
 right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL),sep=", ")
-subset <- c( 8, 179, 157, 79,  147, 176, 160, 49)
+#Find one from each integer
+subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS, 0) ==xx)[1]}))
 left_label[-subset] <- " "
 right_label[-subset] <- " "
 
