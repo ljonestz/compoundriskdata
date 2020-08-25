@@ -2,14 +2,11 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
                  countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot,
-                 ggExtra, ggrepel, knitr, kableExtra)
+                 ggExtra, ggrepel, knitr, kableExtra, grid)
 
 #Load themes
 theme_set(theme_classic(base_size = 16))
 ggthemr("fresh")
-
-#Convert to continents
-riskflags$Continent <- countrycode(riskflags$Country, origin = 'iso3c', destination = '')
 
 #------------------Global plots -------------------------
 #Loading world database
@@ -235,6 +232,9 @@ ggsave("Plots/rankplot.pdf", together, width = 18, height = 10)
 #--------------Correlation plots-----------------------------------
 theme_set(theme_classic())
 
+#Convert to continents
+riskflags$Continent <- countrycode(riskflags$Country, origin = 'iso3c', destination = 'continent')
+
 one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, color=Continent)) +
   geom_count() +
   geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
@@ -333,6 +333,9 @@ plot <- ggcorrplot(rcorr,
 ggsave("Plots/Riskcorr.pdf", plot, width = 10, height = 10)
   
 #----------------Compare emerging and existing risk------------------------------------
+ggthemr_reset()
+theme_set(theme_classic(base_size = 16))
+
 comb <- riskflags %>%
   select(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM) %>%
   arrange(TOTAL_EXISTING_COMPOUND_RISK_SCORE)
@@ -349,11 +352,24 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
                 size=0.75, 
                 colour_xend = "darkred") + 
   scale_y_discrete(labels = countrylab) +
-  ylab("Country (note: only a subset of countries labelled)") +
+  ylab("Country") +
   xlab("Change in risk score") +
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
-        axis.text = element_text(size=16)) 
+        axis.text = element_text(size=16)) +
+  geom_text_repel(data = comb %>% sample_n(7), 
+                  aes(label = Countryname) , 
+                  hjust = "left", 
+                  fontface = "bold", 
+                  color = "darkred",
+                  segment.color = "black",
+                  segment.alpha = 0.7,
+                  segment.size = 0.3,
+                  size = 4, 
+                  nudge_x = 2, 
+                  nudge_y = -1,
+                  direction = "y")  +
+  theme(axis.text.y = element_blank())
 
 ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
   
@@ -458,7 +474,6 @@ rankcountry %>%
   kable_styling() %>%
   save_kable(file = "Plots/top20countriesemerging.html", self_contained = T)
 
-
 #---------------------Slope graph--------------------------------
 li <- riskflags[c(1, 10:16)]
 
@@ -497,10 +512,70 @@ slope <- ggplot(data = longli, aes(x = risk, y = new, group = Country)) +
              label.size = 0.0,
              alpha = 0.6) +
   MySpecial +
-  labs(title = "Emering risk scores across countries")
+  scale_colour_brewer(palette = "Set1")
 
 ggsave("Plots/slopeg.pdf", slope, width = 11.5, height = 6)
 
+#----------------Different between risk flags---------------------------
+#Calculate differences between scores
+diffs <- riskflags %>%
+  mutate(EMERGING_RISK_COVID_RESPONSE_CAPACITY_diff = EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ - EMERGING_RISK_COVID_RESPONSE_CAPACITY,
+         EMERGING_RISK_FOOD_SECURITY_diff = EMERGING_RISK_FOOD_SECURITY_SQ - EMERGING_RISK_FOOD_SECURITY,
+         EMERGING_RISK_CONFLICT_diff = EMERGING_RISK_CONFLICT_SQ - EMERGING_RISK_CONFLICT,
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_diff  = EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ - EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
+         EMERGING_RISK_FISCAL_diff = EMERGING_RISK_FISCAL_SQ - EMERGING_RISK_FISCAL,
+         EMERGING_RISK_NATURAL_HAZARDS_diff = EMERGING_RISK_NATURAL_HAZARDS_SQ - EMERGING_RISK_NATURAL_HAZARDS,
+         EMERGING_RISK_FRAGILITY_INSTITUTIONS_diff = EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ - EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
+diffs <- diffs %>% select(contains("diff")) %>% select(contains("EMERGING"))
+colnames(diffs) <- c("EM_COV", "EM_FS", "EM_C", "EM_MACRO", "EM_FIS", "EM_NH", "EM_FRAG" )
+                                              
+#Draw plots
+plots <- list()
+nm <- colnames(diffs)
+for (i in seq_along(nm)) {
+  ggthemr("fresh")
+  theme_set(theme_classic(base_size = 16))
+  plots[[i]] <- print(ggplot(diffs, aes_string(x = nm[i])) +
+                        geom_histogram(aes(y =..density..),
+                                       colour="black", fill="white") +
+                        ggtitle(print(nm[i])) +
+                        xlab("Change in CR score (sqrt - max)") +
+                        ylab("") +
+                        geom_vline(aes(xintercept = mean(nm[i])), 
+                                   linetype = "dashed", size = 0.6) +
+                        geom_density(alpha = 0.2) +
+                        theme(plot.title = element_text(hjust=0.5))) 
+}
 
+#Arrange the plots
+n <- length(plots) 
+nCol <- floor(sqrt(n))
+up <- do.call("grid.arrange", c(plots[1:6], ncol=nCol))
+blank <- grid.rect(gp=gpar(col="white"))
+down <- grid.arrange(blank, plots[[7]], blank, widths = c(1/3, 1, 1/3))
+diffscores <- grid.arrange(up, down, heights=c(3,1))
 
+ggsave("Plots/diffscores.pdf", diffscores, height = 12, width = 10)
+
+#----------------Table with biggest differences between risk flags as sqrt and max ----------------
+#Function to create top 20 ranked countries
+diffy <- cbind.data.frame(riskflags$Countryname, diffs) 
+diffy <- rename(diffy, Countryname = `riskflags$Countryname`)
+diffycol <- colnames(diffy[-1])
+
+rankcountry <- lapply(diffy[diffycol], function(xx){
+    test <- abs(xx)
+    paste(diffy$Countryname[order(-test)][1:30], round(xx[order(-test)][1:30], 1))
+})
+  
+#Combine list
+rankcountry <- bind_rows(rankcountry)
+  
+#Draw table for existing risks
+rankcountry %>%
+    select(contains("EM")) %>%
+    kable %>%
+    kable_styling() %>%
+    save_kable(file = "Plots/top20countriesdiffs.html", self_contained = T)
+  

@@ -12,9 +12,11 @@ fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundr
 macrosheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
 Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
 Socioeconomic_sheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 #Join datasets
-globalrisk <- full_join(healthsheet, foodsecurity, by=c("Countryname", "Country")) %>%
+globalrisk <- left_join(countrylist, healthsheet, by=c("Countryname", "Country")) %>%
+  left_join(., foodsecurity, by=c("Countryname", "Country")) %>%
   left_join(., conflictsheet,  by=c("Countryname", "Country")) %>% 
   left_join(., debtsheet, by=c("Countryname", "Country")) %>% 
   left_join(., fragilitysheet, by=c("Countryname", "Country")) %>% 
@@ -162,6 +164,23 @@ altflag$EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV <- ifelse(is.na(altflag$NH_INFOR
 #Merge datasets to include alt variables
 riskflags <- inner_join(riskflags, altflag, by=c("Country", "Countryname"), keep=F)
 
+#Calculate emerging risk score using existing risk 
+riskflags <- riskflags %>%
+  mutate(EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ = case_when(!is.na(EXISTING_RISK_COVID_RESPONSE_CAPACITY) ~ sqrt(EXISTING_RISK_COVID_RESPONSE_CAPACITY * EMERGING_RISK_COVID_RESPONSE_CAPACITY),
+                                                              TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY),
+         EMERGING_RISK_FOOD_SECURITY_SQ = case_when(is.na(F_Fewsnet_Score) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
+                                                    TRUE ~ EMERGING_RISK_FOOD_SECURITY),
+         EMERGING_RISK_CONFLICT_SQ = case_when(!is.na(EXISTING_RISK_CONFLICT) ~ sqrt(EXISTING_RISK_CONFLICT * EMERGING_RISK_CONFLICT),
+                                               TRUE ~ EMERGING_RISK_CONFLICT),
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ  = case_when(!is.na(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID) ~ sqrt(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID * EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
+                                                                       TRUE ~ EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
+         EMERGING_RISK_FISCAL_SQ = case_when(!is.na(EXISTING_RISK_FISCAL) ~ sqrt(EXISTING_RISK_FISCAL * EMERGING_RISK_FISCAL),
+                                                    TRUE ~ EMERGING_RISK_FISCAL),
+         EMERGING_RISK_NATURAL_HAZARDS_SQ = EMERGING_RISK_NATURAL_HAZARDS,
+         EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ = case_when(!is.na(EXISTING_RISK_FRAGILITY_INSTITUTIONS) ~ sqrt(EXISTING_RISK_FRAGILITY_INSTITUTIONS * EMERGING_RISK_FRAGILITY_INSTITUTIONS),
+                                                                                                            TRUE ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS)
+)
+         
 #-----------------------------CREATE RELIABILITY SCORES------------------------------------------
 #Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
 reliabilitysheet <- globalrisk %>%
@@ -209,9 +228,9 @@ reliabilitysheet <- globalrisk %>%
                                                                               NH_INFORM_CRISIS_Type)))/3) 
 #Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
-  mutate(RELIABILITY_SCORE_EXISITNG_RISK = rowMeans(select(., starts_with("RELIABILITY_EXISTING"))),
+  mutate(RELIABILITY_SCORE_EXISTING_RISK = rowMeans(select(., starts_with("RELIABILITY_EXISTING"))),
          RELIABILITY_SCORE_EMERGING_RISK = rowMeans(select(., starts_with("RELIABILITY_EMERGING")))) %>%
-  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY,RELIABILITY_EXISTING_FOOD_SECURITY,
+  select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY,RELIABILITY_EXISTING_FOOD_SECURITY,
          RELIABILITY_EXISTING_CONFLICT, RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID,
          RELIABILITY_EXISTING_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
          RELIABILITY_EXISTING_NATURAL_HAZARDS,RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
@@ -224,7 +243,7 @@ write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 
 #Combine the reliability sheet with the global database and write as csv
 reliable <- reliabilitysheet %>%
-  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+  select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
 globalrisk <- full_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
@@ -233,7 +252,7 @@ write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
 
 #Combine the reliability sheet with the summary risk flag sheet
 reliable <- reliabilitysheet %>%
-  select(Countryname, Country, RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+  select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
 riskflags <- full_join(riskflags, reliable, by = c("Countryname", "Country"))
 
@@ -250,7 +269,7 @@ riskset <- riskflags %>%
          EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY, 
          EMERGING_RISK_CONFLICT, EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
          EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,TOTAL_EXISTING_COMPOUND_RISK_SCORE,   TOTAL_EMERGING_COMPOUND_RISK_SCORE,TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, 
-         TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,RELIABILITY_SCORE_EXISITNG_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+         TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
 #Add blank columns to riskflags dataset
 riskflagsblank <- riskset %>%
@@ -280,6 +299,12 @@ addWorksheet(crxls, "Socioeconomic_sheet", tabColour = "lightblue")
 writeData(crxls, "Socioeconomic_sheet", Socioeconomic_sheet, colNames = TRUE)
 addWorksheet(crxls, "Reliability_sheet", tabColour = "grey")
 writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
+
+#Insert alternative flag sheet
+addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "purple")
+alt <- riskflags %>%
+  select(Countryname, Country, contains("SQ"), contains("_AV"))
+writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
 
 #Colour and stlye sheets
 Map(function(number, tab){
@@ -326,7 +351,7 @@ modifyBaseFont(crxls,
                fontColour = "black", 
                fontName = "Arial"
 )
-}, c(1:10))
+}, c(1:11))
 
 #Set specific style for the risk tab sheet
 headerStyle <- createStyle(
@@ -451,6 +476,8 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
+cond("Alternativeflag_sheet", which(colnames(alt) == "EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ"), which(colnames(alt) == "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV"))
+
 
 #Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")

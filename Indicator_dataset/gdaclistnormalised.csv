@@ -1,11 +1,11 @@
 "","NH_GDAC_Date","NH_GDAC_Hazard_Status","NH_GDAC_Hazard_Severity","NH_GDAC_Hazard_Type","Country","NH_GDAC_Hazard_Score_Norm"
-"1","2020-08-23","active","green","earthquake","PNG",0
-"3","2020-08-22","active","green","earthquake","IDN",0
-"5","2020-08-18","past","green","earthquake","IDN",0
+"1","2020-08-24","active","green","earthquake","CRI",0
+"2","2020-08-24","active","green","earthquake","WSM",0
+"4","2020-08-22","active","green","earthquake","IDN",0
 "6","2020-08-18","past","green","earthquake","IDN",0
-"7","2020-08-18","past","green","earthquake","IND",0
-"8","2020-08-16","past","green","earthquake","USA",0
-"10","2020-08-13","past","green","earthquake","USA",0
+"7","2020-08-18","past","green","earthquake","IDN",0
+"8","2020-08-18","past","green","earthquake","IND",0
+"9","2020-08-16","past","green","earthquake","USA",0
 "11","2020-08-18","past","orange","earthquake","PHL",0
 "22","2020-08-20","past","green","flood","NPL",0
 "23","2020-08-16","past","green","flood","IND",0
