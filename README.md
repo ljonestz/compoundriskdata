@@ -8,11 +8,41 @@ Individual indicator datasets are stored as separate files in the 'Indicator_dat
 
 The 'Coumpound_Risk_database.r' script is used to compile the various indicator datasets into the eight seperate risk component sheets. These can each be found as .csv files in the 'Risk_sheets' folder.
 
-## Main Outcome files
-
-'Global database and summary sheet.r' takes the various risk component datasets and aggregates them into a summary sheet of country-level compound risk scores ('Compound_Risk_Flags_Sheet.csv'), as well as a global database featuring all of the indicators feeding into the Compound Risk Monitor ('Global_compound_risk_database.csv'). Finally, a replica full dataset of the Compound Risk Monitor is produced as an .xls file. ('Global_compound_risk_database.xls').
-
- All three datasets are compiled using the 'Global database and summary sheet.r' script. Outputs databasets can be found in the 'Risk_sheets" folder. 
+'Compound Plots.r' generates a series of comparative plots and visuals.
 
 
+## Outcome databases
+
+The main databases can be found in the **Risk_Sheets** folders. These include:
+
+**Global_compound_risk_database.csv** is a compilation of all raw source indicators that feed into the Compound Risk Monitor. These are labelled according to each of the eight risk components (see labelling codes below). 
+
+**Compound_Risk_Flags_Sheet.csv** is a dataset of all summarised country-level compound risk scores. The database also includes all normalised indicators that are used to generate the total risk scores.
+
+**Compound_Risk_Monitor.xslx** is an Excel file that presents all summarised country-level compound risk scores. It is designed to mimic the style used in developing the original Excel CRM, and features separate tabs for each of the eight risk componenets - alongside reliability scores and alternative risk calculations.
+
+**reliabilitysheet.csv** presents the proportion of missing values used in calculating risk scores for each country. It should be seen as a measure of reliability in the overall scores generated.
+
+In addition, separate csv files are generated for each of the each risk components. Each file includes the source indicators, as well as the normalised scores used to calculate the various risk scores.
+
+### Indicator labelling and indexing
+
+All source indicators used in the Compound Risk Monitor are labelled according to the eight separate risk categories. Short tags are included at the start of the variable label, with the indicator description immediately thereafter. For example, F_ is assigned to all food security indicators, meaning that that the FEWSNET score is classified as: F_Fewsnet_score). 
+
+Labels are classified as follows:
+
+C_, Conflict
+D_, Debt
+FR_, Fragility and Institutions
+H_, Health / COVID Response Capacity 
+F_, Food Security
+M_, Macro-economic vulnerability
+NH_, Natural Hazards
+S_, Socioeconomic vulnerability
+RELIABILITY_, Reliability scores
+AV_, Average scores
+SQ_, Geometric average scores
+TOTAL_, Total risk scores
+EMERGING_, Emerging risk scores
+EXISTING_, Existing risk scores
 
