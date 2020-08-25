@@ -365,7 +365,7 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
                   segment.color = "black",
                   segment.alpha = 0.7,
                   segment.size = 0.3,
-                  size = 4, 
+                  size = 5, 
                   nudge_x = 2, 
                   nudge_y = -1,
                   direction = "y")  +
@@ -575,3 +575,44 @@ rankcountry %>%
     kable_styling() %>%
     save_kable(file = "Plots/top20countriesdiffs.html", self_contained = T)
   
+#----------------Compare max and sq risk------------------------------------
+ggthemr_reset()
+theme_set(theme_classic(base_size = 16))
+
+comb <- riskflags %>%
+  select(Countryname, TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ) %>%
+  arrange(-TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+  head(60)
+
+#Pick labels to show subset of countries
+a <- 1:30
+tennum <- a[c(seq(1, length(a), 30), 30)]
+countrylab <- as.character(comb$Countryname)
+countrylab[-tennum] <- ""
+
+#Plot
+plotysq <- ggplot(comb, aes(x=TOTAL_EMERGING_COMPOUND_RISK_SCORE, xend=TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ, y=reorder(Countryname, TOTAL_EMERGING_COMPOUND_RISK_SCORE), group=Countryname)) + 
+  geom_dumbbell(color="#a3c4dc", 
+                size=0.75, 
+                colour_xend = "darkred") + 
+  scale_y_discrete(labels = countrylab) +
+  ylab("Country") +
+  xlab("Change in risk score") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_text(size = 20, hjust = 0.5),
+        axis.text = element_text(size=16)) +
+  geom_text_repel(data = comb %>% sample_n(15), 
+                  aes(label = Countryname) , 
+                  hjust = "left", 
+                  fontface = "bold", 
+                  color = "darkred",
+                  segment.color = "black",
+                  segment.alpha = 0.7,
+                  segment.size = 0.3,
+                  size = 5, 
+                  nudge_x = -1, 
+                  nudge_y = 1,
+                  direction = "y")  +
+  theme(axis.text.y = element_blank())
+
+ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
