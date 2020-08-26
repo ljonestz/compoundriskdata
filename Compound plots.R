@@ -359,7 +359,7 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_text_repel(data = comb %>% sample_n(7), 
+  geom_text_repel(data = comb %>% sample_n(10), 
                   aes(label = Countryname) , 
                   hjust = "left", 
                   fontface = "bold", 
@@ -367,7 +367,7 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
                   segment.color = "black",
                   segment.alpha = 0.7,
                   segment.size = 0.3,
-                  size = 5, 
+                  size = 6, 
                   nudge_x = 2, 
                   nudge_y = -1,
                   direction = "y")  +
@@ -618,3 +618,138 @@ plotysq <- ggplot(comb, aes(x=TOTAL_EMERGING_COMPOUND_RISK_SCORE, xend=TOTAL_EME
   theme(axis.text.y = element_blank())
 
 ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
+
+#----------- Compare scores between countries ----------------------
+
+data <- riskflags %>%
+  filter(Countryname == "Afghanistan") %>%
+  select(contains("EMERGING")) %>%
+  select(-contains(c("_SQ", "MULTIDIMENSIONAL", "_AV", "RELIABILITY"))) %>%
+  gather("risk", "score") %>%
+  mutate(id = 1:9)
+
+data$group <- "Emerging"
+data$group[c(8:9)] <- "Total"
+
+data <- data %>%
+  add_row(risk = NA, score = NA, id = NA,  .before = 8) %>%
+  add_row(risk = NA, score = NA, id = NA,  .after = 10)
+            
+colnames(data) <- c("individual",  "value", "id", "group")
+
+
+# Get the name and the y position of each label
+label_data <- data
+number_of_bar <- nrow(label_data)
+angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
+label_data$hjust <- ifelse( angle < -90, 1, 0)
+label_data$angle <- ifelse(angle < -90, angle+180, angle)
+
+# prepare a data frame for base lines
+base_data <- data %>% 
+  group_by(group) %>% 
+  summarize(start=min(id), end=max(id) - empty_bar) %>% 
+  rowwise() %>% 
+  mutate(title=mean(c(start, end)))
+
+# prepare a data frame for grid (scales)
+grid_data <- base_data
+grid_data$end <- grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
+grid_data$start <- grid_data$start - 1
+grid_data <- grid_data[-1,]
+
+cirplot <- plot(data, aes(x=as.factor(id), y=value, fill=group)) +       # Note that id is a factor. If x is numeric, there is some space between the first bar
+  
+  geom_bar(aes(x=as.factor(id), y=value, fill=group), stat="identity", alpha=0.5) +
+  
+  # Add a val=100/75/50/25 lines. I do it at the beginning to make sur barplots are OVER it.
+  geom_segment(data=grid_data, aes(x = end, y = 8, xend = start, yend = 8), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 6, xend = start, yend = 6), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 4, xend = start, yend = 4), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  geom_segment(data=grid_data, aes(x = end, y = 2, xend = start, yend = 2), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  
+  # Add text showing the value of each 100/75/50/25 lines
+  annotate("text", x = rep(max(data$id),4), y = c(2, 4, 6, 8), label = c("2", "4", "6", "8") , color="grey", size=3 , angle=0, fontface="bold", hjust=1) +
+  
+  geom_bar(aes(x=as.factor(id), y=value, fill=group), stat="identity", alpha=0.5) +
+  ylim(-10,10) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.margin = unit(rep(-1,4), "cm") 
+  ) +
+  coord_polar() + 
+  geom_text(data=label_data, aes(x=id, y=value+1, label=individual, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2.5, angle= label_data$angle, inherit.aes = FALSE ) 
+
+#-----------------Regional population------------------------------------
+gtheme <- theme(axis.ticks = element_blank(),
+                axis.title = element_text(size = 20, hjust = 0.5),
+                axis.text = element_text(size=16),
+                legend.text = element_text(size=16),
+                title = element_text(size=18, face = "bold" ))
+
+#Identify population at risk and merge
+pop <- wpp.by.year(tpop, 2020)
+pop$charcode <- countrycode(pop$charcode, origin = "iso2c", destination = 'iso3c')
+colnames(pop) <- c("Country", "Population")
+risky <- left_join(riskflags, pop, by= "Country", keep=F)
+
+# Find regional values
+riskypop <- risky %>%
+  mutate(Region =  countrycode(Country, origin = "iso3c", destination = 'region')) %>%
+  group_by(Region, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+  summarise(Riskpop = sum(Population, na.rm=T)) %>%
+  rename(Riskcat = TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+  mutate(Riskcat = as.factor(Riskcat)) %>%
+  filter(Riskcat != "0")
+
+#Find regional proprotions
+riskypoptot <- risky %>%
+  mutate(Region =  countrycode(Country, origin = "iso3c", destination = 'region')) %>%
+  group_by(Region) %>%
+  summarise(Regionpop = sum(Population, na.rm =T )) 
+
+riskypop <- left_join(riskypop, riskypoptot, by=c("Region")) %>%
+  mutate(Riskprop = Riskpop / Regionpop)
+
+#Plot and save
+gtheme <- theme( axis.title = element_text(size = 20, hjust = 0.5),
+                axis.text = element_text(size=16),
+                legend.text = element_text(size=16),
+                title = element_text(size=18, face = "bold" ))
+
+riskpopg <- riskypop %>%
+  filter(Riskcat != "0") %>%
+  ggplot(aes(Region, Riskpop, fill=Riskcat)) + geom_histogram(position="stack", stat="identity") +
+  coord_flip() +
+  ylab("Total population at risk (000s)") +
+  scale_fill_ordinal() + 
+  gtheme + 
+  labs(fill = "# Risk flags")
+
+riskpopprop <- ggplot(riskypop, aes(Region, Riskprop, fill=Riskcat)) + geom_histogram(position="stack", stat="identity") +
+  coord_flip() +
+  ylab("Proportion of population at risk") +
+  scale_fill_ordinal() + 
+  gtheme + 
+  labs(fill = "# Risk flags")
+
+comb <- grid.arrange(riskpopg, riskpopprop, nrow = 2)
+
+ggsave("Plots/popatrisk.pdf", comb, width = 12, height = 10)
+
+
+
+  
+
+
+
+
+
+
+  
+  
+  
