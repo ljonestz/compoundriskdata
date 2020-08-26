@@ -52,3 +52,6 @@ EXISTING_ -> Existing risk scores.
 
 To replicate the databases and plots used in the Compound Risk Monitor start by running **Coumpound_Risk_database.r**. This will generate all necessary indicator datasets and risk sheets. Then run **Global database and summary sheet.R** to calculate component and overall risk scores for each country. Lastly, run **Compound Plots.r** to generate summary plots and comparison graphs.
 
+## Details on risk calculation and aggreation steps
+
+Full details on the normalisation proceedures, steps taken to calculate component risk scores and generation of total risk scores can be found in the **Indicator aggregation** file in the **Risk_sheets** folder
