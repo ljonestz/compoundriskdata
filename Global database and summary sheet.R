@@ -49,9 +49,10 @@ riskflags <- globalrisk %>%
                                                       H_Covidgrowth_casesnorm,
                                                       H_Covidgrowth_deathsnorm,
                                                       H_new_cases_smoothed_per_million_norm,
+                                                      H_new_deaths_smoothed_per_million_norm,
                                                       H_Covidproj_Projected_Deaths_._1M_norm, 
                                                       na.rm=T),
-         EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_Fewsnet_Score_norm,
+         EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_FAO_6mFPV_norm,
                                                                                      F_Artemis_Score_norm, 
                                                                                      na.rm=T),
                                                  TRUE ~ F_FAO_6mFPV_norm),
@@ -66,9 +67,10 @@ riskflags <- globalrisk %>%
                                               NH_GDAC_Hazard_Score_Norm, 
                                               NH_INFORM_Crisis_Norm, 
                                               na.rm = T),
-         EMERGING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_FSI_2019minus2020_norm, 
-                                                    Fr_REIGN_couprisk3m_norm,
-                                                    na.rm=T),
+         EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(NH_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
+                                                         TRUE ~ pmax(Fr_FSI_2019minus2020_norm, 
+                                                               Fr_REIGN_couprisk3m_norm,
+                                                               na.rm=T)),
          EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(EXISTING_RISK_FRAGILITY_INSTITUTIONS >=5 & NH_INFORM_CRISIS_Type==3 ~ 10,
                                                           TRUE  ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS)) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
@@ -139,7 +141,7 @@ riskflags <- riskflags %>%
 #Alternativ combined total scores
 altflag <- globalrisk
 names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm", 
-           "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm","H_new_cases_smoothed_per_million_norm", 
+           "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm","H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm", 
            "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm", 
            "F_FAO_6mFPV_norm", "C_GPI_Score_norm", "C_ACLED_event_same_month_difference_perc_norm", 
            "C_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm", 
@@ -156,6 +158,7 @@ altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV <- geometricmeanRow(altflag[c("
                                                                                 "H_Covidgrowth_casesnorm_plus1",
                                                                                 "H_Covidgrowth_deathsnorm_plus1",
                                                                                "H_new_cases_smoothed_per_million_norm_plus1",
+                                                                               "H_new_deaths_smoothed_per_million_norm_plus1",
                                                                                 "H_Covidproj_Projected_Deaths_._1M_norm_plus1")], na.rm=T)
 altflag$EMERGING_RISK_CONFLICT_AV = geometricmeanRow(altflag[c("C_ACLED_event_same_month_difference_perc_norm_plus1",
                                                             "C_ACLED_fatal_same_month_difference_perc_norm_plus1")], na.rm=T)
@@ -216,7 +219,8 @@ reliabilitysheet <- globalrisk %>%
                                                                                H_Covidgrowth_casesnorm, 
                                                                                H_Covidgrowth_deathsnorm, 
                                                                                H_new_cases_smoothed_per_million_norm,
-                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/5,
+                                                                               H_new_deaths_smoothed_per_million_norm,
+                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/6,
          RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
                                                               select(F_Fewsnet_Score_norm,
                                                                      F_Artemis_Score_norm, 
@@ -490,6 +494,7 @@ cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(co
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"), which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
