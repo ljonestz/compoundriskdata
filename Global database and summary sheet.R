@@ -317,7 +317,7 @@ addWorksheet(crxls, "Reliability_sheet", tabColour = "grey")
 writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 
 #Insert alternative flag sheet
-addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "purple")
+addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "#9999CC")
 #Select relevant variables
 alt <- riskflags %>%
   select(Countryname, Country, contains("_AV"), contains("SQ")) %>%
