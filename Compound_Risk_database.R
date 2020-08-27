@@ -33,18 +33,22 @@ HIS <- HIS %>%
 HIS <- normfuncneg(HIS, 20, 70, "H_HIS_Score")
 
 #-----------------------Oxford rollback Score-----------------
-OXrollback <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OXrollbackscore.csv")
-
-upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm=T)
-lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm=T)
-OXrollback <- normfuncneg(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
+OXrollback <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-scratchpad/master/rollback_checklist/rollback_checklist.csv")
 
 OXrollback <- OXrollback %>%
-  mutate(Country = countrycode(Country, 
+  rename(Oxrollback_score = overall_checklist) %>%
+  mutate(Country = countrycode(countryname, 
                                origin = 'country.name',
                                destination = 'iso3c', 
                                nomatch = NULL))
-  
+
+colnames(OXrollback) <- paste0("H_", colnames(OXrollback))
+
+upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm=T)
+lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm=T)
+
+OXrollback <- normfuncpos(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
+
 #-------------------------COVID projections--------------------
 covid <- "https://covid19-projections.com/#view-projections"
 covid <- read_html(covid)

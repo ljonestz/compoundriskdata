@@ -1,6 +1,7 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
+librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, 
+                 tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
@@ -127,16 +128,20 @@ riskflags <- riskflags %>%
 
 #--------------------------------CREATE DATABASE OF ALTERNATIVE RISK SCORES------------------------------------------------------
 #Alternative combined risk scores
-names <- c("EMERGING_RISK_CONFLICT", "EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID")
+names <- c("EMERGING_RISK_CONFLICT", "EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", 
+"EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", "EXISTING_RISK_CONFLICT", "EXISTING_RISK_FRAGILITY_INSTITUTIONS"
+)
+
 riskflags[paste0(names,"_plus1")] <- lapply(riskflags[names], function(xx){ifelse(xx==0, xx+1, xx)})
 
-riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_CONFLICT_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_FISCAL_plus1")], na.rm=T)
+riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_CONFLICT_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
 riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
+riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL_SQ <- geometricmeanRow(riskflags[c("EXISTING_RISK_CONFLICT_plus1", "EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL")], na.rm=T)
+riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ <- geometricmeanRow(riskflags[c("EXISTING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL")], na.rm=T)
 
 #remove unnecessary variables                                                     
 riskflags <- riskflags %>% 
-  select(-EMERGING_RISK_CONFLICT_plus1 ,-EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1 ,
-           -EMERGING_RISK_FISCAL_plus1, -EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1)
+  select(contains("_plus1"))
 
 #Alternativ combined total scores
 altflag <- globalrisk
@@ -289,6 +294,7 @@ riskset <- riskflags %>%
 
 #Add blank columns to riskflags dataset
 riskflagsblank <- riskset %>%
+  arrange(Country) %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS") %>%
   add_column("   " = NA, .after = "TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM") 
@@ -320,13 +326,15 @@ writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "#9999CC")
 #Select relevant variables
 alt <- riskflags %>%
-  select(Countryname, Country, contains("_AV"), contains("SQ")) %>%
+  select(Countryname, Country, contains("_AV"), contains("_MULTIDIMENSIONAL"), contains("SQ"), -contains("OCHA")) %>%
   arrange(Country)
 #Add blank columns
 alt <- alt %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV") %>%
-  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
+  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL") %>%
+  add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ") %>%
+  add_column("     " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
 #Writesheet
 writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
 
@@ -514,15 +522,15 @@ conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule="=
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0.700, 0.999), style = medStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0, 0.6999), style = posStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:15), rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, rule = '=""', style = naStyle)
 
 #DatabarsconditionalFormatting
 conditionalFormatting(crxls, "riskflags", cols = 20:23, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=17, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=23, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 
 #Insert Global Maps
 #install.packages("librarian")     #Run if librarian is not already installed
