@@ -8,7 +8,6 @@ librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis
 healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv")
 foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv")
 debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv")
-conflictsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/conflictsheet.csv")
 fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv")
 macrosheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
 Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
@@ -18,7 +17,6 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 #Join datasets
 globalrisk <- left_join(countrylist, healthsheet, by=c("Countryname", "Country")) %>%
   left_join(., foodsecurity, by=c("Countryname", "Country")) %>%
-  left_join(., conflictsheet,  by=c("Countryname", "Country")) %>% 
   left_join(., debtsheet, by=c("Countryname", "Country")) %>% 
   left_join(., fragilitysheet, by=c("Countryname", "Country")) %>% 
   left_join(., macrosheet, by=c("Countryname", "Country")) %>% 
@@ -38,7 +36,6 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 riskflags <- globalrisk %>%
   mutate(EXISTING_RISK_COVID_RESPONSE_CAPACITY = H_HIS_Score_norm,
          EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
-         EXISTING_RISK_CONFLICT = C_GPI_Score_norm,
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = M_Economic_and_Financial_score_norm, 
          EXISTING_RISK_FISCAL = D_WB_Overall_debt_distress_norm,
          EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
@@ -57,9 +54,6 @@ riskflags <- globalrisk %>%
                                                                                      F_Artemis_Score_norm, 
                                                                                      na.rm=T),
                                                  TRUE ~ F_FAO_6mFPV_norm),
-         EMERGING_RISK_CONFLICT = pmax(C_ACLED_event_same_month_difference_perc_norm,
-                                       C_ACLED_fatal_same_month_difference_perc_norm,
-                                       na.rm=T),
          EMERGING_RISK_FISCAL = D_IMF_debt2020.2019_norm,
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(M_GDP_IMF_2019minus2020_norm,
                                                               M_GDP_WB_2019minus2020_norm, 
@@ -71,24 +65,24 @@ riskflags <- globalrisk %>%
          EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(NH_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
                                                          TRUE ~ pmax(Fr_FSI_2019minus2020_norm, 
                                                                Fr_REIGN_couprisk3m_norm,
-                                                               na.rm=T)),
-         EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(EXISTING_RISK_FRAGILITY_INSTITUTIONS >=5 & NH_INFORM_CRISIS_Type==3 ~ 10,
-                                                          TRUE  ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS)) %>%
+                                                               Fr_ACLED_event_same_month_difference_perc_norm,
+                                                               Fr_ACLED_fatal_same_month_difference_perc_norm,
+                                                               na.rm=T))) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
-         EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
+         EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
          EXISTING_RISK_NATURAL_HAZARDS,EXISTING_RISK_FRAGILITY_INSTITUTIONS,
-         EMERGING_RISK_COVID_RESPONSE_CAPACITY,EMERGING_RISK_FOOD_SECURITY, EMERGING_RISK_CONFLICT,
-         EMERGING_RISK_CONFLICT,EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY,EMERGING_RISK_FOOD_SECURITY,
+         EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
 #Create tertiary risk flags
 vars <- c("EXISTING_RISK_COVID_RESPONSE_CAPACITY", "EXISTING_RISK_FOOD_SECURITY", 
-          "EXISTING_RISK_CONFLICT", "EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
+          "EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
           "EXISTING_RISK_FISCAL", "EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY", 
           "EXISTING_RISK_NATURAL_HAZARDS", "EXISTING_RISK_FRAGILITY_INSTITUTIONS", 
           "EMERGING_RISK_COVID_RESPONSE_CAPACITY", "EMERGING_RISK_FOOD_SECURITY", 
-          "EMERGING_RISK_CONFLICT", "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
+          "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", 
           "EMERGING_RISK_NATURAL_HAZARDS", "EMERGING_RISK_FRAGILITY_INSTITUTIONS")
 
 riskflags[paste0(vars, "_RISKLEVEL")] <- lapply(riskflags[vars], function(tt){
@@ -128,20 +122,18 @@ riskflags <- riskflags %>%
 
 #--------------------------------CREATE DATABASE OF ALTERNATIVE RISK SCORES------------------------------------------------------
 #Alternative combined risk scores
-names <- c("EMERGING_RISK_CONFLICT", "EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", 
-"EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID", "EXISTING_RISK_CONFLICT", "EXISTING_RISK_FRAGILITY_INSTITUTIONS"
+names <- c("EMERGING_RISK_FRAGILITY_INSTITUTIONS", "EMERGING_RISK_FISCAL", 
+"EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID",  "EXISTING_RISK_FRAGILITY_INSTITUTIONS"
 )
 
 riskflags[paste0(names,"_plus1")] <- lapply(riskflags[names], function(xx){ifelse(xx==0, xx+1, xx)})
 
-riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_CONFLICT_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
 riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL <- geometricmeanRow(riskflags[c("EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_plus1")], na.rm=T)
-riskflags$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL_SQ <- geometricmeanRow(riskflags[c("EXISTING_RISK_CONFLICT_plus1", "EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL")], na.rm=T)
 riskflags$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ <- geometricmeanRow(riskflags[c("EXISTING_RISK_FRAGILITY_INSTITUTIONS_plus1", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL")], na.rm=T)
 
 #remove unnecessary variables                                                     
 riskflags <- riskflags %>% 
-  select(contains("_plus1"))
+  select(-contains("_plus1"))
 
 #Alternativ combined total scores
 altflag <- globalrisk
@@ -164,13 +156,22 @@ altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV <- geometricmeanRow(altflag[c("
                                                                                 "H_Covidgrowth_deathsnorm_plus1",
                                                                                "H_new_cases_smoothed_per_million_norm_plus1",
                                                                                "H_new_deaths_smoothed_per_million_norm_plus1",
-                                                                                "H_Covidproj_Projected_Deaths_._1M_norm_plus1")], na.rm=T)
-altflag$EMERGING_RISK_CONFLICT_AV = geometricmeanRow(altflag[c("C_ACLED_event_same_month_difference_perc_norm_plus1",
-                                                            "C_ACLED_fatal_same_month_difference_perc_norm_plus1")], na.rm=T)
+                                                                                "H_Covidproj_Projected_Deaths_._1M_norm_plus1")], 
+                                                                     na.rm=T
+)
+
 altflag$EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmeanRow(altflag[c("M_GDP_IMF_2019minus2020_norm_plus1",
-                                                                                      "M_GDP_WB_2019minus2020_norm_plus1")], na.rm=T)
+                                                                                      "M_GDP_WB_2019minus2020_norm_plus1")], 
+                                                                            na.rm=T
+)
+
 altflag$EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV <- ifelse(is.na(altflag$NH_INFORM_CRISIS_Type) | altflag$NH_INFORM_CRISIS_Type != "Complex crisis", geometricmeanRow(altflag[c("Fr_FSI_2019minus2020_norm_plus1", 
-                                                                                                                                                                               "Fr_REIGN_couprisk3m_norm_plus1")], na.rm=T), 10)
+                                                                                                                                                                               "Fr_REIGN_couprisk3m_norm_plus1",
+                                                                                                                                                                               "C_ACLED_event_same_month_difference_perc_norm_plus1",
+                                                                                                                                                                               "C_ACLED_fatal_same_month_difference_perc_norm_plus1")],
+                                                                                                                                                                     na.rm=T), 10
+)
+
 #Merge datasets to include alt variables
 riskflags <- inner_join(riskflags, altflag, by=c("Country", "Countryname"), keep=F)
 
@@ -180,8 +181,6 @@ riskflags <- riskflags %>%
                                                               TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY),
          EMERGING_RISK_FOOD_SECURITY_SQ = case_when(is.na(F_Fewsnet_Score) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
                                                     TRUE ~ EMERGING_RISK_FOOD_SECURITY),
-         EMERGING_RISK_CONFLICT_SQ = case_when(!is.na(EXISTING_RISK_CONFLICT) ~ sqrt(EXISTING_RISK_CONFLICT * EMERGING_RISK_CONFLICT),
-                                               TRUE ~ EMERGING_RISK_CONFLICT),
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ  = case_when(!is.na(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID) ~ sqrt(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID * EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
                                                                        TRUE ~ EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
          EMERGING_RISK_FISCAL_SQ = case_when(!is.na(EXISTING_RISK_FISCAL) ~ sqrt(EXISTING_RISK_FISCAL * EMERGING_RISK_FISCAL),
@@ -193,7 +192,7 @@ riskflags <- riskflags %>%
 
 #Calculate total emerging risk scores for SQ
 sqnam <- c("EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ", 
-  "EMERGING_RISK_CONFLICT_SQ", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", 
+   "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", 
   "EMERGING_RISK_FISCAL_SQ", "EMERGING_RISK_NATURAL_HAZARDS_SQ", 
   "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ")
 
@@ -206,8 +205,6 @@ reliabilitysheet <- globalrisk %>%
                                                                              TRUE ~ 0),
          RELIABILITY_EXISTING_FOOD_SECURITY = case_when(is.na(F_Proteus_Score_norm) ~ 1,
                                                               TRUE ~ 0),
-         RELIABILITY_EXISTING_CONFLICT = case_when(is.na(C_GPI_Score_norm) ~ 1,
-                                                         TRUE ~ 0),
          RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID = case_when(is.na(M_Economic_and_Financial_score_norm) ~ 1,
                                                                                 TRUE ~ 0),
          RELIABILITY_EXISTING_FISCAL = case_when(is.na(D_WB_Overall_debt_distress_norm) ~ 1,
@@ -218,7 +215,9 @@ reliabilitysheet <- globalrisk %>%
                                                           TRUE ~ 0),
          RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                        select(Fr_INFORM_Fragility_Score_norm, 
-                                                                              Fr_FSI_Score_norm)))/2,
+                                                                              Fr_FSI_Score_norm,
+                                                                              C_ACLED_event_same_month_difference_perc_norm, 
+                                                                              C_ACLED_fatal_same_month_difference_perc_norm)))/4,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,
                                                                                H_Covidgrowth_casesnorm, 
@@ -230,9 +229,6 @@ reliabilitysheet <- globalrisk %>%
                                                               select(F_Fewsnet_Score_norm,
                                                                      F_Artemis_Score_norm, 
                                                                      F_FAO_6mFPV_norm)))/3,
-         RELIABILITY_EMERGING_CONFLICT = rowSums(is.na(globalrisk %>%
-                                                         select(C_ACLED_event_same_month_difference_perc_norm, 
-                                                                C_ACLED_fatal_same_month_difference_perc_norm)))/2,
          RELIABILITY_EMERGING_FISCAL = case_when(is.na(D_IMF_debt2020.2019_norm) ~ 1,
                                                  TRUE ~ 0),
          RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
@@ -244,18 +240,20 @@ reliabilitysheet <- globalrisk %>%
                                                                        NH_INFORM_Crisis_Norm)))/3,
          RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                        select(Fr_FSI_2019minus2020_norm, 
-                                                                              Fr_REIGN_couprisk3m_norm, 
-                                                                              NH_INFORM_CRISIS_Type)))/3) 
+                                                                              Fr_REIGN_couprisk3m_norm,
+                                                                              C_ACLED_event_same_month_difference_perc_norm, 
+                                                                              C_ACLED_fatal_same_month_difference_perc_norm,
+                                                                              NH_INFORM_CRISIS_Type)))/5) 
 #Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
   mutate(RELIABILITY_SCORE_EXISTING_RISK = rowMeans(select(., starts_with("RELIABILITY_EXISTING"))),
          RELIABILITY_SCORE_EMERGING_RISK = rowMeans(select(., starts_with("RELIABILITY_EMERGING")))) %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY,RELIABILITY_EXISTING_FOOD_SECURITY,
-         RELIABILITY_EXISTING_CONFLICT, RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID,
+         RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID,
          RELIABILITY_EXISTING_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
          RELIABILITY_EXISTING_NATURAL_HAZARDS,RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
-         RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY,RELIABILITY_EMERGING_FOOD_SECURITY, RELIABILITY_EMERGING_CONFLICT,
-         RELIABILITY_EMERGING_CONFLICT,RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
+         RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY,RELIABILITY_EMERGING_FOOD_SECURITY,
+         RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
          RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS) %>%
   arrange(Country)
   
@@ -284,11 +282,11 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #Select relevant variables
 riskset <- riskflags %>%
   select(Countryname, Country, EXISTING_RISK_COVID_RESPONSE_CAPACITY, 
-         EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_CONFLICT, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
+         EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
          EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY, 
          EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS, 
          EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY, 
-         EMERGING_RISK_CONFLICT, EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
+         EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
          EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,TOTAL_EXISTING_COMPOUND_RISK_SCORE,   TOTAL_EMERGING_COMPOUND_RISK_SCORE,TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, 
          TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
@@ -303,8 +301,6 @@ riskflagsblank <- riskset %>%
 crxls <- createWorkbook()
 addWorksheet(crxls, "riskflags", tabColour = "lightgrey")
 writeData(crxls, "riskflags", riskflagsblank, colNames = TRUE)
-addWorksheet(crxls, "conflictsheet", tabColour = "red")
-writeData(crxls, "conflictsheet", conflictsheet, colNames = TRUE)
 addWorksheet(crxls, "debtsheet", tabColour = "lightblue")
 writeData(crxls, "debtsheet", debtsheet, colNames = TRUE)
 addWorksheet(crxls, "foodsecurity", tabColour = "lightgreen")
@@ -487,8 +483,6 @@ cond <- function(sheet, numhigh, numlow){
 }
 
 #Conditional formatting of specific cells
-cond("conflictsheet", which(colnames(conflictsheet) == "C_GPI_Score_norm"), which(colnames(conflictsheet) == "C_GPI_Score_norm"))
-cond("conflictsheet", which(colnames(conflictsheet) == "C_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(conflictsheet) == "C_ACLED_event_month_threeyear_difference_perc_norm"))
 cond("debtsheet", which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"), which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"))
 cond("debtsheet", which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"), which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
@@ -498,6 +492,8 @@ cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), wh
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"), which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "F_GPI_Score_norm"), which(colnames(conflictsheet) == "F_GPI_Score_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(conflictsheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
