@@ -310,6 +310,32 @@ imfdebt[names] <- lapply(imfdebt[names], function(xx) {
 
 imfdebt <- normfuncneg(imfdebt,-5, 0, "D_IMF_debt2020.2019") 
 
+#IGC database
+igc <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1s46Oz_NtkyrowAracg9FTPYRdkP8GHRzQqM7w6Qa_2k/edit?ts=5e836726#gid=0")
+
+#Header as first row
+names(igc) <- as.matrix(igc[1, ])
+igc <- igc[-1, ]
+igc[] <- lapply(igc, function(x) type.convert(as.character(x)))
+
+#Name fiscal column
+colnames(igc)[which(colnames(igc)=="Announced/ estimated fiscal support package\n") +1] <- "fiscalgdp"
+igc <- igc[-which(is.na(colnames(igc)))]
+
+#Extract numbers before the % text
+igc$fiscalgdpnum <- sub("\\%.*", "", igc$fiscalgdp)
+igc$fiscalgdpnum <- as.numeric(as.character(igc$fiscalgdpnum))
+
+#Normalised scores
+upperrisk <- quantile(igc$fiscalgdpnum, probs = c(0.95), na.rm=T)
+lowerrisk <- quantile(igc$fiscalgdpnum, probs = c(0.05), na.rm=T)
+igc <- normfuncpos(igc, upperrisk, lowerrisk, "fiscalgdpnum") 
+
+#Add label tabs 
+colnames(igc) <- paste0("D_", colnames(igc))
+igc <- as.data.frame(igc)
+igc <- igc[-which(colnames(igc)=="D_Other reputable links" )]
+
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>% 
@@ -317,6 +343,7 @@ countrylist <- countrylist %>%
 
 debtsheet <- left_join(countrylist, debttab, by="Country") %>%
   left_join(., imfdebt , by="Country") %>%
+  left_join(., igc, by="D_iso3c") %>%
   arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")

@@ -56,7 +56,8 @@ riskflags <- globalrisk %>%
                                                  TRUE ~ F_FAO_6mFPV_norm),
          EMERGING_RISK_FISCAL = D_IMF_debt2020.2019_norm,
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(M_GDP_IMF_2019minus2020_norm,
-                                                              M_GDP_WB_2019minus2020_norm, 
+                                                              M_GDP_WB_2019minus2020_norm,
+                                                              M_CESI_Index_norm,
                                                               na.rm=T),
          EMERGING_RISK_NATURAL_HAZARDS = pmax(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
                                               NH_GDAC_Hazard_Score_Norm, 
@@ -161,7 +162,8 @@ altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV <- geometricmeanRow(altflag[c("
 )
 
 altflag$EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmeanRow(altflag[c("M_GDP_IMF_2019minus2020_norm_plus1",
-                                                                                      "M_GDP_WB_2019minus2020_norm_plus1")], 
+                                                                                      "M_GDP_WB_2019minus2020_norm_plus1",
+                                                                                      "M_CESI_Index_norm")], 
                                                                             na.rm=T
 )
 
@@ -233,7 +235,8 @@ reliabilitysheet <- globalrisk %>%
                                                  TRUE ~ 0),
          RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
                                                                                 select(M_GDP_IMF_2019minus2020_norm,
-                                                                                       M_GDP_WB_2019minus2020_norm)))/2,
+                                                                                       M_GDP_WB_2019minus2020_norm,
+                                                                                       M_CESI_Index_norm)))/3,
          RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
                                                                 select(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm, 
                                                                        NH_GDAC_Hazard_Score_Norm, 
@@ -501,6 +504,7 @@ cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_mi
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"), which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_CESI_Index_norm"), which(colnames(macrosheet) == "M_CESI_Index_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
