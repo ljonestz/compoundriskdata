@@ -140,8 +140,8 @@ altflag <- globalrisk
 names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm", 
            "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm","H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm", 
            "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm", 
-           "F_FAO_6mFPV_norm", "C_GPI_Score_norm", "C_ACLED_event_same_month_difference_perc_norm", 
-           "C_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm", 
+           "F_FAO_6mFPV_norm", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm", 
+           "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm", 
            "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", 
            "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm", 
            "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", 
@@ -167,8 +167,8 @@ altflag$EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmeanRow(altf
 
 altflag$EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV <- ifelse(is.na(altflag$NH_INFORM_CRISIS_Type) | altflag$NH_INFORM_CRISIS_Type != "Complex crisis", geometricmeanRow(altflag[c("Fr_FSI_2019minus2020_norm_plus1", 
                                                                                                                                                                                "Fr_REIGN_couprisk3m_norm_plus1",
-                                                                                                                                                                               "C_ACLED_event_same_month_difference_perc_norm_plus1",
-                                                                                                                                                                               "C_ACLED_fatal_same_month_difference_perc_norm_plus1")],
+                                                                                                                                                                               "Fr_ACLED_event_same_month_difference_perc_norm_plus1",
+                                                                                                                                                                               "Fr_ACLED_fatal_same_month_difference_perc_norm_plus1")],
                                                                                                                                                                      na.rm=T), 10
 )
 
@@ -216,8 +216,8 @@ reliabilitysheet <- globalrisk %>%
          RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                        select(Fr_INFORM_Fragility_Score_norm, 
                                                                               Fr_FSI_Score_norm,
-                                                                              C_ACLED_event_same_month_difference_perc_norm, 
-                                                                              C_ACLED_fatal_same_month_difference_perc_norm)))/4,
+                                                                              Fr_ACLED_event_same_month_difference_perc_norm, 
+                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm)))/4,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,
                                                                                H_Covidgrowth_casesnorm, 
@@ -241,8 +241,8 @@ reliabilitysheet <- globalrisk %>%
          RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                        select(Fr_FSI_2019minus2020_norm, 
                                                                               Fr_REIGN_couprisk3m_norm,
-                                                                              C_ACLED_event_same_month_difference_perc_norm, 
-                                                                              C_ACLED_fatal_same_month_difference_perc_norm,
+                                                                              Fr_ACLED_event_same_month_difference_perc_norm, 
+                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm,
                                                                               NH_INFORM_CRISIS_Type)))/5) 
 #Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
@@ -328,9 +328,8 @@ alt <- riskflags %>%
 alt <- alt %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV") %>%
-  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL") %>%
-  add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ") %>%
-  add_column("     " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
+  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ") %>%
+  add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
 #Writesheet
 writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
 
@@ -353,7 +352,7 @@ addStyle(crxls,
          sheet = number, 
          headerStyle, 
          rows = 1, 
-         cols = 1:50, 
+         cols = 1:52, 
          gridExpand = TRUE
 )
 
@@ -367,7 +366,7 @@ addStyle(crxls,
          sheet = number, 
          bodyStyle, 
          rows = 2:191, 
-         cols = 1:50, 
+         cols = 1:52, 
          gridExpand = TRUE
 )
 
@@ -379,7 +378,7 @@ modifyBaseFont(crxls,
                fontColour = "black", 
                fontName = "Arial"
 )
-}, c(1:11))
+}, c(1:10))
 
 #Set specific style for the risk tab sheet
 headerStyle <- createStyle(
@@ -399,7 +398,7 @@ addStyle(crxls,
          sheet = 1, 
          headerStyle, 
          rows = 1, 
-         cols = 4:11, 
+         cols = 4:10, 
          gridExpand = TRUE
 )
 
@@ -420,7 +419,7 @@ addStyle(crxls,
          sheet = 1, 
          headerStyle, 
          rows = 1, 
-         cols = 12:18, 
+         cols = 11:16, 
          gridExpand = TRUE
 )
 
@@ -441,7 +440,7 @@ addStyle(crxls,
          sheet = 1, 
          headerStyle2, 
          rows = 1, 
-         cols = c(3, 19, 24, 27:50),
+         cols = c(3, 17, 22, 25:52),
          gridExpand = TRUE
 )
 
@@ -455,14 +454,14 @@ negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 #Conditional Cell Formatting for main sheet
-conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, rule="==10", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, type = "between", rule=c(0, 6.999), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols=4:18, rows=1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, type = "between", rule=c(2/3, 1), style = negStyle)
-conditionalFormatting(crxls, "riskflags",cols=25:26, rows=1:191, type = "between", rule=c(1/3, 0.665), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, type = "between", rule=c(0, 0.332), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols=25:26, rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:16, rows=1:191, rule="==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:16, rows=1:191, type = "between", rule=c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:16, rows=1:191, type = "between", rule=c(0, 6.999), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=4:16, rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols=23:24, rows=1:191, type = "between", rule=c(2/3, 1), style = negStyle)
+conditionalFormatting(crxls, "riskflags",cols=23:24, rows=1:191, type = "between", rule=c(1/3, 0.665), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols=23:24, rows=1:191, type = "between", rule=c(0, 0.332), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols=23:24, rows=1:191, rule = '=""', style = naStyle)
 
 #Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow){
@@ -492,8 +491,8 @@ cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), wh
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"), which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))
-cond("fragilitysheet", which(colnames(fragilitysheet) == "F_GPI_Score_norm"), which(colnames(conflictsheet) == "F_GPI_Score_norm"))
-cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(conflictsheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"), which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(fragilitysheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
@@ -518,15 +517,15 @@ conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule="=
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0.700, 0.999), style = medStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, type = "between", rule=c(0, 0.6999), style = posStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:19, rows=1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:7, 9:10, 12:13, 15:21),  rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16), rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet",cols=c(4:6, 8:9, 11:16),  rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16),  rows=1:191, rule = '=""', style = naStyle)
 
 #DatabarsconditionalFormatting
-conditionalFormatting(crxls, "riskflags", cols = 20:23, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "riskflags", cols = 18:21, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=23, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=18, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 
 #Insert Global Maps
 #install.packages("librarian")     #Run if librarian is not already installed

@@ -39,8 +39,9 @@ OXrollback <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-sc
 colnames(OXrollback) <- paste0("H_", colnames(OXrollback))
 
 OXrollback <- OXrollback %>%
-  rename(H_Oxrollback_score = H_overall_checklist) %>%
-  mutate(Country = countrycode(H_countryname, 
+  rename(H_Oxrollback_score = H_overall_checklist,
+         Countryname = H_countryname) %>%
+  mutate(Country = countrycode(Countryname, 
                                origin = 'country.name',
                                destination = 'iso3c', 
                                nomatch = NULL))
@@ -155,7 +156,7 @@ countrylist <- countrylist %>%
   select(-X)
 
 health <- left_join(countrylist, HIS, by="Country") %>%
-  left_join(., OXrollback, by="Country") %>%
+  left_join(., OXrollback, by=c("Country", "Countryname")) %>%
   left_join(., covidproj,  by="Country") %>% 
   left_join(., covidgrowth, by="Country") %>%
   left_join(., covidcurrent, by="Country") %>%
