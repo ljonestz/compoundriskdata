@@ -1,7 +1,7 @@
 #--------------------LOAD PACKAGES-----------------------------------------
 #install.packages("librarian")     #Run if librarian is not already installed (choose not to install dependencies from source)
 librarian::shelf(cowplot, lubridate, rvest, viridis, countrycode,
-                 clipr, awalker89/openxlsx, dplyr, tidyverse)
+                 clipr, awalker89/openxlsx, dplyr, tidyverse, readxl)
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 #Function to normalise with upper and lower bounds (when low score = high vulnerability)
@@ -346,6 +346,31 @@ upperrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.2), na.rm=T)
 lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm=T)
 gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020") 
 
+#COVID Economic Stimulus Index
+#Load file
+url <- "http://web.boun.edu.tr/elgin/CESI_11.xlsx" #Note: may need to check for more recent versions
+destfile <- "Indicator_dataset/cesiraw.xlsx"
+curl::curl_download(url, destfile)
+cesi <- read_excel(destfile)
+
+colnames(cesi) <- paste0("M_", colnames(cesi))
+cesi <- cesi %>%
+  mutate(Country = countrycode(M_Country, 
+                        origin = 'country.name',
+                        destination = 'iso3c', 
+                        nomatch = NULL)) 
+
+#Perform PCA
+cesipca <- prcomp(cesi %>% select(M_fiscal_11, M_ratecut_11, M_reserve_req_11, M_macrofin_11, M_othermonetary_11, M_bopgdp_11, M_otherbop_11), center = TRUE,scale. = TRUE)
+
+#Assign CESI Index as the first two PCs
+cesi$M_CESI_Index <- cesipca$x[,1] + cesipca$x[,2]
+
+#Normalised scores
+upperrisk <- quantile(cesi$M_CESI_Index, probs = c(0.1), na.rm=T)
+lowerrisk <- quantile(cesi$M_CESI_Index, probs = c(0.95), na.rm=T)
+cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "M_CESI_Index") 
+
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>% 
@@ -353,6 +378,7 @@ countrylist <- countrylist %>%
 
 macrosheet <- left_join(countrylist, macro, by="Country") %>%
   left_join(., gdp, by="Country") %>%
+  left_join(., cesi, by="Country") %>%
   arrange(Country)
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
