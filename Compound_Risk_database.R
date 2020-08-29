@@ -327,14 +327,15 @@ igc$fiscalgdpnum <- sub("\\%.*", "", igc$fiscalgdp)
 igc$fiscalgdpnum <- as.numeric(as.character(igc$fiscalgdpnum))
 
 #Normalised scores
-upperrisk <- quantile(igc$fiscalgdpnum, probs = c(0.95), na.rm=T)
-lowerrisk <- quantile(igc$fiscalgdpnum, probs = c(0.05), na.rm=T)
-igc <- normfuncpos(igc, upperrisk, lowerrisk, "fiscalgdpnum") 
+upperrisk <- quantile(igc$fiscalgdpnum, probs = c(0.05), na.rm=T)
+lowerrisk <- quantile(igc$fiscalgdpnum, probs = c(0.95), na.rm=T)
+igc <- normfuncneg(igc, upperrisk, lowerrisk, "fiscalgdpnum") 
 
 #Add label tabs 
 colnames(igc) <- paste0("D_", colnames(igc))
 igc <- as.data.frame(igc)
 igc <- igc[-which(colnames(igc)=="D_Other reputable links" )]
+igc <- igc %>% rename(Country = D_iso3c)
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -343,7 +344,7 @@ countrylist <- countrylist %>%
 
 debtsheet <- left_join(countrylist, debttab, by="Country") %>%
   left_join(., imfdebt , by="Country") %>%
-  left_join(., igc, by="D_iso3c") %>%
+  left_join(., igc, by="Country") %>%
   arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")

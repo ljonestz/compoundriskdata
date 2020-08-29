@@ -1,7 +1,7 @@
 #--------------------LOAD PACKAGES--------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, 
-                 tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats)
+                 tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats, gsheet)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
@@ -54,7 +54,9 @@ riskflags <- globalrisk %>%
                                                                                      F_Artemis_Score_norm, 
                                                                                      na.rm=T),
                                                  TRUE ~ F_FAO_6mFPV_norm),
-         EMERGING_RISK_FISCAL = D_IMF_debt2020.2019_norm,
+         EMERGING_RISK_FISCAL = pmax(D_IMF_debt2020.2019_norm,
+                                     D_fiscalgdpnum_norm,
+                                     na.rm=T),
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(M_GDP_IMF_2019minus2020_norm,
                                                               M_GDP_WB_2019minus2020_norm,
                                                               M_CESI_Index_norm,
@@ -231,8 +233,9 @@ reliabilitysheet <- globalrisk %>%
                                                               select(F_Fewsnet_Score_norm,
                                                                      F_Artemis_Score_norm, 
                                                                      F_FAO_6mFPV_norm)))/3,
-         RELIABILITY_EMERGING_FISCAL = case_when(is.na(D_IMF_debt2020.2019_norm) ~ 1,
-                                                 TRUE ~ 0),
+         RELIABILITY_EMERGING_FISCAL = rowSums(is.na(globalrisk %>%
+                                                       select(D_IMF_debt2020.2019_norm,
+                                                              D_fiscalgdpnum_norm)))/2,
          RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
                                                                                 select(M_GDP_IMF_2019minus2020_norm,
                                                                                        M_GDP_WB_2019minus2020_norm,
@@ -487,6 +490,7 @@ cond <- function(sheet, numhigh, numlow){
 #Conditional formatting of specific cells
 cond("debtsheet", which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"), which(colnames(debtsheet) == "D_WB_Overall_debt_distress_norm"))
 cond("debtsheet", which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"), which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"))
+cond("debtsheet", which(colnames(debtsheet) == "D_fiscalgdpnum_norm"), which(colnames(debtsheet) == "D_fiscalgdpnum_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"), which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"), which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"))
