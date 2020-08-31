@@ -1,6 +1,6 @@
 ######################################################################################################
 #
-#  CODE USED TO CREATE A GLOBAL DATABASET ON COMPOUND RISK 
+#  CODE USED TO CREATE THE GLOBAL DATABASET ON COMPOUND DISASTER RISK 
 #  (to be run after risk component sheets have been generated)
 #
 ######################################################################################################
@@ -222,7 +222,8 @@ sqnam <- c("EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECUR
   "EMERGING_RISK_FISCAL_SQ", "EMERGING_RISK_NATURAL_HAZARDS_SQ", 
   "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ")
 
-riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >=7)
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >=7,
+                                                           na.rm = T)
 
 #-----------------------------CREATE RELIABILITY SCORES------------------------------------------
 #Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
@@ -243,39 +244,46 @@ reliabilitysheet <- globalrisk %>%
                                                                        select(Fr_INFORM_Fragility_Score_norm, 
                                                                               Fr_FSI_Score_norm,
                                                                               Fr_ACLED_event_same_month_difference_perc_norm, 
-                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm)))/4,
+                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm)),
+                                                               na.rm = T)/4,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,
                                                                                H_Covidgrowth_casesnorm, 
                                                                                H_Covidgrowth_deathsnorm, 
                                                                                H_new_cases_smoothed_per_million_norm,
                                                                                H_new_deaths_smoothed_per_million_norm,
-                                                                               H_Covidproj_Projected_Deaths_._1M_norm)))/6,
+                                                                               H_Covidproj_Projected_Deaths_._1M_norm)),
+                                                                na.rm = T)/6,
          RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
                                                               select(F_Fewsnet_Score_norm,
                                                                      F_Artemis_Score_norm, 
-                                                                     F_FAO_6mFPV_norm)))/3,
+                                                                     F_FAO_6mFPV_norm)),
+                                                      na.rm = T)/3,
          RELIABILITY_EMERGING_FISCAL = rowSums(is.na(globalrisk %>%
                                                        select(D_IMF_debt2020.2019_norm,
-                                                              D_fiscalgdpnum_norm)))/2,
+                                                              D_fiscalgdpnum_norm)),
+                                               na.rm = T)/2,
          RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
                                                                                 select(M_GDP_IMF_2019minus2020_norm,
                                                                                        M_GDP_WB_2019minus2020_norm,
-                                                                                       M_CESI_Index_norm)))/3,
+                                                                                       M_CESI_Index_norm)),
+                                                                        na.rm = T)/3,
          RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
                                                                 select(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm, 
                                                                        NH_GDAC_Hazard_Score_Norm, 
-                                                                       NH_INFORM_Crisis_Norm)))/3,
+                                                                       NH_INFORM_Crisis_Norm)),
+                                                        na.rm = T)/3,
          RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                        select(Fr_FSI_2019minus2020_norm, 
                                                                               Fr_REIGN_couprisk3m_norm,
                                                                               Fr_ACLED_event_same_month_difference_perc_norm, 
                                                                               Fr_ACLED_fatal_same_month_difference_perc_norm,
-                                                                              NH_INFORM_CRISIS_Type)))/5) 
+                                                                              NH_INFORM_CRISIS_Type)),
+                                                               na.rm = T)/5) 
 #Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
-  mutate(RELIABILITY_SCORE_EXISTING_RISK = rowMeans(select(., starts_with("RELIABILITY_EXISTING"))),
-         RELIABILITY_SCORE_EMERGING_RISK = rowMeans(select(., starts_with("RELIABILITY_EMERGING")))) %>%
+  mutate(RELIABILITY_SCORE_EXISTING_RISK = round(rowMeans(select(., starts_with("RELIABILITY_EXISTING"))), 1),
+         RELIABILITY_SCORE_EMERGING_RISK = round(rowMeans(select(., starts_with("RELIABILITY_EMERGING"))), 1)) %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY,RELIABILITY_EXISTING_FOOD_SECURITY,
          RELIABILITY_EXISTING_MACROECONOMIC_EXPOSURE_TO_COVID,
          RELIABILITY_EXISTING_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
@@ -284,7 +292,7 @@ reliabilitysheet <- reliabilitysheet %>%
          RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
          RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS) %>%
   arrange(Country)
-  
+
 #Write as a csv file for the reliability sheet
 write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 
@@ -301,7 +309,11 @@ write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
 reliable <- reliabilitysheet %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
-riskflags <- left_join(riskflags, reliable, by = c("Countryname", "Country"))
+riskflags <- left_join(riskflags %>%
+                         select("Countryname", "Country", 
+                                contains(c("_AV", "_SQ", "_ALT", "EXISTING_", "EMERGING_"))),
+                       reliable, 
+                       by = c("Countryname", "Country"))
 
 #Write csv file of all risk flags (+reliability scores)
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
@@ -356,7 +368,7 @@ alt <- riskflags %>%
 alt <- alt %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV") %>%
-  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ") %>%
+  add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL") %>%
   add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
 #Writesheet
 writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
