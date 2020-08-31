@@ -1,4 +1,11 @@
-#--------------------LOAD PACKAGES--------------
+######################################################################################################
+#
+#  CODE USED TO CREATE A GLOBAL DATABASET ON COMPOUND RISK 
+#  (to be run after risk component sheets have been generated)
+#
+######################################################################################################
+
+#--------------------LOAD PACKAGES-----------------------------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, 
                  tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats, gsheet)
@@ -176,12 +183,27 @@ altflag$EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV <- ifelse(is.na(altflag$NH_INFOR
                                                                                                                                                                      na.rm=T), 10
 )
 
+altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT <- geometricmeanRow(cbind.data.frame(altflag$H_Oxrollback_score_norm_plus1,
+                                                                                            pmax(altflag$H_Covidgrowth_casesnorm,
+                                                                                                 altflag$H_Covidgrowth_deathsnorm,
+                                                                                                 altflag$H_new_cases_smoothed_per_million_norm,
+                                                                                                 altflag$H_new_deaths_smoothed_per_million_norm,
+                                                                                                 altflag$H_Covidproj_Projected_Deaths_._1M_norm, 
+                                                                                                 na.rm=T)),
+                                                                           na.rm=T
+)
+
 #Merge datasets to include alt variables
-riskflags <- inner_join(riskflags, altflag, by=c("Country", "Countryname"), keep=F)
+riskflags <- inner_join(riskflags, 
+                        altflag, 
+                        by=c("Country", "Countryname"), 
+                        keep=F)
 
 #Calculate emerging risk score using existing risk 
 riskflags <- riskflags %>%
   mutate(EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ = case_when(!is.na(EXISTING_RISK_COVID_RESPONSE_CAPACITY) ~ sqrt(EXISTING_RISK_COVID_RESPONSE_CAPACITY * EMERGING_RISK_COVID_RESPONSE_CAPACITY),
+                                                              TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY),
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_SQ = case_when(!is.na(EXISTING_RISK_COVID_RESPONSE_CAPACITY) ~ sqrt(EXISTING_RISK_COVID_RESPONSE_CAPACITY * EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT),
                                                               TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY),
          EMERGING_RISK_FOOD_SECURITY_SQ = case_when(is.na(F_Fewsnet_Score) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
                                                     TRUE ~ EMERGING_RISK_FOOD_SECURITY),
@@ -525,15 +547,15 @@ conditionalFormatting(crxls, "Reliability_sheet", cols=5:17, rows=1:191, rule="=
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:17, rows=1:191, type = "between", rule=c(0.700, 0.999), style = medStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:17, rows=1:191, type = "between", rule=c(0, 0.6999), style = posStyle)
 conditionalFormatting(crxls, "Reliability_sheet", cols=5:17, rows=1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16), rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet",cols=c(4:6, 8:9, 11:16),  rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:16),  rows=1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:18), rows=1:191,type = "between", rule=c(7, 10), style = negStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:18), rows=1:191, type = "between", rule=c(5, 6.9999), style = medStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet",cols=c(4:6, 8:9, 11:18),  rows=1:191, type = "between", rule=c(0, 4.9999), style = posStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=c(4:6, 8:9, 11:18),  rows=1:191, rule = '=""', style = naStyle)
 
 #DatabarsconditionalFormatting
 conditionalFormatting(crxls, "riskflags", cols = 18:21, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols=18, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols=20, rows=1:191, type = "databar", style=c("#C6EFCE", "#CD5C5C")) 
 
 #Insert Global Maps
 #install.packages("librarian")     #Run if librarian is not already installed
@@ -543,7 +565,7 @@ librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, c
 world <- map_data("world")
 world <- world %>%
   dplyr::rename(Country = region) %>%
-  dplyr::mutate(Country = countrycode(Country, origin = 'country.name', destination = 'iso3c'))
+  dplyr::mutate(Country = suppressWarnings(countrycode(Country, origin = 'country.name', destination = 'iso3c')))
 
 #Join datasets with risk flags
 worldmap <- inner_join(world, riskflags, by="Country")

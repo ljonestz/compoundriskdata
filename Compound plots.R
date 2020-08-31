@@ -1,3 +1,11 @@
+######################################################################################################
+#
+#  CODE USED TO TO PRODUCE COMPARISON PLOTS FOR THE COMPOUND RISK MONITOR
+#  (to be run after the global database has been generated)
+#
+######################################################################################################
+
+
 #------------------------SCRIPT TO PRODUCE COMPARISON PLOTS-------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 

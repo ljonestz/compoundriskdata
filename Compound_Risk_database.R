@@ -1,7 +1,14 @@
+######################################################################################################
+#
+#  CODE USED TO TO PRODUCE INDIVIDUAL INDICATOR DATASETS AND RISK COMPONENT SHEETS 
+#
+######################################################################################################
+
 #--------------------LOAD PACKAGES-----------------------------------------
-#install.packages("librarian")     #Run if librarian is not already installed (choose not to install dependencies from source)
+#install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(cowplot, lubridate, rvest, viridis, countrycode,
-                 clipr, awalker89/openxlsx, dplyr, tidyverse, readxl)
+                 clipr, awalker89/openxlsx, dplyr, tidyverse, readxl,
+                 gsheet)
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 #Function to normalise with upper and lower bounds (when low score = high vulnerability)
@@ -222,12 +229,12 @@ faoscrape <- faoweb %>%
   html_text()
 
 #Create dataframe
-faoprice <- as.data.frame(matrix(faoscrape, ncol=4, byrow=T), stringsAsFactors=T)
+faoprice <- suppressWarnings(as.data.frame(matrix(faoscrape, ncol=4, byrow=T), stringsAsFactors=T))
 names(faoprice) <- c('Country', "Pc6m", "Pc30d", "Pc7d")
 
 #Convert to numeric
 faoprice[c( "Pc6m", "Pc30d", "Pc7d")] <- lapply(faoprice[c( "Pc6m", "Pc30d", "Pc7d")] , function(xx) {
-  as.numeric(as.character(xx))
+  suppressWarnings(as.numeric(as.character(xx)))
 })
 
 #Remove tag 
@@ -305,13 +312,13 @@ names <- c("D_IMF_debt2017", "D_IMF_debt2018", "D_IMF_debt2019",
 "D_IMF_debt2020", "D_IMF_debt2021", "D_IMF_debt2020.2019")
 
 imfdebt[names] <- lapply(imfdebt[names], function(xx) {
-  as.numeric(as.character(xx))
+  suppressWarnings(as.numeric(as.character(xx)))
 })
 
 imfdebt <- normfuncneg(imfdebt,-5, 0, "D_IMF_debt2020.2019") 
 
 #IGC database
-igc <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1s46Oz_NtkyrowAracg9FTPYRdkP8GHRzQqM7w6Qa_2k/edit?ts=5e836726#gid=0")
+igc <- suppressWarnings(gsheet2tbl("https://docs.google.com/spreadsheets/d/1s46Oz_NtkyrowAracg9FTPYRdkP8GHRzQqM7w6Qa_2k/edit?ts=5e836726#gid=0"))
 
 #Header as first row
 names(igc) <- as.matrix(igc[1, ])
@@ -364,7 +371,7 @@ lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.r
 macro <- normfuncpos(macro,upperrisk, lowerrisk, "M_Economic_and_Financial_score") 
 
 #GDP forecast
-gdp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv")
+gdp <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv"))
 gdp <- gdp %>%
   select(-X1)
 upperrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.2), na.rm=T)
@@ -443,7 +450,7 @@ lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), 
 informfragile <- normfuncpos(informfragile,upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score") 
 
 #REIGN
-reign <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv")
+reign <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv"))
 reign <- reign %>%
   filter(year == 2020) %>%
   select(country, couprisk, month) %>%
@@ -475,7 +482,7 @@ lowerrisk <- quantile(gpi$Fr_GPI_Score, probs = c(0.10), na.rm=T)
 gpi <- normfuncpos(gpi, upperrisk, lowerrisk, "Fr_GPI_Score")
 
 #Load ACLED data  
-acled <- read_csv("~/Google Drive/PhD/R code/Compound Risk/ACLEDraw.csv")
+acled <- suppressMessages(read_csv("~/Google Drive/PhD/R code/Compound Risk/ACLEDraw.csv"))
 
 #summarise deaths
 fatal <- acled %>%
@@ -574,7 +581,7 @@ write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
 #--------------------------------SOCIO-ECONOMIC DATA and SHEET------------------------------------------
 #Load OCHA database
-ocha <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv")
+ocha <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv"))
 ocha <- ocha %>%
   select(-X1) %>%
   arrange(Country)
@@ -586,7 +593,7 @@ write.csv(ocha, "Risk_sheets/Socioeconomic_sheet.csv")
 
 #-------------------------------NATURAL HAZARDS SHEET------------------------------------------------
 #Load UKMO dataset
-nathaz <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv")
+nathaz <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv"))
 nathaz <- nathaz %>%
   select(-X1) %>%
   rename(Country = NH_UKMO_Country)
@@ -733,7 +740,7 @@ gdac <- gdac %>%
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
 #INFORM CRISIS TRACKER
-informcrisis <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv")
+informcrisis <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv"))
 
 #Add duplicates
 informcrisis <- informcrisis %>%
