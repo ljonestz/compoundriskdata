@@ -51,7 +51,8 @@ OXrollback <- OXrollback %>%
   mutate(Country = countrycode(Countryname, 
                                origin = 'country.name',
                                destination = 'iso3c', 
-                               nomatch = NULL))
+                               nomatch = NULL)
+)
 
 upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm=T)
 lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm=T)
@@ -81,7 +82,8 @@ covidproj <- merge(covidproj, covidus, all=T)
 covidproj$Country <- countrycode(covidproj$Country, 
                                  origin = 'country.name', 
                                  destination = 'iso3c',
-                                 nomatch = NULL)
+                                 nomatch = NULL
+)
 
 #Convert to numeric
 covidproj$`Additional Deaths (% of Current Deaths)` <- gsub("%", "", covidproj$`Additional Deaths (% of Current Deaths)`)
@@ -100,7 +102,9 @@ covidproj[varname] <- lapply(covidproj[varname],function(xx) {
 #Change colnames to consistent format
 colnames(covidproj) <- c("Country", "H_Covidproj_Current Deaths", "H_Covidproj_Projected Deaths - Mean", "H_Covidproj_Projected Deaths / 1M", 
                                     "H_Covidproj_Additional Deaths - Mean","Additional Deaths / 1M",  "H_Covidproj_Additional Deaths (% of Current Deaths)", 
-                                    "H_Covidproj_Projected Deaths - 2.5th Percentile", "H_Covidproj_Projected Deaths - 97.5th Percentile")
+                                    "H_Covidproj_Projected Deaths - 2.5th Percentile", "H_Covidproj_Projected Deaths - 97.5th Percentile"
+)
+
 colnames(covidproj) <- gsub(" ", "_", colnames(covidproj))
 
 #Add normalised values
@@ -181,7 +185,8 @@ proteus <- proteus %>%
   mutate(Country = countrycode(Country, 
                                origin = 'country.name',
                                destination = 'iso3c', 
-                               nomatch = NULL))
+                               nomatch = NULL)
+)
 
 upperrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.90), na.rm=T)
 lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm=T)
@@ -297,7 +302,8 @@ debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_dist
                                                   ifelse(debttab$D_WB_Overall_debt_distress == "High", 10,
                                                          ifelse(debttab$D_WB_Overall_debt_distress == "Moderate", 7,
                                                                 ifelse(debttab$D_WB_Overall_debt_distress == "Low", 3, NA)
-                                                  )))
+)))
+
 #IMF Debt forecasts
 imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imfdebt.csv")
 
@@ -393,10 +399,16 @@ cesi <- cesi %>%
   mutate(Country = countrycode(M_Country, 
                         origin = 'country.name',
                         destination = 'iso3c', 
-                        nomatch = NULL)) 
+                        nomatch = NULL)
+) 
 
 #Perform PCA
-cesipca <- prcomp(cesi %>% select(M_fiscal_11, M_ratecut_11, M_reserve_req_11, M_macrofin_11, M_othermonetary_11, M_bopgdp_11, M_otherbop_11), center = TRUE,scale. = TRUE)
+cesipca <- prcomp(cesi %>% select(M_fiscal_11, M_ratecut_11, M_reserve_req_11, 
+                                  M_macrofin_11, M_othermonetary_11, M_bopgdp_11,
+                                  M_otherbop_11), 
+                  center = TRUE,
+                  scale. = TRUE
+)
 
 #Assign CESI Index as the first two PCs
 cesi$M_CESI_Index <- cesipca$x[,1] + cesipca$x[,2]
@@ -710,7 +722,8 @@ gdaclist <- rbind.data.frame(eq, cy,fl, vo, dr)
 #change times
 gdaclist$date <- ifelse(gdaclist$hazard != c("drought")  & gdaclist$status == "active" , paste(as.Date(parse_date_time(gdaclist$date, orders=c("dm HM")))),
                         ifelse(gdaclist$hazard == c("drought"), paste(gdaclist$date),
-                               paste(as.Date(parse_date_time(gdaclist$date, orders=c("dmy"))))))
+                               paste(as.Date(parse_date_time(gdaclist$date, orders=c("dmy")
+)))))
 
 #Remove duplicate countries for drought
 gdaclist$names <- as.character(gdaclist$names)

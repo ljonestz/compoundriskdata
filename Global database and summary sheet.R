@@ -386,38 +386,38 @@ headerStyle <- createStyle(
   borderColour = "white", 
   wrapText = TRUE,
   textRotation = 90
-)
+  )
 
-addStyle(crxls, 
+  addStyle(crxls, 
          sheet = number, 
          headerStyle, 
          rows = 1, 
          cols = 1:52, 
          gridExpand = TRUE
-)
+  )
 
-bodyStyle <- createStyle(fgFill = "white", 
+  bodyStyle <- createStyle(fgFill = "white", 
                          border = "TopBottomLeftRight",
                          borderColour = "white",
                          halign = "center"
-)
+  )
 
-addStyle(crxls, 
+  addStyle(crxls, 
          sheet = number, 
          bodyStyle, 
          rows = 2:191, 
          cols = 1:52, 
          gridExpand = TRUE
-)
+  )
 
-setColWidths(crxls, number, cols = 1, widths = 10) ## set column width for row names column
-setRowHeights(crxls, number, rows = 1, heights =  150) ## set column width for row names column
+  setColWidths(crxls, number, cols = 1, widths = 10) ## set column width for row names column
+  setRowHeights(crxls, number, rows = 1, heights =  150) ## set column width for row names column
 
-modifyBaseFont(crxls, 
+  modifyBaseFont(crxls, 
                fontSize = 12,
                fontColour = "black", 
                fontName = "Arial"
-)
+  )
 }, c(1:10))
 
 #Set specific style for the risk tab sheet
