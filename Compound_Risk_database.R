@@ -680,7 +680,6 @@ eq2$haz <- paste("orange")
 eq <- rbind(eq1, eq2)
 eq$hazard <- "earthquake"
 
-
 #Cyclone
 cy1 <- rbind(haz[[5]], haz[[6]])
 cy1$haz <- paste("green")
@@ -768,6 +767,19 @@ informcrisis <- informcrisis %>%
 
 write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
 
+#INFORM Natural Hazard and Exposure rating
+informnathaz <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Inform_nathaz.csv")
+
+#Rename country
+informnathaz <- informnathaz %>%
+  rename(Country = ISO3,
+         NH_Hazard_Score = HAZARD...EXPOSURE) %>%
+  drop_na(Country, NH_Hazard_Score)
+
+#Normalise scores
+informnathaz <- normfuncpos(informnathaz, 9, 1, "NH_Hazard_Score")
+
+
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>% 
@@ -775,7 +787,8 @@ countrylist <- countrylist %>%
 
 nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
   left_join(., gdac, by="Country") %>%
-  left_join(., informcrisis) %>%
+  left_join(., informcrisis, by="Country") %>%
+  left_join(., informnathaz, by="Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country) %>%
   arrange(Country)

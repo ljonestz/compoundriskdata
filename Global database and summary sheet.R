@@ -8,7 +8,7 @@
 #--------------------LOAD PACKAGES-----------------------------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, compositions, viridis, 
-                 tidyverse, countrycode, clipr, sjmisc, openxlsx, EnvStats, gsheet)
+                 tidyverse, countrycode, clipr, sjmisc, awalker89/openxlsx, EnvStats, gsheet)
 
 #--------------------CREATE GLOBAL DATABASE WITH ALL RISK SHEETS-----------------
 #Load risk sheets
@@ -46,7 +46,7 @@ riskflags <- globalrisk %>%
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = M_Economic_and_Financial_score_norm, 
          EXISTING_RISK_FISCAL = D_WB_Overall_debt_distress_norm,
          EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
-         EXISTING_RISK_NATURAL_HAZARDS = NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
+         EXISTING_RISK_NATURAL_HAZARDS = NH_Hazard_Score_norm,
          EXISTING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, 
                                                      Fr_FSI_Score_norm, 
                                                      na.rm=T),

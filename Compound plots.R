@@ -8,8 +8,8 @@
 #------------------------LOAD PACKAGES-------------------------
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
-                 countrycode, corrplot, ggthemr,  ggalt, gridExtra, ggcorrplot,
-                 ggExtra, ggrepel, knitr, kableExtra, grid)
+                 countrycode, corrplot, cttobin/ggthemr,  ggalt, gridExtra, ggcorrplot,
+                 ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer)
 
 #Load themes
 theme_set(theme_classic(base_size = 16))
@@ -67,14 +67,14 @@ ggsave("Plots/globalmaptwo.pdf", map2, width = 8, height = 12)
 vars <- globalrisk %>%
   select(S_OCHA_Covid.vulnerability.index_norm, H_Oxrollback_score_norm, H_Covidgrowth_casesnorm,
          H_Covidgrowth_deathsnorm, H_HIS_Score_norm,F_Proteus_Score_norm, F_Fewsnet_Score_norm, 
-         F_Artemis_Score_norm,F_FAO_6mFPV_norm, C_GPI_Score_norm, C_ACLED_event_same_month_difference_perc_norm,
-         C_ACLED_fatal_same_month_difference_perc_norm,D_WB_Overall_debt_distress_norm,  D_IMF_debt2020.2019_norm,
+         F_Artemis_Score_norm,F_FAO_6mFPV_norm, Fr_ACLED_event_same_month_difference_perc_norm,
+         Fr_ACLED_fatal_same_month_difference_perc_norm,D_WB_Overall_debt_distress_norm,  D_IMF_debt2020.2019_norm,
          M_Economic_and_Financial_score_norm, M_GDP_IMF_2019minus2020_norm, M_GDP_WB_2019minus2020_norm,
          NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,NH_GDAC_Hazard_Score_Norm, Fr_INFORM_Fragility_Score_norm, Fr_FSI_Score_norm,
          Fr_FSI_2019minus2020_norm, Fr_REIGN_couprisk3m_norm)
 
 colnames(vars) <- c("S_VI", "H_OX", "H_CGN","H_CGD", "H_HIS_norm", "F_PS", "F_FS", "F_AS","F_FPV", 
-                    "C_GPI", "C_AE",'C_AF',"D_WBD",  'D_IMFD',"M_EFS", 'M_IMFG', "M_WBG",
+                    "Fr_AE",'Fr_AF',"D_WBD",  'D_IMFD',"M_EFS", 'M_IMFG', "M_WBG",
                     "NH_UKMO", "NH_GDAC", "Fr_IFS", 'Fr_FSI', "Fr_FSID", "Fr_RE")
 
 #Datasets for the small sector plots
@@ -85,24 +85,19 @@ varstwo <- vars %>%
   select(F_FS, F_AS,F_FPV)
 
 varsthree <- vars %>%
-  select( Fr_IFS, Fr_FSI, Fr_FSID, Fr_RE)
-
-varsfour <- vars %>%
-  select(C_GPI, C_AE, C_AF)
+  select( Fr_IFS, Fr_FSI, Fr_FSID, Fr_RE, Fr_AE, Fr_AF)
 
 #Correlations
 corr <- round(cor(vars, na.rm=T, use='pairwise.complete.obs'), 1)
 corrone <- round(cor(varsone, na.rm=T, use='pairwise.complete.obs'), 1)
 corrtwo <- round(cor(varstwo, na.rm=T, use='pairwise.complete.obs'), 1)
 corrthree <- round(cor(varsthree, na.rm=T, use='pairwise.complete.obs'), 1)
-corrfour <- round(cor(varsfour, na.rm=T, use='pairwise.complete.obs'), 1)
 
 #Pvalues
 p.mat <- cor_pmat(vars, na.rm=T, use='pairwise.complete.obs') 
 p.matone <- cor_pmat(varsone, na.rm=T, use='pairwise.complete.obs') 
 p.mattwo <- cor_pmat(varstwo, na.rm=T, use='pairwise.complete.obs') 
 p.matthree <- cor_pmat(varsthree, na.rm=T, use='pairwise.complete.obs') 
-p.matfour <- cor_pmat(varsfour, na.rm=T, use='pairwise.complete.obs') 
 
 #Plots
 plot <- ggcorrplot(corr, 
@@ -143,31 +138,22 @@ plotthree <- ggcorrplot(corrthree,
   theme(legend.position = "none", 
         plot.margin=unit(c(1,-0.5,1, 1),"cm"))
 
-plotfour <- ggcorrplot(corrfour, 
-                        hc.order = FALSE,
-                        type = "lower", 
-                        p.mat = p.matfour,
-                        outline.col = "white",
-                        colors = c("#6D9EC1", "white", "#E46726")) +
-  theme(legend.position = "none",
-        plot.margin=unit(c(1,-0.5 ,1, 1),"cm"))
-
 #Join and save
-col <- grid.arrange(plotone, plottwo, plotthree, plotfour, ncol=1,  heights = c(1.5, 1.2, 1.5, 1.2))
+col <- grid.arrange(plotone, plottwo, plotthree, ncol=1,  heights = c(1.5, 1.2, 1.5))
 colone <- plot_grid(col, plot,  ncol=2, rel_widths = c(1,5), rel_heights=c(6,2), align = "h")
 ggsave("Plots/corrplot.pdf", colone, width = 12, height = 10, units="in")
 
 #------------------------------Comparison between different overall risk scores--------------------
 #Subset dataset
 rankco <- riskflags %>%
-  select(Countryname, EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL, EMERGING_RISK_CONFLICT) 
-rankco$sign <- ifelse(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL - rankco$EMERGING_RISK_CONFLICT > 0, "red" ,
+  select(Countryname, EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT, EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ) 
+rankco$sign <- ifelse(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT - rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ > 0, "red" ,
                       "green")
 #Country labels
-left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT), sep=", ")
-right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL),sep=", ")
+left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ), sep=", ")
+right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT),sep=", ")
 #Find one from each integer
-subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_CONFLICT, 0) ==xx)[1]}))
+subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, 0) ==xx)[1]}))
 left_label[-subset] <- " "
 right_label[-subset] <- " "
 
@@ -175,17 +161,17 @@ theme_set(theme_classic())
 
 #First plot
 one <- ggplot(rankco) + 
-  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_CONFLICT`, yend=`EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL`, col=sign), size=.75, show.legend=F) + 
+  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ`, yend=`EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT`, col=sign), size=.75, show.legend=F) + 
   geom_vline(xintercept=1, linetype="dashed", size=.1) + 
   geom_vline(xintercept=2, linetype="dashed", size=.1) +
   scale_color_manual(labels = c("Up", "Down"), 
                      values = c("green"="#00ba38", "red"="#f8766d")) +
   labs(x="", y="") +
   xlim(.5, 2.5) + ylim(0,10.3) +
-  geom_text(label=left_label, y=rankco$EMERGING_RISK_CONFLICT, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
-  geom_text(label=right_label, y=rankco$EMERGING_RISK_CONFLICT_MULTIDIMENSIONAL, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
-  geom_text(label="Single", x=0.8, y=10.3, size= 5)  +
-  geom_text(label="Multiple", x=2, y=10.3, hjust=-0.1, size=5) +
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
+  geom_text(label=right_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
+  geom_text(label="GeoAv Outcome", x=0.8, y=10.3, size= 5)  +
+  geom_text(label="GeoAv All", x=2, y=10.3, hjust=-0.1, size=5) +
   theme(panel.background = element_blank(), 
         panel.grid = element_blank(),
         axis.ticks = element_blank(),
@@ -195,7 +181,7 @@ one <- ggplot(rankco) +
         axis.text = element_blank(),
         plot.margin=unit(c(1,-0.5 ,1, 1),"cm"),
         title = element_text(size = 20, hjust = 0.5, face = "bold")) +
-  ggtitle("Conflict risk")
+  ggtitle("COVID Response risk")
 
 #Second subset for fragility and institutions
 rankco <- riskflags %>%
@@ -312,16 +298,16 @@ ggsave("Plots/reliabilescore.pdf", rel, width = 12, height = 6)
 #------------------Comparison between current and future risk----------------------------------
 #Correlations of all source indicators that feed into the compound risk monitor
 rvar <- riskflags %>%
-  select(EXISTING_RISK_COVID_RESPONSE_CAPACITY, EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_CONFLICT,
+  select(EXISTING_RISK_COVID_RESPONSE_CAPACITY, EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, 
          EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY, 
          EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS, 
          EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY, 
-         EMERGING_RISK_CONFLICT, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL, 
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL, 
          EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
-colnames(rvar) <- c("EX_Covid", "EX_FoodS", "EX_Conflict", "EX_Macro", "EX_Fiscal", "EX_Socio", "EX_Natural", "EX_Fragile",
-"EM_Covid", "EM_FoodS", "EM_Conflict", "EM_Macro", "EM_Fiscal",  "EM_Natural", "EM_Fragile")
+colnames(rvar) <- c("EX_Covid", "EX_FoodS", "EX_Macro", "EX_Fiscal", "EX_Socio", "EX_Natural", "EX_Fragile",
+"EM_Covid", "EM_FoodS", "EM_Macro", "EM_Fiscal",  "EM_Natural", "EM_Fragile")
 
 #Calculate correlations
 rcorr <- round(cor(rvar, na.rm=T, use='pairwise.complete.obs'), 1)
@@ -407,22 +393,6 @@ gtheme +
 #Add histograms
 one <- ggMarginal(one, type = "histogram", fill="transparent")
 
-two <- ggplot(riskflags, aes(EMERGING_RISK_CONFLICT, EMERGING_RISK_CONFLICT_AV, color = Continent)) +
-  geom_count(alpha = 0.7) + 
-  xlab("Max value") +
-  ylab("Geometric mean") +
-  ggtitle("b) Conflict") +
-gtheme +
-  geom_line(stat="smooth", method="lm", se = F, alpha = 0.6)+
-  ggrepel::geom_text_repel(data = riskflags  %>%
-                             sample_n(2),
-                           aes(label = Countryname),
-                           arrow = arrow(length = unit(0.01, 'npc')),
-                           size = 5,
-                           box.padding = 7)
-
-two <- ggMarginal(two, type = "histogram", fill="transparent")
-
 three <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID , EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV, color = Continent)) +
   geom_count(alpha = 0.7) + 
   xlab("Max value") +
@@ -456,7 +426,7 @@ four <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY , EMERGING_R
 four <- ggMarginal(four, type = "histogram", fill="transparent")
 
 #Merge graphs and save
-comp <- plot_grid(one, two, three, four, nrow=2)
+comp <- plot_grid(one, three, four, nrow=2)
 ggsave("Plots/compareriskcalcs.pdf", comp, width = 14, height = 10)
 
 #-------Ranking exercise--------------------
@@ -484,12 +454,34 @@ rankcountry %>%
   save_kable(file = "Plots/top20countriesemerging.html", self_contained = T)
 
 #---------------------Slope graph--------------------------------
-li <- riskflags[c(1, 10:16)]
-
-colnames(li) <- c("Country", "EM_FR", "EM_COVID", 
-                  "EM_FS", "EM_C", "EM_FISC", 
-                  "EM_MACRO", "EM_NH"
+MySpecial <- list(  
+  # move the x axis labels up top
+  scale_x_discrete(position = "top"),
+  theme_bw(),
+  # Format tweaks
+  # Remove the legend
+  theme(legend.position = "none"),
+  # Remove the panel border
+  theme(panel.border     = element_blank()),
+  # Remove just about everything from the y axis
+  theme(axis.title.y     = element_blank()),
+  theme(axis.text.y      = element_blank()),
+  theme(panel.grid.major.y = element_blank()),
+  theme(panel.grid.minor.y = element_blank()),
+  # Remove a few things from the x axis and increase font size
+  theme(axis.title.x     = element_blank()),
+  theme(panel.grid.major.x = element_blank()),
+  theme(axis.text.x.top      = element_text(size=12)),
+  # Remove x & y tick marks
+  theme(axis.ticks       = element_blank()),
+  # Format title & subtitle
+  theme(plot.title       = element_text(size=14, face = "bold", hjust = 0.5)),
+  theme(plot.subtitle    = element_text(hjust = 0.5))
 )
+
+li <- riskflags[c(1, 9:14)]
+
+colnames(li) <- c("Country","EM_C", "EM_FS","EM_MACRO","EM_FISC","EM_NH", "EM_FR")
 
 countries <- c("Afghanistan", "Algeria", "Nigeria", "Ghana", "Serbia", "Tunisia")
 
@@ -530,13 +522,12 @@ ggsave("Plots/slopeg.pdf", slope, width = 11.5, height = 6)
 diffs <- riskflags %>%
   mutate(EMERGING_RISK_COVID_RESPONSE_CAPACITY_diff = EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ - EMERGING_RISK_COVID_RESPONSE_CAPACITY,
          EMERGING_RISK_FOOD_SECURITY_diff = EMERGING_RISK_FOOD_SECURITY_SQ - EMERGING_RISK_FOOD_SECURITY,
-         EMERGING_RISK_CONFLICT_diff = EMERGING_RISK_CONFLICT_SQ - EMERGING_RISK_CONFLICT,
          EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_diff  = EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ - EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
          EMERGING_RISK_FISCAL_diff = EMERGING_RISK_FISCAL_SQ - EMERGING_RISK_FISCAL,
          EMERGING_RISK_FRAGILITY_INSTITUTIONS_diff = EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ - EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
 diffs <- diffs %>% select(contains("diff")) %>% select(contains("EMERGING"))
-colnames(diffs) <- c("EM_COV", "EM_FS", "EM_C", "EM_MACRO", "EM_FIS",  "EM_FRAG" )
+colnames(diffs) <- c("EM_COV", "EM_FS", "EM_MACRO", "EM_FIS",  "EM_FRAG" )
                                               
 #Draw plots
 plots <- list()
@@ -626,71 +617,6 @@ plotysq <- ggplot(comb, aes(x=TOTAL_EMERGING_COMPOUND_RISK_SCORE, xend=TOTAL_EME
 
 ggsave("Plots/changerisk.pdf", ploty, height = 10, width = 12)
 
-#----------- Compare scores between countries ----------------------
-
-data <- riskflags %>%
-  filter(Countryname == "Afghanistan") %>%
-  select(contains("EMERGING")) %>%
-  select(-contains(c("_SQ", "MULTIDIMENSIONAL", "_AV", "RELIABILITY"))) %>%
-  gather("risk", "score") %>%
-  mutate(id = 1:9)
-
-data$group <- "Emerging"
-data$group[c(8:9)] <- "Total"
-
-data <- data %>%
-  add_row(risk = NA, score = NA, id = NA,  .before = 8) %>%
-  add_row(risk = NA, score = NA, id = NA,  .after = 10)
-            
-colnames(data) <- c("individual",  "value", "id", "group")
-
-
-# Get the name and the y position of each label
-label_data <- data
-number_of_bar <- nrow(label_data)
-angle <- 90 - 360 * (label_data$id-0.5) /number_of_bar     # I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
-label_data$hjust <- ifelse( angle < -90, 1, 0)
-label_data$angle <- ifelse(angle < -90, angle+180, angle)
-
-# prepare a data frame for base lines
-base_data <- data %>% 
-  group_by(group) %>% 
-  summarize(start=min(id), end=max(id) - empty_bar) %>% 
-  rowwise() %>% 
-  mutate(title=mean(c(start, end)))
-
-# prepare a data frame for grid (scales)
-grid_data <- base_data
-grid_data$end <- grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
-grid_data$start <- grid_data$start - 1
-grid_data <- grid_data[-1,]
-
-cirplot <- plot(data, aes(x=as.factor(id), y=value, fill=group)) +       # Note that id is a factor. If x is numeric, there is some space between the first bar
-  
-  geom_bar(aes(x=as.factor(id), y=value, fill=group), stat="identity", alpha=0.5) +
-  
-  # Add a val=100/75/50/25 lines. I do it at the beginning to make sur barplots are OVER it.
-  geom_segment(data=grid_data, aes(x = end, y = 8, xend = start, yend = 8), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
-  geom_segment(data=grid_data, aes(x = end, y = 6, xend = start, yend = 6), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
-  geom_segment(data=grid_data, aes(x = end, y = 4, xend = start, yend = 4), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
-  geom_segment(data=grid_data, aes(x = end, y = 2, xend = start, yend = 2), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
-  
-  # Add text showing the value of each 100/75/50/25 lines
-  annotate("text", x = rep(max(data$id),4), y = c(2, 4, 6, 8), label = c("2", "4", "6", "8") , color="grey", size=3 , angle=0, fontface="bold", hjust=1) +
-  
-  geom_bar(aes(x=as.factor(id), y=value, fill=group), stat="identity", alpha=0.5) +
-  ylim(-10,10) +
-  theme_minimal() +
-  theme(
-    legend.position = "none",
-    axis.text = element_blank(),
-    axis.title = element_blank(),
-    panel.grid = element_blank(),
-    plot.margin = unit(rep(-1,4), "cm") 
-  ) +
-  coord_polar() + 
-  geom_text(data=label_data, aes(x=id, y=value+1, label=individual, hjust=hjust), color="black", fontface="bold",alpha=0.6, size=2.5, angle= label_data$angle, inherit.aes = FALSE ) 
-
 #-----------------Regional population------------------------------------
 gtheme <- theme(axis.ticks = element_blank(),
                 axis.title = element_text(size = 20, hjust = 0.5),
@@ -699,8 +625,9 @@ gtheme <- theme(axis.ticks = element_blank(),
                 title = element_text(size=18, face = "bold" ))
 
 #Identify population at risk and merge
-pop <- wpp.by.year(tpop, 2020)
-pop$charcode <- countrycode(pop$charcode, origin = "iso2c", destination = 'iso3c')
+
+pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
+pop$charcode <- suppressWarnings(countrycode(pop$charcode, origin = "iso2c", destination = 'iso3c'))
 colnames(pop) <- c("Country", "Population")
 risky <- left_join(riskflags, pop, by= "Country", keep=F)
 

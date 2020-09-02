@@ -37,7 +37,192 @@ if (!!window.navigator.userAgent.match("MSIE 8")) {
 if (!!window.navigator.userAgent.match("MSIE 8")) {
 !function(a){"use strict";a.matchMedia=a.matchMedia||function(a){var b,c=a.documentElement,d=c.firstElementChild||c.firstChild,e=a.createElement("body"),f=a.createElement("div");return f.id="mq-test-1",f.style.cssText="position:absolute;top:-100em",e.style.background="none",e.appendChild(f),function(a){return f.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',c.insertBefore(e,d),b=42===f.offsetWidth,c.removeChild(e),{matches:b,media:a}}}(a.document)}(this),function(a){"use strict";function b(){u(!0)}var c={};a.respond=c,c.update=function(){};var d=[],e=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}(),f=function(a,b){var c=e();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))};if(c.ajax=f,c.queue=d,c.regex={media:/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi,keyframes:/@(?:\-(?:o|moz|webkit)\-)?keyframes[^\{]+\{(?:[^\{\}]*\{[^\}\{]*\})+[^\}]*\}/gi,urls:/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,findStyles:/@media *([^\{]+)\{([\S\s]+?)$/,only:/(only\s+)?([a-zA-Z]+)\s?/,minw:/\([\s]*min\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/,maxw:/\([\s]*max\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/},c.mediaQueriesSupported=a.matchMedia&&null!==a.matchMedia("only all")&&a.matchMedia("only all").matches,!c.mediaQueriesSupported){var g,h,i,j=a.document,k=j.documentElement,l=[],m=[],n=[],o={},p=30,q=j.getElementsByTagName("head")[0]||k,r=j.getElementsByTagName("base")[0],s=q.getElementsByTagName("link"),t=function(){var a,b=j.createElement("div"),c=j.body,d=k.style.fontSize,e=c&&c.style.fontSize,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",c||(c=f=j.createElement("body"),c.style.background="none"),k.style.fontSize="100%",c.style.fontSize="100%",c.appendChild(b),f&&k.insertBefore(c,k.firstChild),a=b.offsetWidth,f?k.removeChild(c):c.removeChild(b),k.style.fontSize=d,e&&(c.style.fontSize=e),a=i=parseFloat(a)},u=function(b){var c="clientWidth",d=k[c],e="CSS1Compat"===j.compatMode&&d||j.body[c]||d,f={},o=s[s.length-1],r=(new Date).getTime();if(b&&g&&p>r-g)return a.clearTimeout(h),h=a.setTimeout(u,p),void 0;g=r;for(var v in l)if(l.hasOwnProperty(v)){var w=l[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?i||t():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?i||t():1)),w.hasquery&&(z&&A||!(z||e>=x)||!(A||y>=e))||(f[w.media]||(f[w.media]=[]),f[w.media].push(m[w.rules]))}for(var C in n)n.hasOwnProperty(C)&&n[C]&&n[C].parentNode===q&&q.removeChild(n[C]);n.length=0;for(var D in f)if(f.hasOwnProperty(D)){var E=j.createElement("style"),F=f[D].join("\n");E.type="text/css",E.media=D,q.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(j.createTextNode(F)),n.push(E)}},v=function(a,b,d){var e=a.replace(c.regex.keyframes,"").match(c.regex.media),f=e&&e.length||0;b=b.substring(0,b.lastIndexOf("/"));var g=function(a){return a.replace(c.regex.urls,"$1"+b+"$2$3")},h=!f&&d;b.length&&(b+="/"),h&&(f=1);for(var i=0;f>i;i++){var j,k,n,o;h?(j=d,m.push(g(a))):(j=e[i].match(c.regex.findStyles)&&RegExp.$1,m.push(RegExp.$2&&g(RegExp.$2))),n=j.split(","),o=n.length;for(var p=0;o>p;p++)k=n[p],l.push({media:k.split("(")[0].match(c.regex.only)&&RegExp.$2||"all",rules:m.length-1,hasquery:k.indexOf("(")>-1,minw:k.match(c.regex.minw)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:k.match(c.regex.maxw)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},w=function(){if(d.length){var b=d.shift();f(b.href,function(c){v(c,b.href,b.media),o[b.href]=!0,a.setTimeout(function(){w()},0)})}},x=function(){for(var b=0;b<s.length;b++){var c=s[b],e=c.href,f=c.media,g=c.rel&&"stylesheet"===c.rel.toLowerCase();e&&g&&!o[e]&&(c.styleSheet&&c.styleSheet.rawCssText?(v(c.styleSheet.rawCssText,e,f),o[e]=!0):(!/^([a-zA-Z:]*\/\/)/.test(e)&&!r||e.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&("//"===e.substring(0,2)&&(e=a.location.protocol+e),d.push({href:e,media:f})))}w()};x(),c.update=x,c.getEmValue=t,a.addEventListener?a.addEventListener("resize",b,!1):a.attachEvent&&a.attachEvent("onresize",b)}}(this);
 };
-</script> <script>$(document).ready(function(){
+</script> <style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic tbody tr:last-child td {
+border-bottom: 0.14em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style> <script>$(document).ready(function(){
     if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -51,285 +236,471 @@ if (!!window.navigator.userAgent.match("MSIE 8")) {
 <table class="table" style="margin-left: auto; margin-right: auto;">
  <thead>
   <tr>
-   <th style="text-align:left;"> EMERGING_RISK_COVID_RESPONSE_CAPACITY </th>
-   <th style="text-align:left;"> EMERGING_RISK_FOOD_SECURITY </th>
-   <th style="text-align:left;"> EMERGING_RISK_CONFLICT </th>
-   <th style="text-align:left;"> EMERGING_RISK_FISCAL </th>
-   <th style="text-align:left;"> EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID </th>
-   <th style="text-align:left;"> EMERGING_RISK_NATURAL_HAZARDS </th>
-   <th style="text-align:left;"> EMERGING_RISK_FRAGILITY_INSTITUTIONS </th>
+   <th style="text-align:left;"> EMERGING_RISK_COVID_RESPONSE_CAPACITY_AV </th>
+   <th style="text-align:left;"> EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV </th>
+   <th style="text-align:left;"> EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV </th>
+   <th style="text-align:left;"> EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT </th>
+   <th style="text-align:left;"> EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_FOOD_SECURITY_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_FISCAL_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_NATURAL_HAZARDS_SQ </th>
+   <th style="text-align:left;"> EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ </th>
+   <th style="text-align:left;"> TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ </th>
   </tr>
  </thead>
 <tbody>
   <tr>
+   <td style="text-align:left;"> Vanuatu 10 </td>
    <td style="text-align:left;"> Libya 10 </td>
    <td style="text-align:left;"> Sudan 10 </td>
-   <td style="text-align:left;"> Sudan 10 </td>
-   <td style="text-align:left;"> Libya 10 </td>
-   <td style="text-align:left;"> Libya 10 </td>
    <td style="text-align:left;"> Afghanistan 10 </td>
-   <td style="text-align:left;"> Sudan 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Iraq 10 </td>
-   <td style="text-align:left;"> Afghanistan 10 </td>
-   <td style="text-align:left;"> South Sudan 10 </td>
-   <td style="text-align:left;"> Sudan 10 </td>
-   <td style="text-align:left;"> Iraq 10 </td>
-   <td style="text-align:left;"> Mozambique 10 </td>
-   <td style="text-align:left;"> Afghanistan 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> South Sudan 10 </td>
-   <td style="text-align:left;"> Mozambique 10 </td>
    <td style="text-align:left;"> Chad 10 </td>
+   <td style="text-align:left;"> Somalia 10 </td>
+   <td style="text-align:left;"> Korea Republic of 10 </td>
+   <td style="text-align:left;"> Sudan 10 </td>
+   <td style="text-align:left;"> Libya 10 </td>
+   <td style="text-align:left;"> Libya 10 </td>
+   <td style="text-align:left;"> Afghanistan 10 </td>
+   <td style="text-align:left;"> Sudan 10 </td>
+   <td style="text-align:left;"> Somalia 6 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Trinidad and Tobago 7.9 </td>
+   <td style="text-align:left;"> Grenada 10 </td>
+   <td style="text-align:left;"> Afghanistan 10 </td>
+   <td style="text-align:left;"> Iraq 10 </td>
+   <td style="text-align:left;"> Maldives 10 </td>
+   <td style="text-align:left;"> Korea Republic of 10 </td>
+   <td style="text-align:left;"> Vanuatu 9.4 </td>
+   <td style="text-align:left;"> Afghanistan 10 </td>
+   <td style="text-align:left;"> Afghanistan 10 </td>
+   <td style="text-align:left;"> Sudan 10 </td>
    <td style="text-align:left;"> Mozambique 10 </td>
-   <td style="text-align:left;"> Croatia 10 </td>
-   <td style="text-align:left;"> Ethiopia 10 </td>
-   <td style="text-align:left;"> Algeria 10 </td>
+   <td style="text-align:left;"> Afghanistan 10 </td>
+   <td style="text-align:left;"> Yemen 6 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Croatia 10 </td>
-   <td style="text-align:left;"> Niger 10 </td>
-   <td style="text-align:left;"> Mauritania 10 </td>
-   <td style="text-align:left;"> Algeria 10 </td>
-   <td style="text-align:left;"> Maldives 10 </td>
-   <td style="text-align:left;"> Iraq 10 </td>
-   <td style="text-align:left;"> Ethiopia 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Lebanon 10 </td>
-   <td style="text-align:left;"> Ethiopia 10 </td>
-   <td style="text-align:left;"> Belarus 10 </td>
-   <td style="text-align:left;"> Iraq 10 </td>
-   <td style="text-align:left;"> Ukraine 10 </td>
-   <td style="text-align:left;"> South Sudan 10 </td>
-   <td style="text-align:left;"> Iraq 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Maldives 10 </td>
-   <td style="text-align:left;"> South Sudan 10 </td>
-   <td style="text-align:left;"> Guinea 10 </td>
-   <td style="text-align:left;"> Croatia 10 </td>
-   <td style="text-align:left;"> Brazil 10 </td>
-   <td style="text-align:left;"> Mauritania 10 </td>
-   <td style="text-align:left;"> South Sudan 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Brazil 10 </td>
-   <td style="text-align:left;"> Chad 10 </td>
-   <td style="text-align:left;"> Iran 10 </td>
-   <td style="text-align:left;"> Maldives 10 </td>
-   <td style="text-align:left;"> Cabo Verde 10 </td>
-   <td style="text-align:left;"> Zimbabwe 10 </td>
-   <td style="text-align:left;"> Central African Republic 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Cabo Verde 10 </td>
-   <td style="text-align:left;"> Lebanon 10 </td>
-   <td style="text-align:left;"> Kenya 10 </td>
-   <td style="text-align:left;"> Mauritania 10 </td>
-   <td style="text-align:left;"> Honduras 10 </td>
-   <td style="text-align:left;"> Somalia 10 </td>
-   <td style="text-align:left;"> Maldives 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Honduras 10 </td>
-   <td style="text-align:left;"> Mauritania 10 </td>
-   <td style="text-align:left;"> Malawi 10 </td>
-   <td style="text-align:left;"> Ukraine 10 </td>
-   <td style="text-align:left;"> Peru 10 </td>
-   <td style="text-align:left;"> Malawi 10 </td>
-   <td style="text-align:left;"> Zimbabwe 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Peru 10 </td>
-   <td style="text-align:left;"> Zimbabwe 10 </td>
-   <td style="text-align:left;"> Montenegro 10 </td>
-   <td style="text-align:left;"> Belarus 10 </td>
-   <td style="text-align:left;"> Armenia 10 </td>
-   <td style="text-align:left;"> South Africa 10 </td>
-   <td style="text-align:left;"> Belarus 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Somalia 10 </td>
-   <td style="text-align:left;"> Haiti 10 </td>
-   <td style="text-align:left;"> Suriname 10 </td>
-   <td style="text-align:left;"> Cabo Verde 10 </td>
-   <td style="text-align:left;"> Grenada 10 </td>
-   <td style="text-align:left;"> Pakistan 10 </td>
-   <td style="text-align:left;"> Haiti 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Yemen 10 </td>
-   <td style="text-align:left;"> Somalia 10 </td>
-   <td style="text-align:left;"> Tunisia 10 </td>
-   <td style="text-align:left;"> Peru 10 </td>
-   <td style="text-align:left;"> Montenegro 10 </td>
-   <td style="text-align:left;"> Syria 10 </td>
-   <td style="text-align:left;"> Honduras 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Armenia 10 </td>
-   <td style="text-align:left;"> Yemen 10 </td>
-   <td style="text-align:left;"> Uganda 10 </td>
-   <td style="text-align:left;"> Serbia 10 </td>
-   <td style="text-align:left;"> Romania 10 </td>
-   <td style="text-align:left;"> Uganda 10 </td>
-   <td style="text-align:left;"> Somalia 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Colombia 10 </td>
-   <td style="text-align:left;"> Congo DR 10 </td>
-   <td style="text-align:left;"> Angola 10 </td>
-   <td style="text-align:left;"> Grenada 10 </td>
-   <td style="text-align:left;"> Tajikistan 10 </td>
-   <td style="text-align:left;"> Sudan 9.9 </td>
-   <td style="text-align:left;"> Yemen 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Montenegro 10 </td>
-   <td style="text-align:left;"> Malawi 10 </td>
-   <td style="text-align:left;"> Bulgaria 10 </td>
-   <td style="text-align:left;"> Montenegro 10 </td>
+   <td style="text-align:left;"> Guyana 7.8 </td>
    <td style="text-align:left;"> Antigua and Barbuda 10 </td>
-   <td style="text-align:left;"> Niger 9.5 </td>
-   <td style="text-align:left;"> Armenia 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Romania 10 </td>
-   <td style="text-align:left;"> Zambia 10 </td>
-   <td style="text-align:left;"> Mongolia 10 </td>
-   <td style="text-align:left;"> South Africa 10 </td>
-   <td style="text-align:left;"> Bolivia 10 </td>
-   <td style="text-align:left;"> Haiti 9.2 </td>
-   <td style="text-align:left;"> Congo DR 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> South Africa 10 </td>
-   <td style="text-align:left;"> Barbados 10 </td>
-   <td style="text-align:left;"> Uzbekistan 10 </td>
-   <td style="text-align:left;"> Antigua and Barbuda 10 </td>
-   <td style="text-align:left;"> Dominica 10 </td>
+   <td style="text-align:left;"> Ethiopia 10 </td>
+   <td style="text-align:left;"> Yemen 10 </td>
+   <td style="text-align:left;"> Cabo Verde 10 </td>
+   <td style="text-align:left;"> South Sudan 9.8 </td>
    <td style="text-align:left;"> Chad 9.1 </td>
-   <td style="text-align:left;"> Grenada 10 </td>
+   <td style="text-align:left;"> Mozambique 10 </td>
+   <td style="text-align:left;"> Lebanon 10 </td>
+   <td style="text-align:left;"> Mozambique 10 </td>
+   <td style="text-align:left;"> Ethiopia 10 </td>
+   <td style="text-align:left;"> Iraq 10 </td>
+   <td style="text-align:left;"> Afghanistan 5 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Albania 10 </td>
-   <td style="text-align:left;"> Myanmar 10 </td>
-   <td style="text-align:left;"> Cuba 10 </td>
-   <td style="text-align:left;"> El Salvador 10 </td>
-   <td style="text-align:left;"> Georgia 10 </td>
-   <td style="text-align:left;"> Eritrea 8.8 </td>
-   <td style="text-align:left;"> Kenya 10 </td>
+   <td style="text-align:left;"> Belize 7.6 </td>
+   <td style="text-align:left;"> Dominica 10 </td>
+   <td style="text-align:left;"> South Sudan 10 </td>
+   <td style="text-align:left;"> Congo DR 10 </td>
+   <td style="text-align:left;"> Montenegro 10 </td>
+   <td style="text-align:left;"> Eritrea 9.8 </td>
+   <td style="text-align:left;"> Cabo Verde 9 </td>
+   <td style="text-align:left;"> Niger 10 </td>
+   <td style="text-align:left;"> Cabo Verde 10 </td>
+   <td style="text-align:left;"> Algeria 10 </td>
+   <td style="text-align:left;"> Iraq 10 </td>
+   <td style="text-align:left;"> South Sudan 10 </td>
+   <td style="text-align:left;"> Mozambique 5 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Argentina 10 </td>
-   <td style="text-align:left;"> Venezuela 10 </td>
-   <td style="text-align:left;"> Israel 10 </td>
-   <td style="text-align:left;"> Georgia 10 </td>
-   <td style="text-align:left;"> Mauritius 10 </td>
-   <td style="text-align:left;"> Kenya 8.7 </td>
-   <td style="text-align:left;"> Malawi 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Bolivia 10 </td>
-   <td style="text-align:left;"> Djibouti 10 </td>
-   <td style="text-align:left;"> Indonesia 10 </td>
-   <td style="text-align:left;"> Seychelles 10 </td>
-   <td style="text-align:left;"> Seychelles 10 </td>
-   <td style="text-align:left;"> Yemen 8.5 </td>
-   <td style="text-align:left;"> Mali 10 </td>
-  </tr>
-  <tr>
+   <td style="text-align:left;"> Paraguay 7 </td>
+   <td style="text-align:left;"> Belize 10 </td>
+   <td style="text-align:left;"> Central African Republic 10 </td>
    <td style="text-align:left;"> Eritrea 10 </td>
-   <td style="text-align:left;"> Guyana 10 </td>
-   <td style="text-align:left;"> Russian Federation 10 </td>
    <td style="text-align:left;"> Trinidad and Tobago 10 </td>
-   <td style="text-align:left;"> Spain 10 </td>
-   <td style="text-align:left;"> Jordan 8.2 </td>
-   <td style="text-align:left;"> Nigeria 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Spain 10 </td>
-   <td style="text-align:left;"> Bhutan 10 </td>
-   <td style="text-align:left;"> Mali 9.9 </td>
-   <td style="text-align:left;"> Angola 10 </td>
+   <td style="text-align:left;"> Dominica 9.6 </td>
+   <td style="text-align:left;"> Bahamas 8.9 </td>
+   <td style="text-align:left;"> Ethiopia 10 </td>
    <td style="text-align:left;"> Bahamas 10 </td>
-   <td style="text-align:left;"> Djibouti 7.8 </td>
-   <td style="text-align:left;"> Burkina Faso 10 </td>
+   <td style="text-align:left;"> Iraq 10 </td>
+   <td style="text-align:left;"> South Sudan 10 </td>
+   <td style="text-align:left;"> Central African Republic 10 </td>
+   <td style="text-align:left;"> South Sudan 5 </td>
   </tr>
   <tr>
-   <td style="text-align:left;"> Suriname 10 </td>
-   <td style="text-align:left;"> Lesotho 10 </td>
-   <td style="text-align:left;"> Mozambique 9.5 </td>
-   <td style="text-align:left;"> Bahamas 10 </td>
-   <td style="text-align:left;"> Belize 10 </td>
-   <td style="text-align:left;"> Bangladesh 7.7 </td>
-   <td style="text-align:left;"> Eritrea 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Syria 10 </td>
-   <td style="text-align:left;"> Mauritius 9.8 </td>
-   <td style="text-align:left;"> Serbia 8.6 </td>
-   <td style="text-align:left;"> Bosnia and Herzegovina 10 </td>
-   <td style="text-align:left;"> Botswana 10 </td>
-   <td style="text-align:left;"> Congo DR 7.3 </td>
-   <td style="text-align:left;"> Guatemala 10 </td>
-  </tr>
-  <tr>
+   <td style="text-align:left;"> Bahamas 6.6 </td>
+   <td style="text-align:left;"> Palau 10 </td>
+   <td style="text-align:left;"> Haiti 10 </td>
+   <td style="text-align:left;"> Korea DPR 10 </td>
    <td style="text-align:left;"> Tunisia 10 </td>
-   <td style="text-align:left;"> Grenada 9.6 </td>
-   <td style="text-align:left;"> Central African Republic 7.9 </td>
-   <td style="text-align:left;"> Brunei Darussalam 10 </td>
-   <td style="text-align:left;"> Bulgaria 10 </td>
-   <td style="text-align:left;"> Central African Republic 7.1 </td>
-   <td style="text-align:left;"> Lesotho 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Uganda 10 </td>
-   <td style="text-align:left;"> Croatia 8.9 </td>
-   <td style="text-align:left;"> Madagascar 7.8 </td>
-   <td style="text-align:left;"> Equatorial Guinea 10 </td>
-   <td style="text-align:left;"> Cyprus 10 </td>
-   <td style="text-align:left;"> Myanmar 7 </td>
-   <td style="text-align:left;"> Pakistan 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Venezuela 10 </td>
-   <td style="text-align:left;"> Saint Vincent and the Grenadines 8.6 </td>
-   <td style="text-align:left;"> Iraq 7.6 </td>
-   <td style="text-align:left;"> Fiji 10 </td>
-   <td style="text-align:left;"> Greece 10 </td>
-   <td style="text-align:left;"> Congo 7 </td>
-   <td style="text-align:left;"> Timor-Leste 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Bahamas 10 </td>
-   <td style="text-align:left;"> Argentina 7.9 </td>
-   <td style="text-align:left;"> Korea Republic of 6.9 </td>
-   <td style="text-align:left;"> Oman 10 </td>
-   <td style="text-align:left;"> Hungary 10 </td>
-   <td style="text-align:left;"> Nigeria 6.7 </td>
-   <td style="text-align:left;"> Uganda 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Belize 10 </td>
-   <td style="text-align:left;"> Botswana 7.8 </td>
-   <td style="text-align:left;"> Haiti 6.7 </td>
-   <td style="text-align:left;"> Palau 10 </td>
-   <td style="text-align:left;"> Palau 10 </td>
-   <td style="text-align:left;"> Mali 6.6 </td>
-   <td style="text-align:left;"> Venezuela 10 </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> Bosnia and Herzegovina 10 </td>
-   <td style="text-align:left;"> Saint Lucia 7.8 </td>
-   <td style="text-align:left;"> Ghana 6.7 </td>
-   <td style="text-align:left;"> Poland 10 </td>
+   <td style="text-align:left;"> Libya 9.4 </td>
+   <td style="text-align:left;"> Botswana 8.8 </td>
+   <td style="text-align:left;"> South Sudan 10 </td>
    <td style="text-align:left;"> Saint Lucia 10 </td>
-   <td style="text-align:left;"> Philippines 6.6 </td>
+   <td style="text-align:left;"> South Sudan 10 </td>
+   <td style="text-align:left;"> Mauritania 10 </td>
+   <td style="text-align:left;"> Chad 10 </td>
+   <td style="text-align:left;"> Central African Republic 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Honduras 5.6 </td>
+   <td style="text-align:left;"> Saint Lucia 10 </td>
+   <td style="text-align:left;"> Honduras 10 </td>
+   <td style="text-align:left;"> Burundi 10 </td>
+   <td style="text-align:left;"> Uganda 10 </td>
+   <td style="text-align:left;"> Fiji 9.4 </td>
+   <td style="text-align:left;"> Guyana 8.8 </td>
+   <td style="text-align:left;"> Chad 10 </td>
+   <td style="text-align:left;"> Dominica 10 </td>
+   <td style="text-align:left;"> Croatia 10 </td>
+   <td style="text-align:left;"> Zimbabwe 10 </td>
+   <td style="text-align:left;"> Zimbabwe 10 </td>
+   <td style="text-align:left;"> Mauritania 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Jamaica 5.5 </td>
+   <td style="text-align:left;"> Czech Republic 10 </td>
+   <td style="text-align:left;"> Somalia 10 </td>
+   <td style="text-align:left;"> Sudan 9.9 </td>
+   <td style="text-align:left;"> Bahamas 10 </td>
+   <td style="text-align:left;"> Iraq 9.4 </td>
+   <td style="text-align:left;"> Belize 8.7 </td>
+   <td style="text-align:left;"> Mauritania 10 </td>
+   <td style="text-align:left;"> Cambodia 9.8 </td>
+   <td style="text-align:left;"> Maldives 10 </td>
+   <td style="text-align:left;"> Somalia 10 </td>
+   <td style="text-align:left;"> Haiti 10 </td>
+   <td style="text-align:left;"> Haiti 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Argentina 5.3 </td>
+   <td style="text-align:left;"> Saint Kitts and Nevis 10 </td>
+   <td style="text-align:left;"> Yemen 10 </td>
+   <td style="text-align:left;"> Ethiopia 9.9 </td>
+   <td style="text-align:left;"> Belize 10 </td>
+   <td style="text-align:left;"> Timor-Leste 9.4 </td>
+   <td style="text-align:left;"> Honduras 8.6 </td>
+   <td style="text-align:left;"> Zimbabwe 10 </td>
+   <td style="text-align:left;"> Tonga 9.8 </td>
+   <td style="text-align:left;"> Mauritania 10 </td>
+   <td style="text-align:left;"> Malawi 10 </td>
+   <td style="text-align:left;"> Somalia 10 </td>
+   <td style="text-align:left;"> Kenya 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Ecuador 5 </td>
+   <td style="text-align:left;"> Iraq 9.8 </td>
+   <td style="text-align:left;"> Congo DR 10 </td>
+   <td style="text-align:left;"> Mali 9.9 </td>
    <td style="text-align:left;"> Botswana 10 </td>
+   <td style="text-align:left;"> Vanuatu 9.4 </td>
+   <td style="text-align:left;"> Mali 8.5 </td>
+   <td style="text-align:left;"> Haiti 10 </td>
+   <td style="text-align:left;"> Mali 9.8 </td>
+   <td style="text-align:left;"> Ukraine 10 </td>
+   <td style="text-align:left;"> South Africa 10 </td>
+   <td style="text-align:left;"> Yemen 10 </td>
+   <td style="text-align:left;"> Malawi 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Solomon Islands 5 </td>
+   <td style="text-align:left;"> Armenia 9.8 </td>
+   <td style="text-align:left;"> Mali 10 </td>
+   <td style="text-align:left;"> Guinea 9.9 </td>
+   <td style="text-align:left;"> Guyana 10 </td>
+   <td style="text-align:left;"> Mauritania 9.2 </td>
+   <td style="text-align:left;"> Tunisia 8.5 </td>
+   <td style="text-align:left;"> Somalia 10 </td>
+   <td style="text-align:left;"> Georgia 9.7 </td>
+   <td style="text-align:left;"> Belarus 10 </td>
+   <td style="text-align:left;"> Pakistan 10 </td>
+   <td style="text-align:left;"> Congo DR 10 </td>
+   <td style="text-align:left;"> Rwanda 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Nepal 4.8 </td>
+   <td style="text-align:left;"> Mauritania 9.4 </td>
+   <td style="text-align:left;"> Nigeria 10 </td>
+   <td style="text-align:left;"> Chad 9.8 </td>
+   <td style="text-align:left;"> Hungary 10 </td>
+   <td style="text-align:left;"> Honduras 9.2 </td>
+   <td style="text-align:left;"> Maldives 8.5 </td>
+   <td style="text-align:left;"> Yemen 10 </td>
+   <td style="text-align:left;"> Liberia 9.7 </td>
+   <td style="text-align:left;"> Cabo Verde 10 </td>
+   <td style="text-align:left;"> Syria 10 </td>
+   <td style="text-align:left;"> Guinea 10 </td>
+   <td style="text-align:left;"> Togo 5 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Moldova Republic of 4.5 </td>
+   <td style="text-align:left;"> Montenegro 9.4 </td>
+   <td style="text-align:left;"> Eritrea 10 </td>
+   <td style="text-align:left;"> Central African Republic 9.8 </td>
+   <td style="text-align:left;"> Malta 10 </td>
+   <td style="text-align:left;"> Syria 9.1 </td>
+   <td style="text-align:left;"> Rwanda 8.5 </td>
+   <td style="text-align:left;"> Congo DR 10 </td>
+   <td style="text-align:left;"> Montenegro 9.6 </td>
+   <td style="text-align:left;"> Peru 10 </td>
+   <td style="text-align:left;"> Uganda 10 </td>
+   <td style="text-align:left;"> Mali 10 </td>
+   <td style="text-align:left;"> Libya 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Colombia 4.4 </td>
+   <td style="text-align:left;"> Romania 9.3 </td>
+   <td style="text-align:left;"> Guatemala 10 </td>
+   <td style="text-align:left;"> Guinea-Bissau 9.7 </td>
+   <td style="text-align:left;"> Moldova Republic of 10 </td>
+   <td style="text-align:left;"> Chad 9.1 </td>
+   <td style="text-align:left;"> Jamaica 8.4 </td>
+   <td style="text-align:left;"> Malawi 10 </td>
+   <td style="text-align:left;"> Seychelles 9.5 </td>
+   <td style="text-align:left;"> Serbia 10 </td>
+   <td style="text-align:left;"> Sudan 9.9 </td>
+   <td style="text-align:left;"> Nigeria 10 </td>
+   <td style="text-align:left;"> Sudan 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Panama 4.4 </td>
+   <td style="text-align:left;"> Seychelles 9.1 </td>
+   <td style="text-align:left;"> Pakistan 10 </td>
+   <td style="text-align:left;"> Haiti 9.7 </td>
+   <td style="text-align:left;"> Rwanda 10 </td>
+   <td style="text-align:left;"> Mali 9.1 </td>
+   <td style="text-align:left;"> Trinidad and Tobago 8.2 </td>
+   <td style="text-align:left;"> Zambia 10 </td>
+   <td style="text-align:left;"> Guinea-Bissau 9.5 </td>
+   <td style="text-align:left;"> Grenada 10 </td>
+   <td style="text-align:left;"> Niger 9.5 </td>
+   <td style="text-align:left;"> Eritrea 10 </td>
+   <td style="text-align:left;"> Niger 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Lebanon 4.3 </td>
+   <td style="text-align:left;"> Georgia 9.1 </td>
+   <td style="text-align:left;"> Venezuela 10 </td>
+   <td style="text-align:left;"> South Sudan 9.6 </td>
+   <td style="text-align:left;"> Vanuatu 10 </td>
+   <td style="text-align:left;"> Jamaica 9.1 </td>
+   <td style="text-align:left;"> Malta 8.1 </td>
+   <td style="text-align:left;"> Lesotho 10 </td>
+   <td style="text-align:left;"> Palau 9.5 </td>
+   <td style="text-align:left;"> Montenegro 10 </td>
+   <td style="text-align:left;"> Haiti 9.2 </td>
+   <td style="text-align:left;"> Korea DPR 10 </td>
+   <td style="text-align:left;"> Ethiopia 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Spain 4.2 </td>
+   <td style="text-align:left;"> Portugal 9 </td>
+   <td style="text-align:left;"> Korea DPR 10 </td>
+   <td style="text-align:left;"> Turkmenistan 9.5 </td>
+   <td style="text-align:left;"> Lithuania 10 </td>
+   <td style="text-align:left;"> Cabo Verde 9 </td>
+   <td style="text-align:left;"> Iraq 7.9 </td>
+   <td style="text-align:left;"> Djibouti 10 </td>
+   <td style="text-align:left;"> Senegal 9.3 </td>
+   <td style="text-align:left;"> South Africa 10 </td>
+   <td style="text-align:left;"> Chad 9.1 </td>
+   <td style="text-align:left;"> Guinea-Bissau 10 </td>
+   <td style="text-align:left;"> Iraq 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Chile 4.1 </td>
+   <td style="text-align:left;"> Greece 9 </td>
+   <td style="text-align:left;"> Kenya 7.9 </td>
+   <td style="text-align:left;"> Mauritania 9.5 </td>
+   <td style="text-align:left;"> United States of America 10 </td>
+   <td style="text-align:left;"> Burkina Faso 8.9 </td>
+   <td style="text-align:left;"> North Macedonia 7.8 </td>
+   <td style="text-align:left;"> Timor-Leste 8.4 </td>
+   <td style="text-align:left;"> Belize 9.2 </td>
+   <td style="text-align:left;"> Antigua and Barbuda 10 </td>
+   <td style="text-align:left;"> Eritrea 8.8 </td>
+   <td style="text-align:left;"> Burundi 9.9 </td>
+   <td style="text-align:left;"> Chad 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Namibia 4.1 </td>
+   <td style="text-align:left;"> Bulgaria 8.9 </td>
+   <td style="text-align:left;"> Micronesia 7.8 </td>
+   <td style="text-align:left;"> Kenya 9.5 </td>
+   <td style="text-align:left;"> Uruguay 10 </td>
+   <td style="text-align:left;"> Bahamas 8.9 </td>
+   <td style="text-align:left;"> Gabon 7.6 </td>
+   <td style="text-align:left;"> Myanmar 8.4 </td>
+   <td style="text-align:left;"> Bosnia and Herzegovina 8.9 </td>
+   <td style="text-align:left;"> El Salvador 10 </td>
+   <td style="text-align:left;"> Kenya 8.7 </td>
+   <td style="text-align:left;"> Ethiopia 9.9 </td>
+   <td style="text-align:left;"> Ukraine 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> South Africa 4.1 </td>
+   <td style="text-align:left;"> Bahamas 8.9 </td>
+   <td style="text-align:left;"> Uganda 7.3 </td>
+   <td style="text-align:left;"> Cameroon 9.4 </td>
+   <td style="text-align:left;"> Korea Republic of 10 </td>
+   <td style="text-align:left;"> Botswana 8.8 </td>
+   <td style="text-align:left;"> Uruguay 7.6 </td>
+   <td style="text-align:left;"> Bhutan 8.4 </td>
+   <td style="text-align:left;"> Togo 8.8 </td>
+   <td style="text-align:left;"> Georgia 10 </td>
+   <td style="text-align:left;"> Yemen 8.5 </td>
+   <td style="text-align:left;"> Pakistan 9.7 </td>
+   <td style="text-align:left;"> Zimbabwe 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> United States of America 4 </td>
+   <td style="text-align:left;"> El Salvador 8.9 </td>
+   <td style="text-align:left;"> Madagascar 6.2 </td>
+   <td style="text-align:left;"> Côte d'Ivoire 9.3 </td>
+   <td style="text-align:left;"> Armenia 9.7 </td>
+   <td style="text-align:left;"> Guyana 8.8 </td>
+   <td style="text-align:left;"> Moldova Republic of 7.4 </td>
+   <td style="text-align:left;"> Botswana 7.4 </td>
+   <td style="text-align:left;"> Samoa 8.8 </td>
+   <td style="text-align:left;"> Seychelles 10 </td>
+   <td style="text-align:left;"> Jordan 8.2 </td>
+   <td style="text-align:left;"> Uganda 9.7 </td>
+   <td style="text-align:left;"> Congo DR 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Tunisia 4 </td>
+   <td style="text-align:left;"> Latvia 8.9 </td>
+   <td style="text-align:left;"> Russian Federation 6 </td>
+   <td style="text-align:left;"> Nigeria 9.2 </td>
+   <td style="text-align:left;"> North Macedonia 9.7 </td>
+   <td style="text-align:left;"> Belize 8.7 </td>
+   <td style="text-align:left;"> Montenegro 7.3 </td>
+   <td style="text-align:left;"> Madagascar 7.4 </td>
+   <td style="text-align:left;"> Solomon Islands 8.8 </td>
+   <td style="text-align:left;"> Trinidad and Tobago 10 </td>
+   <td style="text-align:left;"> Djibouti 7.8 </td>
+   <td style="text-align:left;"> Venezuela 9.7 </td>
+   <td style="text-align:left;"> Mali 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Israel 3.9 </td>
+   <td style="text-align:left;"> Sao Tome and Principe 8.9 </td>
+   <td style="text-align:left;"> Angola 5.9 </td>
+   <td style="text-align:left;"> Burkina Faso 9.2 </td>
+   <td style="text-align:left;"> Mali 8.9 </td>
+   <td style="text-align:left;"> Barbados 8.7 </td>
+   <td style="text-align:left;"> Venezuela 7.2 </td>
+   <td style="text-align:left;"> Rwanda 7.3 </td>
+   <td style="text-align:left;"> Jamaica 8.8 </td>
+   <td style="text-align:left;"> Angola 10 </td>
+   <td style="text-align:left;"> Bangladesh 7.7 </td>
+   <td style="text-align:left;"> Kenya 9.6 </td>
+   <td style="text-align:left;"> Burkina Faso 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Libya 3.8 </td>
+   <td style="text-align:left;"> Spain 8.8 </td>
+   <td style="text-align:left;"> Guinea 5.1 </td>
+   <td style="text-align:left;"> Angola 9.1 </td>
+   <td style="text-align:left;"> Honduras 8.7 </td>
+   <td style="text-align:left;"> Niger 8.7 </td>
+   <td style="text-align:left;"> Uganda 7.2 </td>
+   <td style="text-align:left;"> Kenya 7.3 </td>
+   <td style="text-align:left;"> Yemen 8.7 </td>
+   <td style="text-align:left;"> Bahamas 10 </td>
+   <td style="text-align:left;"> Congo DR 7.3 </td>
+   <td style="text-align:left;"> Mauritania 9.5 </td>
+   <td style="text-align:left;"> Eritrea 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Brazil 3.7 </td>
+   <td style="text-align:left;"> Cyprus 8.8 </td>
+   <td style="text-align:left;"> Chad 4.8 </td>
+   <td style="text-align:left;"> Djibouti 9 </td>
+   <td style="text-align:left;"> Colombia 8.7 </td>
+   <td style="text-align:left;"> Togo 8.7 </td>
+   <td style="text-align:left;"> Guatemala 7.1 </td>
+   <td style="text-align:left;"> Venezuela 7.1 </td>
+   <td style="text-align:left;"> Armenia 8.7 </td>
+   <td style="text-align:left;"> Bosnia and Herzegovina 10 </td>
+   <td style="text-align:left;"> Central African Republic 7.1 </td>
+   <td style="text-align:left;"> Lesotho 9.4 </td>
+   <td style="text-align:left;"> Lesotho 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Costa Rica 3.6 </td>
+   <td style="text-align:left;"> Cambodia 8.8 </td>
+   <td style="text-align:left;"> Belarus 4.8 </td>
+   <td style="text-align:left;"> Timor-Leste 8.9 </td>
+   <td style="text-align:left;"> South Africa 8.7 </td>
+   <td style="text-align:left;"> Tunisia 8.5 </td>
+   <td style="text-align:left;"> Solomon Islands 7 </td>
+   <td style="text-align:left;"> Bolivia 7.1 </td>
+   <td style="text-align:left;"> Jordan 8.6 </td>
+   <td style="text-align:left;"> Brunei Darussalam 10 </td>
+   <td style="text-align:left;"> Myanmar 7 </td>
+   <td style="text-align:left;"> Turkmenistan 9.4 </td>
+   <td style="text-align:left;"> Belize 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Netherlands 3.6 </td>
+   <td style="text-align:left;"> Hungary 8.6 </td>
+   <td style="text-align:left;"> Israel 4.6 </td>
+   <td style="text-align:left;"> Togo 8.9 </td>
+   <td style="text-align:left;"> Argentina 8.7 </td>
+   <td style="text-align:left;"> Maldives 8.5 </td>
+   <td style="text-align:left;"> Cuba 7 </td>
+   <td style="text-align:left;"> Togo 7 </td>
+   <td style="text-align:left;"> Rwanda 8.6 </td>
+   <td style="text-align:left;"> Equatorial Guinea 10 </td>
+   <td style="text-align:left;"> Congo 7 </td>
+   <td style="text-align:left;"> Mozambique 9.4 </td>
+   <td style="text-align:left;"> Djibouti 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Rwanda 3.6 </td>
+   <td style="text-align:left;"> Slovenia 8.5 </td>
+   <td style="text-align:left;"> Mauritius 4.5 </td>
+   <td style="text-align:left;"> Sierra Leone 8.9 </td>
+   <td style="text-align:left;"> Panama 8.7 </td>
+   <td style="text-align:left;"> Sri Lanka 8.5 </td>
+   <td style="text-align:left;"> Nepal 7 </td>
+   <td style="text-align:left;"> Guyana 6.8 </td>
+   <td style="text-align:left;"> Haiti 8.5 </td>
+   <td style="text-align:left;"> Fiji 10 </td>
+   <td style="text-align:left;"> Nigeria 6.7 </td>
+   <td style="text-align:left;"> Côte d'Ivoire 9.4 </td>
+   <td style="text-align:left;"> Solomon Islands 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Mexico 3.5 </td>
+   <td style="text-align:left;"> Belgium 8.5 </td>
+   <td style="text-align:left;"> Tunisia 4.3 </td>
+   <td style="text-align:left;"> Cambodia 8.9 </td>
+   <td style="text-align:left;"> India 8.7 </td>
+   <td style="text-align:left;"> Rwanda 8.5 </td>
+   <td style="text-align:left;"> Eswatini 7 </td>
+   <td style="text-align:left;"> Guatemala 6.8 </td>
+   <td style="text-align:left;"> Honduras 8.4 </td>
+   <td style="text-align:left;"> Hungary 10 </td>
+   <td style="text-align:left;"> Mali 6.6 </td>
+   <td style="text-align:left;"> Angola 9.4 </td>
+   <td style="text-align:left;"> Bhutan 4 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> France 3.4 </td>
+   <td style="text-align:left;"> Afghanistan 8.5 </td>
+   <td style="text-align:left;"> Fiji 4.3 </td>
+   <td style="text-align:left;"> Liberia 8.9 </td>
+   <td style="text-align:left;"> Jamaica 8.7 </td>
+   <td style="text-align:left;"> Mauritius 8.4 </td>
+   <td style="text-align:left;"> Papua New Guinea 7 </td>
+   <td style="text-align:left;"> Mali 6.6 </td>
+   <td style="text-align:left;"> Côte d'Ivoire 8.4 </td>
+   <td style="text-align:left;"> Oman 10 </td>
+   <td style="text-align:left;"> Philippines 6.6 </td>
+   <td style="text-align:left;"> Burkina Faso 9.3 </td>
+   <td style="text-align:left;"> Madagascar 4 </td>
   </tr>
 </tbody>
 </table>
