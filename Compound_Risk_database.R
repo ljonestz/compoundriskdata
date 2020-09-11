@@ -416,7 +416,7 @@ cesi$M_CESI_Index <- cesipca$x[,1] + cesipca$x[,2]
 #Normalised scores
 upperrisk <- quantile(cesi$M_CESI_Index, probs = c(0.1), na.rm=T)
 lowerrisk <- quantile(cesi$M_CESI_Index, probs = c(0.95), na.rm=T)
-cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "M_CESI_Index") 
+cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "Indicator_dataset/M_CESI_Index") 
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -800,8 +800,83 @@ write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 
 
 
+#--------------------LOAD ACAPS realtime database-------------------------------------------
+#Load website
+acaps <- read_html("https://www.acaps.org/countries")
 
+#Select relevant columns from the site all merged into a single string
+country <- acaps %>%
+  html_nodes(".severity__country__label, .severity__country__crisis__label, .severity__country__crisis__value") %>%
+  html_text() 
 
+#Find country labels in the string (select 2nd lag behind a numberic variable if the given item is a character)
+countryisolate <- suppressWarnings(ifelse(!is.na(as.numeric(as.character(country))) & lag(is.na(as.numeric(as.character(country))), 2),
+                                          lag(country, 2), 
+                                          NA
+))
+
+#For all variables that have a country label, change to iso categories
+country[which(!is.na(countryisolate)) - 2] <- countrycode(country[which(!is.na(countryisolate)) - 2],
+                                                          origin = 'country.name', 
+                                                          destination = 'iso3c',
+                                                          nomatch = NULL)
+#Collect list of all world countries
+world <- map_data("world")
+world <- world %>%
+  dplyr::rename(Country = region) %>%
+  dplyr::mutate(Country = suppressWarnings(countrycode(Country,
+                                                       origin = 'country.name', 
+                                                       destination = 'iso3c',
+                                                       nomatch = NULL)))
+
+countrynam <-levels(as.factor(world$Country))
+
+#Find all countrys in the list and replace with correct country name (then fill in remaining NAs)
+gap <- ifelse(country %in% countrynam, country, NA)
+gaplist <- na.locf(gap)
+
+#Create new dataframe with correct countrynames
+acapslist <- cbind.data.frame(country, gaplist)
+acapslist <- acapslist[!acapslist$country %in% countrynam,]
+acapslist <- acapslist %>% filter(country != "Countrylevel")
+
+#Create new column with the risk scores (and duplicate for missing rows up until the correct value)
+acapslist$risk <- suppressWarnings(ifelse(!is.na(as.numeric(as.character(acapslist$country))), as.numeric(as.character(acapslist$country)), NA))
+acapslist$risk <- c(na.locf(acapslist$risk), NA)
+
+#Remove duplicate rows and numeric rows
+acapslist <- acapslist %>%
+  filter(is.na(as.numeric(as.character(country)))) %>%
+  filter(country != "Country level") %>%
+  filter(country != "Country Level") %>%
+  filter(country != "")
+
+write.csv(acapslist, "Indicator_dataset/acaps.csv")
+
+#List of countries with specific hazards
+conflictnams <- acapslist %>%
+  filter(str_detect(acapslist$country, c("conflict|Crisis|crisis|Conflict|Refugees|refugees|
+                                         Migration|migration|violence|violence|Boko Haram"))) %>%
+  filter(risk >= 4) %>% 
+  select(gaplist)
+conflictnams <- unique(conflictnams)
+  
+foodnams <- acapslist[str_detect(acapslist$country, c("Food|food|famine|famine")),] %>%
+  filter(risk >= 4) %>% 
+  select(gaplist) 
+foodnams <- unique(foodnams)
+  
+naturalnams <-  acapslist[str_detect(acapslist$country, c("Floods|floods|Drought|drought|Cyclone|cyclone|
+                                                          Flooding|flooding|Landslides|landslides|
+                                                          Earthquake|earthquake")),] %>%
+filter(risk >= 3) %>% 
+  select(gaplist) 
+naturalnams <- unique(naturalnams)
+
+healthnams <- acapslist[str_detect(acapslist$country, c("Epidemic|epidemic")),] %>%
+filter(risk >= 3) %>% 
+  select(gaplist) 
+healthnams <- unique(healthnams)
 
 
   
