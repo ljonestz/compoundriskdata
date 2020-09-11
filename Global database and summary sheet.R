@@ -19,6 +19,7 @@ fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundr
 macrosheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
 Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
 Socioeconomic_sheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
+acapssheet <- read.csv(read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv"))
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 #Join datasets
@@ -28,7 +29,8 @@ globalrisk <- left_join(countrylist, healthsheet, by=c("Countryname", "Country")
   left_join(., fragilitysheet, by=c("Countryname", "Country")) %>% 
   left_join(., macrosheet, by=c("Countryname", "Country")) %>% 
   left_join(., Naturalhazardsheet, by=c("Countryname", "Country")) %>% 
-  left_join(., Socioeconomic_sheet,by=c( "Country")) %>%
+  left_join(., Socioeconomic_sheet, by=c( "Country")) %>% 
+  left_join(., acapssheet, by=c( "Country", "Countryname")) %>%
   select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
@@ -48,7 +50,7 @@ riskflags <- globalrisk %>%
          EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
          EXISTING_RISK_NATURAL_HAZARDS = NH_Hazard_Score_norm,
          EXISTING_RISK_FRAGILITY_INSTITUTIONS = pmax(Fr_INFORM_Fragility_Score_norm, 
-                                                     Fr_FSI_Score_norm, 
+                                                     Fr_FSI_Score_norm,
                                                      na.rm=T),
          EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(H_Oxrollback_score_norm, 
                                                       H_Covidgrowth_casesnorm,
@@ -56,9 +58,11 @@ riskflags <- globalrisk %>%
                                                       H_new_cases_smoothed_per_million_norm,
                                                       H_new_deaths_smoothed_per_million_norm,
                                                       H_Covidproj_Projected_Deaths_._1M_norm, 
+                                                      H_health_acled,
                                                       na.rm=T),
          EMERGING_RISK_FOOD_SECURITY = case_when(!is.na(F_Fewsnet_Score_norm) ~ pmax(F_FAO_6mFPV_norm,
-                                                                                     F_Artemis_Score_norm, 
+                                                                                     F_Artemis_Score_norm,
+                                                                                     F_food_acled,
                                                                                      na.rm=T),
                                                  TRUE ~ F_FAO_6mFPV_norm),
          EMERGING_RISK_FISCAL = pmax(D_IMF_debt2020.2019_norm,
@@ -71,12 +75,14 @@ riskflags <- globalrisk %>%
          EMERGING_RISK_NATURAL_HAZARDS = pmax(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
                                               NH_GDAC_Hazard_Score_Norm, 
                                               NH_INFORM_Crisis_Norm, 
+                                              NH_natural_acled,
                                               na.rm = T),
          EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(NH_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
                                                          TRUE ~ pmax(Fr_FSI_2019minus2020_norm, 
                                                                Fr_REIGN_couprisk3m_norm,
                                                                Fr_ACLED_event_same_month_difference_perc_norm,
                                                                Fr_ACLED_fatal_same_month_difference_perc_norm,
+                                                               Fr_conflict_acled,
                                                                na.rm=T))) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
@@ -156,7 +162,8 @@ names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm",
            "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm", 
            "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", 
            "Fr_INFORM_Fragility_Score_norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm", 
-           "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm")
+           "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm", "H_health", "F_food",
+           "Fr_conflict", "NH_natural")
 
 altflag[paste0(names,"_plus1")] <- lapply(altflag[names], function(xx){ifelse(xx==0, xx+1, xx)})
 
@@ -188,7 +195,8 @@ altflag$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT <- geometricmeanRow(cbind.d
                                                                                                  altflag$H_Covidgrowth_deathsnorm,
                                                                                                  altflag$H_new_cases_smoothed_per_million_norm,
                                                                                                  altflag$H_new_deaths_smoothed_per_million_norm,
-                                                                                                 altflag$H_Covidproj_Projected_Deaths_._1M_norm, 
+                                                                                                 altflag$H_Covidproj_Projected_Deaths_._1M_norm,
+                                                                                                 altflag$H_health_acled,
                                                                                                  na.rm=T)),
                                                                            na.rm=T
 )

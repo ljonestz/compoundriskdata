@@ -878,8 +878,20 @@ healthnams <- unique(healthnams)
 
 #Load countries in the CRM
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
-countrylist <- countrylist %>% 
+acapssheet <- countrylist %>% 
   select(-X) %>%
-  mutate()
+  mutate(Fr_conflict = case_when(Country %in% unlist(as.list(conflictnams)) ~ 10,
+                              TRUE ~ 0),
+         H_health = case_when(Country %in% unlist(as.list(healthnams)) ~ 10,
+                            TRUE ~ 0),
+         NH_natural = case_when(Country %in% unlist(as.list(naturalnams)) ~ 10,
+                             TRUE ~ 0),
+         F_food = case_when(Country %in% unlist(as.list(foodnams)) ~ 10,
+                          TRUE ~ 0))
+
+#Write ACAPS sheet
+write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
+
+
 
   
