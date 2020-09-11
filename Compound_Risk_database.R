@@ -795,11 +795,6 @@ nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
 
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 
-
-
-
-
-
 #--------------------LOAD ACAPS realtime database-------------------------------------------
 #Load website
 acaps <- read_html("https://www.acaps.org/countries")
@@ -860,12 +855,14 @@ conflictnams <- acapslist %>%
   filter(risk >= 4) %>% 
   select(gaplist)
 conflictnams <- unique(conflictnams)
-  
+
+#Food security countries
 foodnams <- acapslist[str_detect(acapslist$country, c("Food|food|famine|famine")),] %>%
   filter(risk >= 4) %>% 
   select(gaplist) 
 foodnams <- unique(foodnams)
-  
+
+#Natural hazard countries
 naturalnams <-  acapslist[str_detect(acapslist$country, c("Floods|floods|Drought|drought|Cyclone|cyclone|
                                                           Flooding|flooding|Landslides|landslides|
                                                           Earthquake|earthquake")),] %>%
@@ -873,10 +870,16 @@ filter(risk >= 3) %>%
   select(gaplist) 
 naturalnams <- unique(naturalnams)
 
+#Epidemic countries
 healthnams <- acapslist[str_detect(acapslist$country, c("Epidemic|epidemic")),] %>%
 filter(risk >= 3) %>% 
   select(gaplist) 
 healthnams <- unique(healthnams)
 
+#Load countries in the CRM
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>% 
+  select(-X) %>%
+  mutate()
 
   
