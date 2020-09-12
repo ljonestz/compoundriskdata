@@ -19,7 +19,7 @@ fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundr
 macrosheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
 Naturalhazardsheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
 Socioeconomic_sheet <-  read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
-acapssheet <- read.csv(read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv"))
+acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv")
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 #Join datasets
@@ -31,7 +31,7 @@ globalrisk <- left_join(countrylist, healthsheet, by=c("Countryname", "Country")
   left_join(., Naturalhazardsheet, by=c("Countryname", "Country")) %>% 
   left_join(., Socioeconomic_sheet, by=c( "Country")) %>% 
   left_join(., acapssheet, by=c( "Country", "Countryname")) %>%
-  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y) %>%
+  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y, -X) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
 
@@ -85,7 +85,7 @@ riskflags <- globalrisk %>%
                                                                Fr_conflict_acled,
                                                                Fr_state6m_norm,
                                                                Fr_nonstate6m_norm,
-                                                               Fr_onesided6m_norm
+                                                               Fr_oneside6m_norm,
                                                                na.rm=T))) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
@@ -165,8 +165,7 @@ names <- c("S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm",
            "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm", 
            "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", 
            "Fr_INFORM_Fragility_Score_norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm", 
-           "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm", "H_health", "F_food",
-           "Fr_conflict", "NH_natural")
+           "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm")
 
 altflag[paste0(names,"_plus1")] <- lapply(altflag[names], function(xx){ifelse(xx==0, xx+1, xx)})
 
@@ -258,7 +257,7 @@ reliabilitysheet <- globalrisk %>%
                                                                               Fr_ACLED_fatal_same_month_difference_perc_norm,
                                                                               Fr_state6m_norm,
                                                                               Fr_nonstate6m_norm,
-                                                                              Fr_onesided6m_norm)),
+                                                                              Fr_oneside6m_norm)),
                                                                na.rm = T)/4,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,
@@ -406,7 +405,7 @@ headerStyle <- createStyle(
          sheet = number, 
          headerStyle, 
          rows = 1, 
-         cols = 1:52, 
+         cols = 1:57, 
          gridExpand = TRUE
   )
 
@@ -420,7 +419,7 @@ headerStyle <- createStyle(
          sheet = number, 
          bodyStyle, 
          rows = 2:191, 
-         cols = 1:52, 
+         cols = 1:57, 
          gridExpand = TRUE
   )
 
@@ -548,6 +547,7 @@ cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Sc
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"), which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(fragilitysheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_state6m_norm"), which(colnames(fragilitysheet) == "Fr_nonstate6m_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
@@ -651,6 +651,6 @@ globalriskflags <- left_join(riskset %>% select(-contains("RELIABILITY")), debts
   left_join(., alt, by = c("Countryname", "Country")) %>%
 select(-c("X", contains(c("X.", "x.", "..", " "))))
 
-write.csv(globalriskflags, file = "Risk_sheets/Globalrisksheet.xlsx")
+write.csv(globalriskflags, file = "Risk_sheets/Globalrisksheet.csv")
 
   
