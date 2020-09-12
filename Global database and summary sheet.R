@@ -83,6 +83,9 @@ riskflags <- globalrisk %>%
                                                                Fr_ACLED_event_same_month_difference_perc_norm,
                                                                Fr_ACLED_fatal_same_month_difference_perc_norm,
                                                                Fr_conflict_acled,
+                                                               Fr_state6m_norm,
+                                                               Fr_nonstate6m_norm,
+                                                               Fr_onesided6m_norm
                                                                na.rm=T))) %>%
   select(Countryname, Country,EXISTING_RISK_COVID_RESPONSE_CAPACITY,EXISTING_RISK_FOOD_SECURITY,
          EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
@@ -252,7 +255,10 @@ reliabilitysheet <- globalrisk %>%
                                                                        select(Fr_INFORM_Fragility_Score_norm, 
                                                                               Fr_FSI_Score_norm,
                                                                               Fr_ACLED_event_same_month_difference_perc_norm, 
-                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm)),
+                                                                              Fr_ACLED_fatal_same_month_difference_perc_norm,
+                                                                              Fr_state6m_norm,
+                                                                              Fr_nonstate6m_norm,
+                                                                              Fr_onesided6m_norm)),
                                                                na.rm = T)/4,
          RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
                                                                         select(H_Oxrollback_score_norm,

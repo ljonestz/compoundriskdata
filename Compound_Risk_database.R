@@ -416,7 +416,7 @@ cesi$M_CESI_Index <- cesipca$x[,1] + cesipca$x[,2]
 #Normalised scores
 upperrisk <- quantile(cesi$M_CESI_Index, probs = c(0.1), na.rm=T)
 lowerrisk <- quantile(cesi$M_CESI_Index, probs = c(0.95), na.rm=T)
-cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "Indicator_dataset/M_CESI_Index") 
+cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "M_CESI_Index") 
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -577,6 +577,52 @@ acleddata <- aclednorm(acleddata, 800, 0, "Fr_ACLED_event_month_threeyear_differ
 
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 
+#Load VIEWS data
+#Download and unzip file from View site
+download.file("http://ucdp.uu.se/downloads/views/predictions_cm.zip", "Indicator_dataset/Viewsrawzip")
+
+state_views <- read.csv(unz("Indicator_dataset/Viewsrawzip", "predictions_sb_cm/average_base_sb.csv"))
+nonstate_views <- read.csv(unz("Indicator_dataset/Viewsrawzip", "predictions_ns_cm/average_base_ns.csv"))
+oneside_views <- read.csv(unz("Indicator_dataset/Viewsrawzip", "predictions_os_cm/average_base_os.csv"))
+
+#Calculate month converter
+elapsed_months <- function(end_date, start_date) {
+  ed <- as.POSIXlt(end_date)
+  sd <- as.POSIXlt(start_date)
+  12 * (ed$year - sd$year) + (ed$mon - sd$mon)
+}
+
+#Select next six months state
+state_views_6m <- state_views %>%
+  filter(month_id >= elapsed_months(Sys.time(), as.Date("1980-01-01")) &
+           month_id <= elapsed_months(Sys.time(), as.Date("1980-01-01")) + 5) %>%
+  group_by(isoab) %>%
+  summarise(Fr_state6m = max(average_base_sb, na.rm=T)) 
+
+#Select next six months nonstate
+nonstate_views_6m <- nonstate_views %>%
+  filter(month_id >= elapsed_months(Sys.time(), as.Date("1980-01-01")) &
+           month_id <= elapsed_months(Sys.time(), as.Date("1980-01-01")) + 5) %>%
+  group_by(isoab) %>%
+  summarise(Fr_nonstate6m = max(average_base_ns, na.rm=T)) 
+
+#Select next six months oneside
+oneside_views_6m <- oneside_views %>%
+  filter(month_id >= elapsed_months(Sys.time(), as.Date("1980-01-01")) &
+           month_id <= elapsed_months(Sys.time(), as.Date("1980-01-01")) + 5) %>%
+  group_by(isoab) %>%
+  summarise(Fr_oneside6m = max(average_base_os, na.rm=T)) 
+
+#Combine into one
+views_6m_proj <- full_join(state_views_6m, nonstate_views_6m, by="isoab") %>%
+  full_join(., oneside_views_6m, by="isoab") %>%
+  rename(Country = isoab) 
+
+#Normalise values
+views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_state6m")
+views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_nonstate6m")
+views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_oneside6m")
+
 #-------------------------------------FRAGILITY SHEET--------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>% 
@@ -587,6 +633,7 @@ fragilitysheet <- left_join(countrylist, fsi, by="Country")  %>%
   left_join(., reign,  by="Country") %>%
   left_join(., gpi, by="Country") %>%
   left_join(., acleddata, by="Country") %>%
+  left_join(., views_6m_proj, by="Country") %>%
   arrange(Country)
 
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
@@ -846,6 +893,7 @@ acapslist <- acapslist %>%
   filter(country != "Country Level") %>%
   filter(country != "")
 
+#Save csv with full acapslist
 write.csv(acapslist, "Indicator_dataset/acaps.csv")
 
 #List of countries with specific hazards
@@ -854,12 +902,14 @@ conflictnams <- acapslist %>%
                                          Migration|migration|violence|violence|Boko Haram"))) %>%
   filter(risk >= 4) %>% 
   select(gaplist)
+
 conflictnams <- unique(conflictnams)
 
 #Food security countries
 foodnams <- acapslist[str_detect(acapslist$country, c("Food|food|famine|famine")),] %>%
   filter(risk >= 4) %>% 
   select(gaplist) 
+
 foodnams <- unique(foodnams)
 
 #Natural hazard countries
@@ -868,29 +918,37 @@ naturalnams <-  acapslist[str_detect(acapslist$country, c("Floods|floods|Drought
                                                           Earthquake|earthquake")),] %>%
 filter(risk >= 3) %>% 
   select(gaplist) 
+
 naturalnams <- unique(naturalnams)
 
 #Epidemic countries
 healthnams <- acapslist[str_detect(acapslist$country, c("Epidemic|epidemic")),] %>%
 filter(risk >= 3) %>% 
   select(gaplist) 
+
 healthnams <- unique(healthnams)
 
 #Load countries in the CRM
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+
 acapssheet <- countrylist %>% 
   select(-X) %>%
-  mutate(Fr_conflict = case_when(Country %in% unlist(as.list(conflictnams)) ~ 10,
+  mutate(Fr_conflict_acled = case_when(Country %in% unlist(as.list(conflictnams)) ~ 10,
                               TRUE ~ 0),
-         H_health = case_when(Country %in% unlist(as.list(healthnams)) ~ 10,
+         H_health_acled = case_when(Country %in% unlist(as.list(healthnams)) ~ 10,
                             TRUE ~ 0),
-         NH_natural = case_when(Country %in% unlist(as.list(naturalnams)) ~ 10,
+         NH_natural_acled = case_when(Country %in% unlist(as.list(naturalnams)) ~ 10,
                              TRUE ~ 0),
-         F_food = case_when(Country %in% unlist(as.list(foodnams)) ~ 10,
+         F_food_acled = case_when(Country %in% unlist(as.list(foodnams)) ~ 10,
                           TRUE ~ 0))
 
 #Write ACAPS sheet
 write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
+
+
+
+  
+
 
 
 
