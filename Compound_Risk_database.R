@@ -8,7 +8,7 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(cowplot, lubridate, rvest, viridis, countrycode,
                  clipr, awalker89/openxlsx, dplyr, tidyverse, readxl,
-                 gsheet)
+                 gsheet, zoo)
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 #Function to normalise with upper and lower bounds (when low score = high vulnerability)
@@ -30,6 +30,14 @@ normfuncpos <- function(df,upperrisk, lowerrisk, col1){
                                         ))
   df
 }
+
+#
+##
+### ********************************************************************************************
+####    CREATE HEALTH SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
 
 #--------------------HIS Score-----------------
 HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/HIS.csv")
@@ -175,6 +183,14 @@ health <- left_join(countrylist, HIS, by="Country") %>%
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
 
+#
+##
+### ********************************************************************************************
+####    CREATE FOOD SECURITY SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
+
 #---------------------------------LOAD FOOD SECURITY DATA---------------------------
 #Proteus Index
 proteus <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/proteus.csv")
@@ -271,6 +287,14 @@ foodsecurity <- left_join(countrylist, proteus, by="Country") %>%
 
 write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 
+#
+##
+### ********************************************************************************************
+####    CREATE DEBT SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
+
 #---------------------------LOAD DEBT DATA----------------------------
 #SCRAPE DEBT DATA
 debtweb <- "https://www.worldbank.org/en/topic/debt/brief/covid-19-debt-service-suspension-initiative"
@@ -362,6 +386,14 @@ debtsheet <- left_join(countrylist, debttab, by="Country") %>%
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
 
+#
+##
+### ********************************************************************************************
+####    CREATE MACRO  SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
+
 #--------------------------MACRO DATA---------------------------------------
 macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macro.csv")
 macro <- macro %>%
@@ -429,6 +461,14 @@ macrosheet <- left_join(countrylist, macro, by="Country") %>%
   arrange(Country)
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
+
+#
+##
+### ********************************************************************************************
+####    CREATE FRAGILITY  SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
 
 #--------------------------------FRAGILITY DATA-----------------------------------------
 fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FSI.csv")
@@ -638,6 +678,14 @@ fragilitysheet <- left_join(countrylist, fsi, by="Country")  %>%
 
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
+#
+##
+### ********************************************************************************************
+####    CREATE SOCIO-ECONOMIC SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
+
 #--------------------------------SOCIO-ECONOMIC DATA and SHEET------------------------------------------
 #Load OCHA database
 ocha <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv"))
@@ -649,6 +697,14 @@ upperrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.95), na
 lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na.rm=T)
 ocha <- normfuncpos(ocha,upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index") 
 write.csv(ocha, "Risk_sheets/Socioeconomic_sheet.csv")
+
+#
+##
+### ********************************************************************************************
+####    CREATE NATURAL HAZARDS SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
 
 #-------------------------------NATURAL HAZARDS SHEET------------------------------------------------
 #Load UKMO dataset
@@ -826,7 +882,6 @@ informnathaz <- informnathaz %>%
 #Normalise scores
 informnathaz <- normfuncpos(informnathaz, 9, 1, "NH_Hazard_Score")
 
-
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>% 
@@ -841,6 +896,14 @@ nathazardfull <- left_join(countrylist, nathaz, by="Country") %>%
   arrange(Country)
 
 write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
+
+#
+##
+### ********************************************************************************************
+####    CREATE ACAPS SHEET USING A RANGE OF SOURCE INDICATORS
+### ********************************************************************************************
+##
+#
 
 #--------------------LOAD ACAPS realtime database-------------------------------------------
 #Load website
@@ -880,7 +943,8 @@ gaplist <- na.locf(gap)
 #Create new dataframe with correct countrynames
 acapslist <- cbind.data.frame(country, gaplist)
 acapslist <- acapslist[!acapslist$country %in% countrynam,]
-acapslist <- acapslist %>% filter(country != "Countrylevel")
+acapslist <- acapslist %>% 
+  filter(country != "Countrylevel")
 
 #Create new column with the risk scores (and duplicate for missing rows up until the correct value)
 acapslist$risk <- suppressWarnings(ifelse(!is.na(as.numeric(as.character(acapslist$country))), as.numeric(as.character(acapslist$country)), NA))
