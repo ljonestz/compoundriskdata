@@ -67,6 +67,11 @@ lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm=T)
 
 OXrollback <- normfuncpos(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
 
+#--------------------------Oxford Response Tracker----------------------------
+Oxres <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
+
+
+
 #-------------------------COVID projections--------------------
 covid <- "https://covid19-projections.com/#view-projections"
 covid <- read_html(covid)

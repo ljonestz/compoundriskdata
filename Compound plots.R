@@ -20,7 +20,10 @@ ggthemr("fresh")
 world <- map_data("world")
 world <- world %>%
   dplyr::rename(Country = region) %>%
-  dplyr::mutate(Country = countrycode(Country, origin = 'country.name', destination = 'iso3c'))
+  dplyr::mutate(Country = suppressWarnings(countrycode(Country, 
+                                                       origin = 'country.name',
+                                                       destination = 'iso3c'))
+)
 
 #Join datasets with risk flags
 worldmap <- inner_join(world, riskflags, by="Country")
@@ -146,14 +149,14 @@ ggsave("Plots/corrplot.pdf", colone, width = 12, height = 10, units="in")
 #------------------------------Comparison between different overall risk scores--------------------
 #Subset dataset
 rankco <- riskflags %>%
-  select(Countryname, EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT, EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ) 
-rankco$sign <- ifelse(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT - rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ > 0, "red" ,
+  select(Countryname, EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, EMERGING_RISK_COVID_RESPONSE_CAPACITY) 
+rankco$sign <- ifelse(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ - rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY > 0, "red" ,
                       "green")
 #Country labels
-left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ), sep=", ")
-right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT),sep=", ")
+left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY), sep=", ")
+right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ),sep=", ")
 #Find one from each integer
-subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, 0) ==xx)[1]}))
+subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY, 0) ==xx)[1]}))
 left_label[-subset] <- " "
 right_label[-subset] <- " "
 
@@ -161,17 +164,17 @@ theme_set(theme_classic())
 
 #First plot
 one <- ggplot(rankco) + 
-  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ`, yend=`EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT`, col=sign), size=.75, show.legend=F) + 
+  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_COVID_RESPONSE_CAPACITY`, yend=`EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ`, col=sign), size=.75, show.legend=F) + 
   geom_vline(xintercept=1, linetype="dashed", size=.1) + 
   geom_vline(xintercept=2, linetype="dashed", size=.1) +
   scale_color_manual(labels = c("Up", "Down"), 
                      values = c("green"="#00ba38", "red"="#f8766d")) +
   labs(x="", y="") +
   xlim(.5, 2.5) + ylim(0,10.3) +
-  geom_text(label=left_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
-  geom_text(label=right_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
-  geom_text(label="GeoAv Outcome", x=0.8, y=10.3, size= 5)  +
-  geom_text(label="GeoAv All", x=2, y=10.3, hjust=-0.1, size=5) +
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY, x=rep(1, NROW(rankco)), hjust=1.1, size=7) + 
+  geom_text(label=right_label, y=rankco$EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ, x=rep(2, NROW(rankco)), hjust=-0.1, size=7) +
+  geom_text(label="Max value", x=0.8, y=10.3, size= 7)  +
+  geom_text(label="Geometric M", x=2, y=10.3, hjust=-0.1, size=7) +
   theme(panel.background = element_blank(), 
         panel.grid = element_blank(),
         axis.ticks = element_blank(),
@@ -183,42 +186,44 @@ one <- ggplot(rankco) +
         title = element_text(size = 20, hjust = 0.5, face = "bold")) +
   ggtitle("COVID Response risk")
 
-#Second subset for fragility and institutions
+#Subset dataset
 rankco <- riskflags %>%
-  select(Countryname, EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL, EMERGING_RISK_FRAGILITY_INSTITUTIONS) 
-rankco$sign <- ifelse(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL - rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS > 0, "red" ,
+  select(Countryname, EMERGING_RISK_FOOD_SECURITY_SQ, EMERGING_RISK_FOOD_SECURITY) 
+rankco$sign <- ifelse(rankco$EMERGING_RISK_FOOD_SECURITY_SQ - rankco$EMERGING_RISK_FOOD_SECURITY > 0, "red" ,
                       "green")
-left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS), sep=", ")
-right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL),sep=", ")
+#Country labels
+left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FOOD_SECURITY), sep=", ")
+right_label <-  paste(rankco$Countryname, round(rankco$EMERGING_RISK_FOOD_SECURITY_SQ),sep=", ")
 #Find one from each integer
-subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS, 0) ==xx)[1]}))
+subset <- unlist(lapply(c(0,3,6,10), function(xx){which(round(rankco$EMERGING_RISK_FOOD_SECURITY, 0) ==xx)[1]}))
 left_label[-subset] <- " "
 right_label[-subset] <- " "
 
-#Plot second 
 theme_set(theme_classic())
+
+#Second plot
 two <- ggplot(rankco) + 
-  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_FRAGILITY_INSTITUTIONS`, yend=`EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL`, col=sign), size=.75, show.legend=F) + 
+  geom_segment(aes(x=1, xend=2, y=`EMERGING_RISK_FOOD_SECURITY`, yend=`EMERGING_RISK_FOOD_SECURITY_SQ`, col=sign), size=.75, show.legend=F) + 
   geom_vline(xintercept=1, linetype="dashed", size=.1) + 
   geom_vline(xintercept=2, linetype="dashed", size=.1) +
   scale_color_manual(labels = c("Up", "Down"), 
                      values = c("green"="#00ba38", "red"="#f8766d")) +
   labs(x="", y="") +
   xlim(.5, 2.5) + ylim(0,10.3) +
-  geom_text(label=left_label, y=rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS, x=rep(1, NROW(rankco)), hjust=1.1, size=5) + 
-  geom_text(label=right_label, y=rankco$EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL, x=rep(2, NROW(rankco)), hjust=-0.1, size=5) +
-  geom_text(label="Single", x=0.8, y=10.3, size=5)  +
-  geom_text(label="Multiple", x=2, y=10.3, hjust=-0.1, size=5) +
+  geom_text(label=left_label, y=rankco$EMERGING_RISK_FOOD_SECURITY, x=rep(1, NROW(rankco)), hjust=1.1, size=7) + 
+  geom_text(label=right_label, y=rankco$EMERGING_RISK_FOOD_SECURITY_SQ, x=rep(2, NROW(rankco)), hjust=-0.1, size=7) +
+  geom_text(label="Max Value", x=0.8, y=10.3, size= 7)  +
+  geom_text(label="Geometric M", x=2, y=10.3, hjust=-0.1, size=7) +
   theme(panel.background = element_blank(), 
         panel.grid = element_blank(),
         axis.ticks = element_blank(),
         axis.text.x = element_blank(),
         panel.border = element_blank(),
-        plot.margin = unit(c(1,2,1,2), "cm"),
         line = element_blank(),
         axis.text = element_blank(),
+        plot.margin=unit(c(1,-0.5 ,1, 1),"cm"),
         title = element_text(size = 20, hjust = 0.5, face = "bold")) +
-  ggtitle("Fragility and Institutional risk")
+  ggtitle("Food Security risk")
 
 #Join and save
 together <- cowplot::plot_grid(one, two, ncol=2)
@@ -352,7 +357,7 @@ ploty <- ggplot(comb, aes(x=TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend=TOTAL_EXIST
   theme(axis.ticks = element_blank(),
         axis.title = element_text(size = 20, hjust = 0.5),
         axis.text = element_text(size=16)) +
-  geom_text_repel(data = comb %>% sample_n(10), 
+  geom_text_repel(data = as.data.frame(comb) %>% sample_n(10), 
                   aes(label = Countryname) , 
                   hjust = "left", 
                   fontface = "bold", 
@@ -431,27 +436,66 @@ ggsave("Plots/compareriskcalcs.pdf", comp, width = 14, height = 10)
 
 #-------Ranking exercise--------------------
 #Function to create top 20 ranked countries
-names <- colnames(riskflags[3:17])
-rankcountry <- lapply(riskflags[names], function(xx){
-  paste(riskflags$Countryname[order(-xx)][1:30], round(xx[order(-xx)][1:30], 1))
+rankcountry <- lapply(riskset %>% select(contains(c("EXISTING_", "EMERGING_"))), function(xx){
+  paste(riskset$Country[order(-xx)][1:28], round(xx[order(-xx)][1:28], 1))
 })
 
 #Combine list
 rankcountry <- bind_rows(rankcountry)
 
 #Draw table for existing risks
-rankcountry %>%
-  select(contains("EXISTING")) %>%
+tab <- rankcountry %>%
+  select(contains("EXISTING")) 
+colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
+colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
+colnames(tab) <- c("COVID", "FOOD", "MACROECO", 
+  "FISCAL", "SOCIO VUL", "NATURAL", "FRAGILITY", 
+  "TOTAL", "TOTAL(+MEDIUM)", 
+  "RELIABILITY")
+tab %>%
   kable %>%
-  kable_styling() %>%
+  kable_styling(full_width = F, html_font = "Arial") %>%
   save_kable(file = "Plots/top20countriesexisting.html", self_contained = T)
 
 #Draw table for emerging risks
-rankcountry %>%
-  select(contains("EMERGING")) %>%
+tab <- rankcountry %>%
+  select(contains("EMERGING")) 
+colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
+colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
+colnames(tab) <- c("COVID", "FOOD", "MACROECO", 
+                   "FISCAL",  "NATURAL", "FRAGILITY", 
+                   "TOTAL", "TOTAL(+MEDIUM)", 
+                   "RELIABILITY")
+tab %>%
   kable %>%
-  kable_styling() %>%
+  kable_styling(full_width = F, html_font = "Arial") %>%
   save_kable(file = "Plots/top20countriesemerging.html", self_contained = T)
+
+#Draw table for geometric risks
+sq <- c("EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ","EMERGING_RISK_FOOD_SECURITY_SQ",
+"EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", "EMERGING_RISK_FISCAL_SQ",
+"EMERGING_RISK_NATURAL_HAZARDS_SQ", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ",
+"TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ")
+
+#Function to create top 20 ranked countries
+rankcountry <- lapply(alt %>% select(sq), function(xx){
+  paste(alt$Country[order(-xx)][1:28], round(xx[order(-xx)][1:28], 1))
+})
+
+#Combine list
+rankcountry <- bind_rows(rankcountry)
+
+#relabel
+tab <- rankcountry %>%
+  select(contains("EMERGING")) 
+colnames(tab) <- c("COVID","FOOD", "MACROECO", 
+                   "FISCAL",  "NATURAL", "FRAGILITY", 
+                   "TOTAL")
+tab %>%
+  kable %>%
+  kable_styling(full_width = F, html_font = "Arial") %>%
+  save_kable(file = "Plots/top20countriesesgeo.html", self_contained = T)
+
 
 #---------------------Slope graph--------------------------------
 MySpecial <- list(  
@@ -539,7 +583,7 @@ for (i in seq_along(nm)) {
                         geom_histogram(aes(y =..density..),
                                        colour="black", fill="white") +
                         ggtitle(print(nm[i])) +
-                        xlab("Change in CR score (sqrt - max)") +
+                        xlab("Change in CR score (geomean - max)") +
                         ylab("") +
                         geom_vline(aes(xintercept = mean(nm[i])), 
                                    linetype = "dashed", size = 0.6) +
@@ -675,15 +719,224 @@ comb <- grid.arrange(riskpopg, riskpopprop, nrow = 2)
 
 ggsave("Plots/popatrisk.pdf", comb, width = 12, height = 10)
 
+#-----------------Compare emerging and existing risk---------------------------
 
+gtheme <- theme( axis.title = element_text(size = 20, hjust = 0.5),
+                 axis.text = element_text(size=16),
+                 legend.text = element_text(size=16),
+                 title = element_text(size=18, face = "bold" ))
 
+complot <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE,
+                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE, 
+                                 color=Continent)) + 
+  geom_count() + 
+  geom_smooth(method="lm", se=F) + 
+  gtheme +
+  ylab("Emerging Compound Risk") +
+  xlab("Existing Compound Risk") +
+  ggrepel::geom_text_repel(data = as.data.frame(riskflags)  %>%
+                             filter(TOTAL_EXISTING_COMPOUND_RISK_SCORE >=3) %>%
+                             sample_n(2),
+                           aes(label = Countryname),
+                           arrow = arrow(length = unit(0.01, 'npc')),
+                           size = 6,
+                           box.padding = 3,
+                           color= "Black")
+
+#Add histogram
+complot <- ggMarginal(complot, type = "histogram", fill="transparent")
+
+ggsave("Plots/complot.pdf", complot, width = 8, height = 6)
+
+#----------Coefficient of variation plot------------------------------------
+gtheme <- theme( axis.title = element_text(size = 20, hjust = 0.5),
+                 axis.text = element_text(size=16),
+                 legend.text = element_text(size=16),
+                 title = element_text(size=18, face = "bold" ))
+
+one <- ggplot(riskflags, aes(EMERGING_RISK_COVID_RESPONSE_CAPACITY, H_coefvar)) + 
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  gtheme +
+  ylab("Coef. of Variation") +
+  xlab("Covid Response Capacity")
   
+two <- ggplot(riskflags, aes(EMERGING_RISK_FRAGILITY_INSTITUTIONS, Fr_coefvar)) + 
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  gtheme +
+  ylab("") +
+  xlab("Fragility and Conflict")
 
+three <- ggplot(riskflags, aes(EMERGING_RISK_FISCAL, D_coefvar)) +
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  gtheme +
+  ylab("Coef. of Variation") +
+  xlab("Fiscal")
 
+four <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, M_coefvar)) +
+  geom_point() + 
+  geom_smooth(method="lm") + 
+  gtheme +
+  ylab("") +
+  xlab("Macro-economic")
 
+covarscore <- cowplot::plot_grid(one,two,three,four)
+ggsave("Plots/covar.pdf", covarscore, width = 12, height = 8)
 
+#------Polar Diagram---------------
+plot <- riskflags %>%
+  select(Countryname,
+         EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
+         EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL,
+         EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS)
 
+colnames(plot) <- c("Countryname", "Covid", "FoodS", "Macro", "Fisc.",  "Natural", "Fragile")
 
+plotone <-  plot %>%
+  gather(one, two, Covid:Fragile) %>%
+  mutate(Risk_cat = as.factor(case_when(two == 10 ~ "high",
+                           two >= 7 & two < 10 ~ "med",
+                           TRUE  ~ "low")),
+         Risk_cat = fct_relevel(Risk_cat, "high", "med", "low"),
+         twona = case_when(two == 0 ~ NA_real_, 
+                           TRUE ~ two))
   
+polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Afghanistan", "Spain"))) +
+  geom_col(aes(y = two, 
+               x = one,
+               fill = Risk_cat,
+               label=two),
+           width = 0.7,  
+           position = "identity") +
+  coord_polar(start = pi) + 
+  facet_grid(cols = vars(Countryname)) +
+  theme_gray() + 
+  theme(axis.text = element_text(size=14),
+        axis.text.y = element_blank(),
+        axis.ticks = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = NA),
+        panel.ontop = TRUE,
+        axis.title = element_blank(),
+        legend.text = element_text(size=16),
+        strip.text = element_text(size=18, face="bold"),
+        strip.background = element_blank(),
+        title = element_text(size=18, face = "bold"),
+        panel.grid.minor.x  = element_line(colour = "white", size = 2),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.y  = element_line(colour = "white", size = 0.5),
+        panel.grid.major.y = element_line(colour = "white", size = 0.5),
+        legend.position = "bottom")  +
+  scale_y_sqrt() +
+  scale_fill_manual(values = c("#f26c64", "#ffdd71", "#9fcd99")) +
+  geom_text(aes(y = two,
+                x = one, 
+                fill = Risk_cat,
+                label = round(twona, 1)),
+            nudge_y = -0.01, 
+            nudge_x = 0.1, 
+            fontface = "bold",
+            size = 5.5)
+
+ggsave("Plots/polar.pdf", polar, width = 16, height = 7)
+
+#----------Sankey Diagram---------
+
+test <- risky %>%
+  group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+  count(Population)
+
+testing <- test %>%
+  mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE)) %>%
+  group_by(new) %>%
+  summarise(tt = sum(Population, na.rm=T)) %>%
+  ungroup()
+
+testing$emerging_risk <- str_sub(testing$new,2,3)
+testing$existing_risk <- str_sub(testing$new,0,1)
+
+dat <- testing %>%
+  select(existing_risk, emerging_risk, tt)
+
+dat_ggforce <- dat  %>%
+  gather_set_data(1:2) %>%        # <- ggforce helper function
+  arrange(x,existing_risk,desc(emerging_risk)) %>%
+  mutate(x = as.factor(x))
+
+glob <- ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
+  geom_parallel_sets(aes(fill = existing_risk), alpha = alpha, axis.width = 0.2,
+                     n=100, strength = 0.5) +
+  geom_parallel_sets_axes(axis.width = 0.25, fill = "gray95",
+                          color = "gray80", size = 0.15) +
+  geom_parallel_sets_labels(colour = 'gray35', size = 4.5, angle = 0, fontface="bold") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 12, face = "bold"),
+    axis.title.x  = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    plot.margin = unit(c(0, -1, 0, -1), "cm")
+  ) + 
+  scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
+  ggtitle("Global")
+
+sankyreg <- function(reg) {
+  test <- risky %>%
+    filter(Continent == reg) %>%
+    group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+    count(Population)
   
+  testing <- test %>%
+    mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE)) %>%
+    group_by(new) %>%
+    summarise(tt = sum(Population, na.rm=T)) %>%
+    ungroup()
   
+  testing$emerging_risk <- str_sub(testing$new,2,3)
+  testing$existing_risk <- str_sub(testing$new,0,1)
+  
+  dat <- testing %>%
+    select(existing_risk, emerging_risk, tt)
+  
+  dat_ggforce <- dat  %>%
+    gather_set_data(1:2) %>%        # <- ggforce helper function
+    arrange(x,existing_risk,desc(emerging_risk)) %>%
+    mutate(x = as.factor(x))
+  
+  ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
+    geom_parallel_sets(aes(fill = existing_risk), alpha = alpha, axis.width = 0.2,
+                       n=100, strength = 0.5) +
+    geom_parallel_sets_axes(axis.width = 0.25, fill = "gray95",
+                            color = "gray80", size = 0.15) +
+    geom_parallel_sets_labels(colour = 'gray35', size = 4.5, angle = 0, fontface="bold") +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 12, face = "bold"),
+      axis.title.x  = element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      plot.margin = unit(c(0, 0, 0, 0), "cm")
+    ) + 
+    scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
+    ggtitle(paste(reg))
+}
+
+afr <- sankyreg("Africa")
+asia<- sankyreg("Asia")
+eur <- sankyreg("Europe")
+oce <- sankyreg("Oceania")
+ame <- sankyreg("Americas")
+
+one <- cowplot::plot_grid(afr, asia, ncol = 1)
+two <- cowplot::plot_grid(ame, oce, ncol = 1)
+cowplot::plot_grid(one, glob, two, nrow = 1, rel_widths = c(1, 3, 1))
+
+

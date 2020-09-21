@@ -444,21 +444,23 @@ writeData(crxls, "Socioeconomic_sheet", Socioeconomic_sheet, colNames = TRUE)
 addWorksheet(crxls, "Reliability_sheet", tabColour = "grey")
 writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 
-#-----------------------------------------Conditional formatting-------------------------------------------------
 #Insert alternative flag sheet
 addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "#9999CC")
 #Select relevant variables
 alt <- riskflags %>%
-  select(Countryname, Country, contains("_AV"), contains("_MULTIDIMENSIONAL"), contains("SQ"), -contains("OCHA")) %>%
+  select(Countryname, Country, contains("_AV"), contains("_MULTIDIMENSIONAL"), contains("SQ"), contains("coefvar"), -contains("OCHA")) %>%
   arrange(Country)
 #Add blank columns
 alt <- alt %>%
   add_column(" " = NA, .after = "Country") %>%
   add_column("  " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV") %>%
   add_column("   " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL") %>%
-  add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") 
+  add_column("    " = NA, .after = "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ") %>%
+  add_column("     " = NA, .after = "TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ")
 #Writesheet
 writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
+
+#-----------------------------------------Conditional formatting-------------------------------------------------
 
 #Colour and stlye sheets
 Map(function(number, tab){
