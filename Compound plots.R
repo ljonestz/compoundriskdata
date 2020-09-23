@@ -9,7 +9,8 @@
 #install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(ggplot2, cowplot, lubridate, rvest,dplyr, viridis, tidyverse, 
                  countrycode, corrplot, cttobin/ggthemr,  ggalt, gridExtra, ggcorrplot,
-                 ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer)
+                 ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer, alluvial, ggforce,
+                 ggalluvial, ggparallel)
 
 #Load themes
 theme_set(theme_classic(base_size = 16))
@@ -854,8 +855,8 @@ testing <- test %>%
   summarise(tt = sum(Population, na.rm=T)) %>%
   ungroup()
 
-testing$emerging_risk <- str_sub(testing$new,2,3)
-testing$existing_risk <- str_sub(testing$new,0,1)
+testing$emerging_risk <- str_sub(testing$new, 2, 3)
+testing$existing_risk <- str_sub(testing$new, 0, 1)
 
 dat <- testing %>%
   select(existing_risk, emerging_risk, tt)
@@ -864,6 +865,8 @@ dat_ggforce <- dat  %>%
   gather_set_data(1:2) %>%        # <- ggforce helper function
   arrange(x,existing_risk,desc(emerging_risk)) %>%
   mutate(x = as.factor(x))
+
+alpha <- 0.7
 
 glob <- ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
   geom_parallel_sets(aes(fill = existing_risk), alpha = alpha, axis.width = 0.2,
@@ -879,7 +882,7 @@ glob <- ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
     axis.text.y = element_blank(),
     axis.text.x = element_text(size = 12, face = "bold"),
     axis.title.x  = element_blank(),
-    plot.title = element_text(hjust = 0.5),
+    plot.title = element_text(hjust = 0.5,  face= "bold"),
     plot.margin = unit(c(0, -1, 0, -1), "cm")
   ) + 
   scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
@@ -887,6 +890,7 @@ glob <- ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
 
 sankyreg <- function(reg) {
   test <- risky %>%
+    mutate(Continent = countrycode(Country, origin = 'iso3c', destination = 'continent')) %>%
     filter(Continent == reg) %>%
     group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
     count(Population)
@@ -922,7 +926,7 @@ sankyreg <- function(reg) {
       axis.text.y = element_blank(),
       axis.text.x = element_text(size = 12, face = "bold"),
       axis.title.x  = element_blank(),
-      plot.title = element_text(hjust = 0.5),
+      plot.title = element_text(hjust = 0.5, face= "bold"),
       plot.margin = unit(c(0, 0, 0, 0), "cm")
     ) + 
     scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
@@ -937,6 +941,9 @@ ame <- sankyreg("Americas")
 
 one <- cowplot::plot_grid(afr, asia, ncol = 1)
 two <- cowplot::plot_grid(ame, oce, ncol = 1)
-cowplot::plot_grid(one, glob, two, nrow = 1, rel_widths = c(1, 3, 1))
+
+sank <- cowplot::plot_grid(one, glob, two, nrow = 1, rel_widths = c(1, 3, 1))
+
+ggsave("Plots/sankey.pdf", sank, width = 16, height = 8)
 
 
