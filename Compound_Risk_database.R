@@ -1002,13 +1002,13 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 
 acapssheet <- countrylist %>% 
   select(-X) %>%
-  mutate(Fr_conflict_acled = case_when(Country %in% unlist(as.list(conflictnams)) ~ 10,
+  mutate(Fr_conflict_acaps = case_when(Country %in% unlist(as.list(conflictnams)) ~ 10,
                               TRUE ~ 0),
-         H_health_acled = case_when(Country %in% unlist(as.list(healthnams)) ~ 10,
+         H_health_acaps = case_when(Country %in% unlist(as.list(healthnams)) ~ 10,
                             TRUE ~ 0),
-         NH_natural_acled = case_when(Country %in% unlist(as.list(naturalnams)) ~ 10,
+         NH_natural_acaps = case_when(Country %in% unlist(as.list(naturalnams)) ~ 10,
                              TRUE ~ 0),
-         F_food_acled = case_when(Country %in% unlist(as.list(foodnams)) ~ 10,
+         F_food_acaps = case_when(Country %in% unlist(as.list(foodnams)) ~ 10,
                           TRUE ~ 0))
 
 #Write ACAPS sheet
