@@ -1,7 +1,7 @@
 "","NH_GDAC_Date","NH_GDAC_Hazard_Status","NH_GDAC_Hazard_Severity","NH_GDAC_Hazard_Type","Country","NH_GDAC_Hazard_Score_Norm"
 "1","2020-09-21","active","green","earthquake","RUS",0
 "2","2020-09-20","active","green","earthquake","PHL",0
-"3","2020-09-19","active","green","earthquake","IND",0
+"3","2020-09-19","past","green","earthquake","IND",0
 "4","2020-09-18","past","green","earthquake","GRC",0
 "5","2020-09-17","past","green","earthquake","WLF",0
 "6","2020-09-17","past","green","earthquake","IDN",0
