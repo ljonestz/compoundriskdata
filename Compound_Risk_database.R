@@ -82,9 +82,9 @@ covidtable <- covid %>%
   html_table(fill = TRUE)
 
 #Isolate regional tables
-covideu <- covidtable[[9]]
-covidworld <- covidtable[[10]]
-covidus <- covidtable[[8]][1,]
+covideu <- covidtable[[8]]
+covidworld <- covidtable[[9]]
+covidus <- covidtable[[7]][1,]
 colnames(covidus)[1] <- c("Country")
 colnames(covideu)[1] <- c("Country")
 colnames(covidworld)[1] <- c("Country")
@@ -426,12 +426,13 @@ gdp <- normfuncneg(gdp,upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020")
 
 #COVID Economic Stimulus Index
 #Load file
-url <- "http://web.boun.edu.tr/elgin/CESI_11.xlsx" #Note: may need to check for more recent versions
+url <- "http://web.boun.edu.tr/elgin/CESI_12.xlsx" #Note: may need to check for more recent versions
 destfile <- "Indicator_dataset/cesiraw.xlsx"
 curl::curl_download(url, destfile)
 cesi <- read_excel(destfile)
 
 colnames(cesi) <- paste0("M_", colnames(cesi))
+colnames(cesi) <- gsub("_1.*","",colnames(cesi))
 cesi <- cesi %>%
   mutate(Country = countrycode(M_Country, 
                         origin = 'country.name',
@@ -440,9 +441,9 @@ cesi <- cesi %>%
 ) 
 
 #Perform PCA
-cesipca <- prcomp(cesi %>% select(M_fiscal_11, M_ratecut_11, M_reserve_req_11, 
-                                  M_macrofin_11, M_othermonetary_11, M_bopgdp_11,
-                                  M_otherbop_11), 
+cesipca <- prcomp(cesi %>% select(M_fiscal, M_ratecut, M_reserve_req, 
+                                  M_macrofin, M_othermonetary, M_bopgdp,
+                                  M_otherbop), 
                   center = TRUE,
                   scale. = TRUE
 )
