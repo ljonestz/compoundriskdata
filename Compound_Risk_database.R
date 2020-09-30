@@ -319,6 +319,31 @@ upperrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.95), na.rm = T)
 lowerrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.05), na.rm = T)
 fpv <- normfuncpos(faoprice, upperrisk, lowerrisk, "F_FAO_6mFPV")
 
+#--------------Alternative Food price volatility scopes -----------------------
+fao_fpma <- read_html("http://www.fao.org/giews/food-prices/home/en/")
+
+#Highlight countries that are undergoing high FPV  
+fpv_alt_raw <- fao_fpma %>%
+  html_nodes(".maplist-country") %>%
+  html_text() %>% 
+  as.tibble() %>%
+  mutate(Country = countrycode(value,
+                               origin = "country.name",
+                               destination = "iso3c",
+                               nomatch = NULL)
+  )
+
+#Compile dataframe with 10 for high risk countries
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+
+fpv_alt <- countrylist %>%
+  select(-X, -Countryname) %>%
+  mutate(F_fpv_alt = case_when(Country %in% fpv_alt_raw$Country ~ 10,
+                               TRUE ~ 0)
+  )
+
+#Write csv and save to github
+write.csv(fpv_alt, "Indicator_Dataset/FPV_alternative.csv")
 
 #------------------------CREATE FOOD SECURITY SHEET--------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -327,7 +352,8 @@ countrylist <- countrylist %>%
 
 foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews, by = "Country") %>%
-  left_join(., fpv, by = "Country") %>%
+  #left_join(., fpv, by = "Country") %>%
+  left_join(., fpv_alt, by = "Country") %>%
   left_join(., artemis, by = "Country") %>%
   arrange(Country)
 

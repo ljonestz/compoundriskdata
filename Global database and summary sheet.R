@@ -75,13 +75,16 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
-      !is.na(F_Fewsnet_Score_norm) ~ pmax(
-        F_FAO_6mFPV_norm,
+      !is.na(F_Fewsnet_Score_norm) ~ as.numeric(pmax(
+        F_Fewsnet_Score_norm,
         F_Artemis_Score_norm,
-        F_food_acaps,
         na.rm = T
-      ),
-      TRUE ~ F_FAO_6mFPV_norm
+      )),
+      TRUE ~ as.numeric(pmax(
+        F_fpv_alt,
+        F_food_acaps,
+        na.rm=T
+        ))
     ),
     EMERGING_RISK_FISCAL = pmax(
       D_IMF_debt2020.2019_norm,
@@ -226,7 +229,7 @@ names <- c(
   "S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm",
-  "F_FAO_6mFPV_norm", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
+  "F_fpv_alt", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
   "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_Overall_debt_distress_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm",
@@ -323,7 +326,7 @@ altflag <- altflag %>%
     na.rm = T
     ),
     F_coefvar = cv(c(
-      F_FAO_6mFPV_norm,
+      F_fpv_alt,
       F_Artemis_Score_norm),
     na.rm = T
     )
@@ -429,7 +432,7 @@ reliabilitysheet <- globalrisk %>%
       select(
         F_Fewsnet_Score_norm,
         F_Artemis_Score_norm,
-        F_FAO_6mFPV_norm
+        F_fpv_alt
       )),
     na.rm = T
     ) / 3,
@@ -744,7 +747,7 @@ cond("debtsheet", which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"), whic
 cond("debtsheet", which(colnames(debtsheet) == "D_fiscalgdpnum_norm"), which(colnames(debtsheet) == "D_fiscalgdpnum_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"), which(colnames(foodsecurity) == "F_Fewsnet_Score_norm"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"), which(colnames(foodsecurity) == "F_FAO_6mFPV_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_alt"), which(colnames(foodsecurity) == "F_fpv_alt"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_WB_structural_norm"), which(colnames(fragilitysheet) == "Fr_WB_structural_norm"))

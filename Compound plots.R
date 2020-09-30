@@ -11,7 +11,7 @@ librarian::shelf(
   ggplot2, cowplot, lubridate, rvest, dplyr, viridis, tidyverse,
   countrycode, corrplot, cttobin / ggthemr, ggalt, gridExtra, ggcorrplot,
   ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer, alluvial, ggforce,
-  ggalluvial, ggparallel
+  ggalluvial, ggparallel, styler
 )
 
 # Load themes
@@ -193,7 +193,10 @@ theme_set(theme_classic())
 
 # First plot
 one <- ggplot(rankco) +
-  geom_segment(aes(x = 1, xend = 2, y = `EMERGING_RISK_COVID_RESPONSE_CAPACITY`, yend = `EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ`, col = sign), size = .75, show.legend = F) +
+  geom_segment(aes(x = 1, xend = 2, y = `EMERGING_RISK_COVID_RESPONSE_CAPACITY`,  
+                   yend = `EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ`, col = sign), 
+               size = .75, 
+               show.legend = F) +
   geom_vline(xintercept = 1, linetype = "dashed", size = .1) +
   geom_vline(xintercept = 2, linetype = "dashed", size = .1) +
   scale_color_manual(
@@ -242,7 +245,8 @@ theme_set(theme_classic())
 
 # Second plot
 two <- ggplot(rankco) +
-  geom_segment(aes(x = 1, xend = 2, y = `EMERGING_RISK_FOOD_SECURITY`, yend = `EMERGING_RISK_FOOD_SECURITY_SQ`, col = sign), size = .75, show.legend = F) +
+  geom_segment(aes(x = 1, xend = 2, y = `EMERGING_RISK_FOOD_SECURITY`, yend = `EMERGING_RISK_FOOD_SECURITY_SQ`, col = sign),
+               size = .75, show.legend = F) +
   geom_vline(xintercept = 1, linetype = "dashed", size = .1) +
   geom_vline(xintercept = 2, linetype = "dashed", size = .1) +
   scale_color_manual(
@@ -421,7 +425,8 @@ countrylab <- as.character(comb$Countryname)
 countrylab[-tennum] <- ""
 
 # Plot
-ploty <- ggplot(comb, aes(x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, y = reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE), group = Countryname)) +
+ploty <- ggplot(comb, aes(x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+                          y = reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE), group = Countryname)) +
   geom_dumbbell(
     color = "#a3c4dc",
     size = 0.75,
