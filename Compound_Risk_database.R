@@ -470,8 +470,11 @@ igc <- normfuncneg(igc, upperrisk, lowerrisk, "fiscalgdpnum")
 colnames(igc) <- paste0("D_", colnames(igc))
 igc <- as.data.frame(igc)
 igc <- igc[-which(colnames(igc) == "D_Other reputable links")]
-igc <- igc %>% rename(Country = D_iso3c)
 
+igc <- igc %>%
+  rename(Country = D_iso3c) %>%
+  select(Country, D_fiscalgdpnum, D_fiscalgdpnum_norm)
+  
 #------------------------------COVID Economic Stimulus Index-------------------------
 # Load file
 url <- "http://web.boun.edu.tr/elgin/CESI_12.xlsx" # Note: may need to check for more recent versions
@@ -487,7 +490,8 @@ cesi <- cesi %>%
     origin = "country.name",
     destination = "iso3c",
     nomatch = NULL
-  ))
+  )) %>%
+  select(-D_Country, -D_Date)
 
 # Perform PCA
 cesipca <- prcomp(cesi %>% select(
