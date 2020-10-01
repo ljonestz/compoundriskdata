@@ -17,11 +17,11 @@ librarian::shelf(
 normfuncneg <- function(df, upperrisk, lowerrisk, col1) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] <= upperrisk, 10,
-    ifelse(df[[col1]] >= lowerrisk, 0,
-      ifelse(df[[col1]] > upperrisk & df[[col1]] < lowerrisk, 10 - (upperrisk - df[[col1]]) / 
-               (upperrisk - lowerrisk) * 10, NA)
-    )
-  )
+                                        ifelse(df[[col1]] >= lowerrisk, 0,
+                                               ifelse(df[[col1]] > upperrisk & df[[col1]] < lowerrisk, 10 - (upperrisk - df[[col1]]) / 
+                                                        (upperrisk - lowerrisk) * 10, NA)
+                                               )
+                                        )
   df
 }
 
@@ -29,11 +29,11 @@ normfuncneg <- function(df, upperrisk, lowerrisk, col1) {
 normfuncpos <- function(df, upperrisk, lowerrisk, col1) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-    ifelse(df[[col1]] <= lowerrisk, 0,
-      ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - (upperrisk - df[[col1]]) / 
-               (upperrisk - lowerrisk) * 10, NA)
-    )
-  )
+                                        ifelse(df[[col1]] <= lowerrisk, 0,
+                                               ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - (upperrisk - df[[col1]]) / 
+                                                        (upperrisk - lowerrisk) * 10, NA)
+                                               )
+                                        )
   df
 }
 
@@ -52,6 +52,7 @@ HIS <- HIS %>%
   rename(Country = H_Country) %>%
   select(-X)
 
+#Normalise scores
 HIS <- normfuncneg(HIS, 20, 70, "H_HIS_Score")
 
 #-----------------------Oxford rollback Score-----------------
@@ -60,10 +61,12 @@ OXrollback <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-sc
 colnames(OXrollback) <- paste0("H_", colnames(OXrollback))
 
 OXrollback <- OXrollback %>%
-  rename(H_Oxrollback_score = H_overall_checklist,
+  rename(
+    H_Oxrollback_score = H_overall_checklist,
     Countryname = H_countryname
   ) %>%
-  mutate(Country = countrycode(Countryname,
+  mutate(
+    Country = countrycode(Countryname,
     origin = "country.name",
     destination = "iso3c",
     nomatch = NULL
@@ -73,11 +76,6 @@ upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm = T)
 lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm = T)
 
 OXrollback <- normfuncpos(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
-
-#--------------------------Oxford Response Tracker----------------------------
-Oxres <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
-
-
 
 #-------------------------COVID projections--------------------
 covid <- "https://covid19-projections.com/#view-projections"
@@ -198,6 +196,25 @@ colnames(covidcurrent) <- c(
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm"
 )
 
+#--------------------------Oxford Response Tracker----------------------------
+Oxres <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
+
+#Select latest data
+Ox_cov_resp <- Oxres %>%
+  group_by(CountryCode) %>%
+  filter(Date == max(Date)) %>%
+  select(
+    CountryCode, Date, GovernmentResponseIndex, GovernmentResponseIndexForDisplay,
+    EconomicSupportIndex, EconomicSupportIndexForDisplay, ContainmentHealthIndex,
+    ContainmentHealthIndexForDisplay
+  )
+
+colnames(Ox_cov_resp) <- c("Country", paste0("C_", colnames(Ox_cov_resp[,-1])))
+
+#Create normalised scores
+Ox_cov_resp <- normfuncneg(Ox_cov_resp, 15, 80, "C_GovernmentResponseIndexForDisplay")
+Ox_cov_resp <- normfuncneg(Ox_cov_resp, 0, 100, "C_EconomicSupportIndexForDisplay")
+
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
@@ -208,6 +225,7 @@ health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., covidproj, by = "Country") %>%
   left_join(., covidgrowth, by = "Country") %>%
   left_join(., covidcurrent, by = "Country") %>%
+  left_join(., Ox_cov_resp, by = "Country") %>%
   arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
@@ -255,7 +273,7 @@ artemis <- artemis %>%
     ) %>%
   select(-X)
 
-# FEWSNET
+#------------------FEWSNET-------------------------------
 fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fewsnet.csv")
 
 fews <- fews %>%
@@ -352,7 +370,7 @@ countrylist <- countrylist %>%
 
 foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews, by = "Country") %>%
-  #left_join(., fpv, by = "Country") %>%
+  #left_join(., fpv, by = "Country") %>%  # Reintroduce if FAO price site comes back online
   left_join(., fpv_alt, by = "Country") %>%
   left_join(., artemis, by = "Country") %>%
   arrange(Country)
@@ -405,7 +423,7 @@ debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_dist
   )
 )
 
-# IMF Debt forecasts
+#----------------IMF Debt forecasts---------------------------------
 imfdebt <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imfdebt.csv")
 
 imfdebt <- imfdebt %>%
@@ -427,7 +445,7 @@ imfdebt[names] <- lapply(imfdebt[names], function(xx) {
 
 imfdebt <- normfuncneg(imfdebt, -5, 0, "D_IMF_debt2020.2019")
 
-# IGC database
+#-------------------IGC database--------------------------
 igc <- suppressWarnings(gsheet2tbl("https://docs.google.com/spreadsheets/d/1s46Oz_NtkyrowAracg9FTPYRdkP8GHRzQqM7w6Qa_2k/edit?ts=5e836726#gid=0"))
 
 # Header as first row
@@ -454,6 +472,46 @@ igc <- as.data.frame(igc)
 igc <- igc[-which(colnames(igc) == "D_Other reputable links")]
 igc <- igc %>% rename(Country = D_iso3c)
 
+#------------------------------COVID Economic Stimulus Index-------------------------
+# Load file
+url <- "http://web.boun.edu.tr/elgin/CESI_12.xlsx" # Note: may need to check for more recent versions
+destfile <- "Indicator_dataset/cesiraw.xlsx"
+curl::curl_download(url, destfile)
+cesi <- read_excel(destfile)
+
+colnames(cesi) <- paste0("D_", colnames(cesi))
+colnames(cesi) <- gsub("_1.*", "", colnames(cesi))
+cesi <- cesi %>%
+  mutate(Country = countrycode(
+    D_Country,
+    origin = "country.name",
+    destination = "iso3c",
+    nomatch = NULL
+  ))
+
+# Perform PCA
+cesipca <- prcomp(cesi %>% select(
+  D_fiscal, D_ratecut, D_reserve_req,
+  D_macrofin, D_othermonetary, D_bopgdp,
+  D_otherbop
+  ),
+center = TRUE,
+scale. = TRUE
+)
+
+# Assign CESI Index as the first two PCs
+cesi$D_CESI_Index <- cesipca$x[, 1] + cesipca$x[, 2]
+
+# Normalised scores
+upperrisk <- quantile(cesi$D_CESI_Index, probs = c(0.1), na.rm = T)
+lowerrisk <- quantile(cesi$D_CESI_Index, probs = c(0.95), na.rm = T)
+cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "D_CESI_Index")
+
+#------------------Import Economic Stimulus Index from the Health Sheet---------------------
+Ox_fiscal <- Ox_cov_resp %>%
+  select(Country, C_EconomicSupportIndexForDisplay_norm) %>%
+  rename(D_EconomicSupportIndexForDisplay_norm = C_EconomicSupportIndexForDisplay_norm)
+
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
@@ -462,6 +520,8 @@ countrylist <- countrylist %>%
 debtsheet <- left_join(countrylist, debttab, by = "Country") %>%
   left_join(., imfdebt, by = "Country") %>%
   left_join(., igc, by = "Country") %>%
+  left_join(., Ox_fiscal, by = "Country") %>%
+  left_join(., cesi, by = "Country") %>%
   arrange(Country)
 
 write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
@@ -479,21 +539,21 @@ macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/m
 macro <- macro %>%
   mutate(
     M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc, M_Travel_Tourism_perc)),
-      na.rm = T
-    ),
+                                           na.rm = T
+                                           ),
     M_Financial_Resilience_Score = rowMeans(select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)),
-      na.rm = T
-    )
+                                            na.rm = T
+                                            )
   ) %>%
   mutate(M_Economic_and_Financial_score = rowMeans(select(., c(M_Economic_Dependence_Score, M_Financial_Resilience_Score)),
-    na.rm = T
+                                                   na.rm = T
   )) %>%
   select(-X)
 upperrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.9), na.rm = T)
 lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm = T)
 macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_score")
 
-# GDP forecast
+#---------------------------GDP forecast-------------------------------
 gdp <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv"))
 gdp <- gdp %>%
   select(-X1)
@@ -504,40 +564,6 @@ upperrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.2), na.rm = T)
 lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm = T)
 gdp <- normfuncneg(gdp, upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020")
 
-# COVID Economic Stimulus Index
-# Load file
-url <- "http://web.boun.edu.tr/elgin/CESI_12.xlsx" # Note: may need to check for more recent versions
-destfile <- "Indicator_dataset/cesiraw.xlsx"
-curl::curl_download(url, destfile)
-cesi <- read_excel(destfile)
-
-colnames(cesi) <- paste0("M_", colnames(cesi))
-colnames(cesi) <- gsub("_1.*", "", colnames(cesi))
-cesi <- cesi %>%
-  mutate(Country = countrycode(M_Country,
-    origin = "country.name",
-    destination = "iso3c",
-    nomatch = NULL
-  ))
-
-# Perform PCA
-cesipca <- prcomp(cesi %>% select(
-  M_fiscal, M_ratecut, M_reserve_req,
-  M_macrofin, M_othermonetary, M_bopgdp,
-  M_otherbop
-),
-center = TRUE,
-scale. = TRUE
-)
-
-# Assign CESI Index as the first two PCs
-cesi$M_CESI_Index <- cesipca$x[, 1] + cesipca$x[, 2]
-
-# Normalised scores
-upperrisk <- quantile(cesi$M_CESI_Index, probs = c(0.1), na.rm = T)
-lowerrisk <- quantile(cesi$M_CESI_Index, probs = c(0.95), na.rm = T)
-cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "M_CESI_Index")
-
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
@@ -545,7 +571,6 @@ countrylist <- countrylist %>%
 
 macrosheet <- left_join(countrylist, macro, by = "Country") %>%
   left_join(., gdp, by = "Country") %>%
-  left_join(., cesi, by = "Country") %>%
   arrange(Country)
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
@@ -560,6 +585,7 @@ write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 
 #--------------------------------FRAGILITY DATA-----------------------------------------
 fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FSI.csv")
+
 fsi <- fsi %>%
   select(-X) %>%
   drop_na(Country)
@@ -570,28 +596,34 @@ fsi <- normfuncpos(fsi, upperrisk, lowerrisk, "Fr_FSI_Score")
 
 upperrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.1), na.rm = T)
 lowerrisk <- quantile(fsi$Fr_FSI_2019minus2020, probs = c(0.9), na.rm = T)
+
 # Specific normalisation
 fsinormneg <- function(df, upperrisk, lowerrisk, col1) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] <= upperrisk, 10,
-    ifelse(df[[col1]] >= lowerrisk | df$Fr_FSI_Score_norm == 0, 0,
-      ifelse(df[[col1]] > upperrisk & df[[col1]] < lowerrisk, 10 - (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
-    )
-  )
+                                        ifelse(df[[col1]] >= lowerrisk | df$Fr_FSI_Score_norm == 0, 0,
+                                               ifelse(df[[col1]] > upperrisk & df[[col1]] < lowerrisk, 10 - 
+                                                        (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
+                                               )
+                                        )
   df
 }
+
 fsi <- fsinormneg(fsi, upperrisk, lowerrisk, "Fr_FSI_2019minus2020")
 
 
-# INFORM
+#-----------------------INFORM-----------------------
 informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_fragility")
 informfragile <- informfragile %>% select(-X)
+
 upperrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.95), na.rm = T)
 lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), na.rm = T)
+
 informfragile <- normfuncpos(informfragile, upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score")
 
-# REIGN
+#----------------------REIGN---------------------
 reign <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv"))
+
 reign <- reign %>%
   filter(year == 2020) %>%
   select(country, couprisk, month) %>%
@@ -610,7 +642,7 @@ lowerrisk <- quantile(reign$Fr_REIGN_couprisk3m, probs = c(0.05), na.rm = T)
 
 reign <- normfuncpos(reign, upperrisk, lowerrisk, "Fr_REIGN_couprisk3m")
 
-# Load GPI data
+#------------------------Load GPI data-----------------------------
 gpi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/GPI.csv")
 gpi <- gpi %>%
   select(-X) %>%
@@ -624,7 +656,7 @@ upperrisk <- quantile(gpi$Fr_GPI_Score, probs = c(0.90), na.rm = T)
 lowerrisk <- quantile(gpi$Fr_GPI_Score, probs = c(0.10), na.rm = T)
 gpi <- normfuncpos(gpi, upperrisk, lowerrisk, "Fr_GPI_Score")
 
-# Load ACLED data
+#---------------------Load ACLED data----------------------------
 acled <- suppressMessages(read_csv("~/Google Drive/PhD/R code/Compound Risk/ACLEDraw.csv"))
 
 # summarise deaths
@@ -696,16 +728,17 @@ acledjoin <- acledjoin %>%
   rename(Country = iso3)
 
 # Normalise fatalities
-# Normalise fatalities
 aclednorm <- function(df, upperrisk, lowerrisk, col1, number) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-    ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 5, 0,
-      ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
-    )
-  )
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 5, 0,
+                                               ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - 
+                                                        (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
+                                               )
+                                        )
   df
 }
+
 acleddata <- aclednorm(acledjoin, 300, 0, "Fr_ACLED_fatal_same_month_difference_perc", "Fr_ACLED_fatal_last30d")
 acleddata <- aclednorm(acleddata, 300, 0, "Fr_ACLED_fatal_month_annual_difference_perc", "Fr_ACLED_fatal_last30d")
 acleddata <- aclednorm(acleddata, 600, 0, "Fr_ACLED_fatal_month_threeyear_difference_perc", "Fr_ACLED_fatal_last30d")
@@ -714,19 +747,21 @@ acleddata <- aclednorm(acleddata, 600, 0, "Fr_ACLED_fatal_month_threeyear_differ
 aclednorm <- function(df, upperrisk, lowerrisk, col1, number) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-    ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 25, 0,
-      ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
-    )
-  )
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 25, 0,
+                                               ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - 
+                                                        (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
+                                               )
+                                        )
   df
 }
+
 acleddata <- aclednorm(acleddata, 400, 0, "Fr_ACLED_event_same_month_difference_perc", "Fr_ACLED_event_last30d")
 acleddata <- aclednorm(acleddata, 400, 0, "Fr_ACLED_event_month_annual_difference_perc", "Fr_ACLED_event_last30d")
 acleddata <- aclednorm(acleddata, 800, 0, "Fr_ACLED_event_month_threeyear_difference_perc", "Fr_ACLED_event_last30d")
 
 write.csv(acleddata, "Indicator_Dataset/ACLEDnormalised.csv")
 
-# Load VIEWS data
+#---------------------- Load VIEWS data--------------------------------------
 # Download and unzip file from View site
 download.file("http://ucdp.uu.se/downloads/views/predictions_cm.zip", "Indicator_dataset/Viewsrawzip")
 
@@ -772,7 +807,7 @@ views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_state6m")
 views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_nonstate6m")
 views_6m_proj <- normfuncpos(views_6m_proj, 0.8, 0.1, "Fr_oneside6m")
 
-# WB structural model
+#-----------------------WB structural model----------------------------------
 wbstructural <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Fragility_WB_structural_model.csv", na.strings = c("", "NA"))
 
 wbstructural <- wbstructural %>%
@@ -1003,7 +1038,7 @@ informcrisis <- informcrisis %>%
 
 write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
 
-# INFORM Natural Hazard and Exposure rating
+#----------------------INFORM Natural Hazard and Exposure rating--------------------------
 informnathaz <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Inform_nathaz.csv")
 
 # Rename country
