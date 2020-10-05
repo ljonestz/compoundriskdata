@@ -495,10 +495,7 @@ write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 reliable <- reliabilitysheet %>%
   select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
-globalrisk <- left_join(globalrisk,
-  reliable,
-  by = c("Countryname", "Country")
-)
+globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
 # Save database of all risk indicators (+ reliability scores)
 write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
@@ -512,7 +509,7 @@ riskflags <- left_join(riskflags %>%
     "Countryname", "Country",
     contains(c("_AV", "_SQ", "_ALT", "EXISTING_", "EMERGING_", "coefvar"))
   ),
-reliable,
+reliable, 
 by = c("Countryname", "Country")
 )
 
