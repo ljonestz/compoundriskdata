@@ -209,11 +209,11 @@ Ox_cov_resp <- Oxres %>%
     ContainmentHealthIndexForDisplay
   )
 
-colnames(Ox_cov_resp) <- c("Country", paste0("C_", colnames(Ox_cov_resp[,-1])))
+colnames(Ox_cov_resp) <- c("Country", paste0("H_", colnames(Ox_cov_resp[,-1])))
 
 #Create normalised scores
-Ox_cov_resp <- normfuncneg(Ox_cov_resp, 15, 80, "C_GovernmentResponseIndexForDisplay")
-Ox_cov_resp <- normfuncneg(Ox_cov_resp, 0, 100, "C_EconomicSupportIndexForDisplay")
+Ox_cov_resp <- normfuncneg(Ox_cov_resp, 15, 80, "H_GovernmentResponseIndexForDisplay")
+Ox_cov_resp <- normfuncneg(Ox_cov_resp, 0, 100, "H_EconomicSupportIndexForDisplay")
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -513,8 +513,8 @@ cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "D_CESI_Index")
 
 #------------------Import Economic Stimulus Index from the Health Sheet---------------------
 Ox_fiscal <- Ox_cov_resp %>%
-  select(Country, C_EconomicSupportIndexForDisplay_norm) %>%
-  rename(D_EconomicSupportIndexForDisplay_norm = C_EconomicSupportIndexForDisplay_norm)
+  select(Country, H_EconomicSupportIndexForDisplay_norm) %>%
+  rename(D_EconomicSupportIndexForDisplay_norm = H_EconomicSupportIndexForDisplay_norm)
 
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")

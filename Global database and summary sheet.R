@@ -73,6 +73,7 @@ riskflags <- globalrisk %>%
       H_new_deaths_smoothed_per_million_norm,
       H_Covidproj_Projected_Deaths_._1M_norm,
       H_health_acaps,
+      H_GovernmentResponseIndexForDisplay,
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
@@ -152,13 +153,15 @@ riskflags[paste0(vars, "_RISKLEVEL")] <- lapply(riskflags[vars], function(tt) {
 })
 
 # Calculate total compound risk scores
-riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(riskflags,
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(
+  riskflags,
   EXISTING_RISK_COVID_RESPONSE_CAPACITY:EXISTING_RISK_FRAGILITY_INSTITUTIONS,
   count = 10,
   append = F
 )))
 
-riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(riskflags,
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(
+  riskflags, 
   EMERGING_RISK_COVID_RESPONSE_CAPACITY:EMERGING_RISK_FRAGILITY_INSTITUTIONS,
   count = 10,
   append = F
