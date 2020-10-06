@@ -73,7 +73,7 @@ riskflags <- globalrisk %>%
       H_new_deaths_smoothed_per_million_norm,
       H_Covidproj_Projected_Deaths_._1M_norm,
       H_health_acaps,
-      H_GovernmentResponseIndexForDisplay,
+      H_GovernmentResponseIndexForDisplay_norm,
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
