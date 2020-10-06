@@ -1060,10 +1060,12 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 countrylist <- countrylist %>%
   select(-X)
 
+# Add INFORM fragility indicator (under NH sheet)
 inform_fragile <- nathazardfull %>%
   select(Country, NH_INFORM_CRISIS_Type) %>%
   rename(Fr_INFORM_CRISIS_Type = NH_INFORM_CRISIS_Type)
 
+# Compile joint database
 fragilitysheet <- left_join(countrylist, fsi, by = "Country") %>%
   left_join(., informfragile, by = "Country") %>%
   left_join(., reign, by = "Country") %>%

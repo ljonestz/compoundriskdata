@@ -108,7 +108,7 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(
-      NH_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
+      Fr_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
       TRUE ~ pmax(
         Fr_FSI_2019minus2020_norm,
         Fr_REIGN_couprisk3m_norm,
@@ -265,7 +265,7 @@ altflag <- altflag %>%
       na.rm = T
     )),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = case_when(
-      is.na(NH_INFORM_CRISIS_Type) | NH_INFORM_CRISIS_Type != "Complex crisis" ~ geometricmean(c(Fr_FSI_2019minus2020_norm_plus1,
+      is.na(Fr_INFORM_CRISIS_Type) | Fr_INFORM_CRISIS_Type != "Complex crisis" ~ geometricmean(c(Fr_FSI_2019minus2020_norm_plus1,
         Fr_REIGN_couprisk3m_norm_plus1,
         Fr_ACLED_event_same_month_difference_perc_norm_plus1,
         Fr_ACLED_fatal_same_month_difference_perc_norm_plus1,
@@ -469,7 +469,7 @@ reliabilitysheet <- globalrisk %>%
         Fr_REIGN_couprisk3m_norm,
         Fr_ACLED_event_same_month_difference_perc_norm,
         Fr_ACLED_fatal_same_month_difference_perc_norm,
-        NH_INFORM_CRISIS_Type
+        Fr_INFORM_CRISIS_Type
       )),
     na.rm = T
     ) / 5
