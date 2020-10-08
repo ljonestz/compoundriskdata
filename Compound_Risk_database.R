@@ -293,50 +293,6 @@ fews <- fews %>%
     )
   )
 
-#---------------------- Scrape food price data from FAO ---------------------------------
-# Food price volatility
-librarian::shelf(ggplot2, cowplot, lubridate, rvest, dplyr, viridis, tidyverse, countrycode)
-
-# Website
-fao <- "https://datalab.review.fao.org/scraped_prices/world.html"
-faoweb <- read_html(fao)
-
-# Scrape table
-faoscrape <- faoweb %>%
-  html_nodes("td") %>%
-  html_text()
-
-# Create dataframe
-faoprice <- suppressWarnings(
-  as.data.frame(matrix(faoscrape, ncol = 4, byrow = T), stringsAsFactors = T)
-)
-
-names(faoprice) <- c("Country", "Pc6m", "Pc30d", "Pc7d")
-
-# Convert to numeric
-faoprice[c("Pc6m", "Pc30d", "Pc7d")] <- lapply(faoprice[c("Pc6m", "Pc30d", "Pc7d")], function(xx) {
-  suppressWarnings(as.numeric(as.character(xx)))
-})
-
-# Remove tag
-faoprice <- faoprice %>%
-  filter(faoprice$Country != "Source: Numbeo.com\n") %>%
-  mutate(Country = countrycode(Country,
-    origin = "country.name",
-    destination = "iso3c",
-    nomatch = NULL
-  )) %>%
-  rename(
-    F_FAO_6mFPV = Pc6m,
-    F_FAO_30dFPV = Pc30d,
-    F_FAO_7dFPV = Pc7d
-  )
-
-# Normalise scores
-upperrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(faoprice$F_FAO_6mFPV, probs = c(0.05), na.rm = T)
-fpv <- normfuncpos(faoprice, upperrisk, lowerrisk, "F_FAO_6mFPV")
-
 #--------------Alternative Food price volatility scopes -----------------------
 fao_fpma <- read_html("http://www.fao.org/giews/food-prices/home/en/")
 
@@ -1062,8 +1018,10 @@ countrylist <- countrylist %>%
 
 # Add INFORM fragility indicator (under NH sheet)
 inform_fragile <- nathazardfull %>%
-  select(Country, NH_INFORM_CRISIS_Type) %>%
-  rename(Fr_INFORM_CRISIS_Type = NH_INFORM_CRISIS_Type)
+  select(Country, NH_INFORM_CRISIS_Type)  %>%
+  mutate(Fr_INFORM_CRISIS_Norm = case_when(NH_INFORM_CRISIS_Type %in% c("Complex crisis" , "Conflict") ~ 10,
+                                           TRUE ~ 0)
+         )
 
 # Compile joint database
 fragilitysheet <- left_join(countrylist, fsi, by = "Country") %>%

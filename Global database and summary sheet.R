@@ -107,19 +107,17 @@ riskflags <- globalrisk %>%
       NH_natural_acaps,
       na.rm = T
     ),
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS = case_when(
-      Fr_INFORM_CRISIS_Type == "Complex crisis" ~ 10,
-      TRUE ~ pmax(
-        Fr_FSI_2019minus2020_norm,
-        Fr_REIGN_couprisk3m_norm,
-        Fr_ACLED_event_same_month_difference_perc_norm,
-        Fr_ACLED_fatal_same_month_difference_perc_norm,
-        Fr_conflict_acaps,
-        Fr_state6m_norm,
-        Fr_nonstate6m_norm,
-        Fr_oneside6m_norm,
-        na.rm = T
-      )
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
+      Fr_FSI_2019minus2020_norm,
+      Fr_REIGN_couprisk3m_norm,
+       Fr_ACLED_event_same_month_difference_perc_norm,
+      Fr_ACLED_fatal_same_month_difference_perc_norm,
+      Fr_conflict_acaps,
+      Fr_state6m_norm,
+      Fr_nonstate6m_norm,
+      Fr_oneside6m_norm,
+      Fr_INFORM_CRISIS_Norm,
+      na.rm = T
     )
   ) %>%
   select(
@@ -239,7 +237,7 @@ names <- c(
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",
-  "Fr_INFORM_Fragility_Score_norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm",
+  "Fr_INFORM_Fragility_Score_norm","Fr_INFORM_CRISIS_Norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm",
   "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm", "Fr_WB_structural_norm"
 )
 
@@ -264,15 +262,15 @@ altflag <- altflag %>%
       M_GDP_WB_2019minus2020_norm_plus1,
       na.rm = T
     )),
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = case_when(
-      is.na(Fr_INFORM_CRISIS_Type) | Fr_INFORM_CRISIS_Type != "Complex crisis" ~ geometricmean(c(Fr_FSI_2019minus2020_norm_plus1,
-        Fr_REIGN_couprisk3m_norm_plus1,
-        Fr_ACLED_event_same_month_difference_perc_norm_plus1,
-        Fr_ACLED_fatal_same_month_difference_perc_norm_plus1,
-        na.rm = T
-      )),
-      TRUE ~ 10
-    ),
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
+      Fr_FSI_2019minus2020_norm_plus1,
+      Fr_REIGN_couprisk3m_norm_plus1,
+      Fr_ACLED_event_same_month_difference_perc_norm_plus1,
+      Fr_ACLED_fatal_same_month_difference_perc_norm_plus1,
+      Fr_INFORM_CRISIS_Norm,
+      na.rm = T
+    ))
+    ,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ_ALT = geometricmean(c(
       H_Oxrollback_score_norm_plus1,
       max(altflag$H_Covidgrowth_casesnorm,
@@ -469,7 +467,7 @@ reliabilitysheet <- globalrisk %>%
         Fr_REIGN_couprisk3m_norm,
         Fr_ACLED_event_same_month_difference_perc_norm,
         Fr_ACLED_fatal_same_month_difference_perc_norm,
-        Fr_INFORM_CRISIS_Type
+        Fr_INFORM_CRISIS_Norm,
       )),
     na.rm = T
     ) / 5
