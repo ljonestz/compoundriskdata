@@ -77,62 +77,6 @@ lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm = T)
 
 OXrollback <- normfuncpos(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
 
-#-------------------------COVID projections--------------------
-covid <- "https://covid19-projections.com/#view-projections"
-covid <- read_html(covid)
-
-# Scrape tables
-covidtable <- covid %>%
-  html_nodes("table") %>%
-  html_table(fill = TRUE)
-
-# Isolate regional tables
-covideu <- covidtable[[8]]
-covidworld <- covidtable[[9]]
-covidus <- covidtable[[7]][1, ]
-colnames(covidus)[1] <- c("Country")
-colnames(covideu)[1] <- c("Country")
-colnames(covidworld)[1] <- c("Country")
-
-# Merge tables
-covidproj <- merge(covideu, covidworld, all = T)
-covidproj <- merge(covidproj, covidus, all = T)
-covidproj$Country <- countrycode(covidproj$Country,
-  origin = "country.name",
-  destination = "iso3c",
-  nomatch = NULL
-)
-
-# Convert to numeric
-covidproj$`Additional Deaths (% of Current Deaths)` <- gsub("%", "", covidproj$`Additional Deaths (% of Current Deaths)`)
-varname <- c(
-  "Current Deaths", "Projected Deaths - Mean", "Projected Deaths / 1M",
-  "Additional Deaths - Mean", "Additional Deaths (% of Current Deaths)",
-  "Projected Deaths - 2.5th Percentile", "Projected Deaths - 97.5th Percentile"
-)
-
-covidproj[varname] <- lapply(covidproj[varname], function(xx) {
-  gsub(",", "", xx)
-})
-
-covidproj[varname] <- lapply(covidproj[varname], function(xx) {
-  as.numeric(as.character(xx))
-})
-
-# Change colnames to consistent format
-colnames(covidproj) <- c(
-  "Country", "H_Covidproj_Current Deaths", "H_Covidproj_Projected Deaths - Mean", "H_Covidproj_Projected Deaths / 1M",
-  "H_Covidproj_Additional Deaths - Mean", "Additional Deaths / 1M", "H_Covidproj_Additional Deaths (% of Current Deaths)",
-  "H_Covidproj_Projected Deaths - 2.5th Percentile", "H_Covidproj_Projected Deaths - 97.5th Percentile"
-)
-
-colnames(covidproj) <- gsub(" ", "_", colnames(covidproj))
-
-# Add normalised values
-upperrisk <- quantile(covidproj$`H_Covidproj_Projected_Deaths_/_1M`, probs = c(0.80), na.rm = T)
-lowerrisk <- quantile(covidproj$`H_Covidproj_Projected_Deaths_/_1M`, probs = c(0.10), na.rm = T)
-covidproj <- normfuncpos(covidproj, upperrisk, lowerrisk, "H_Covidproj_Projected_Deaths_/_1M")
-
 #------------------------COVID deaths and cases--------------------------
 covidweb <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv")
 
@@ -282,7 +226,6 @@ countrylist <- countrylist %>%
 
 health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., OXrollback, by = c("Country", "Countryname")) %>%
-  left_join(., covidproj, by = "Country") %>%
   left_join(., covidgrowth, by = "Country") %>%
   left_join(., covidcurrent, by = "Country") %>%
   left_join(., Ox_cov_resp, by = "Country") %>%
