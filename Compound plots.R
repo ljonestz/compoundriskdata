@@ -1099,3 +1099,59 @@ two <- cowplot::plot_grid(ame, oce, ncol = 1)
 sank <- cowplot::plot_grid(one, glob, two, nrow = 1, rel_widths = c(1, 3, 1))
 
 ggsave("Plots/sankey.pdf", sank, width = 16, height = 8)
+
+#-------------------Regional Maps-----------------------------------------
+# Map theme
+plain <- theme(
+  axis.text = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  panel.border = element_blank(),
+  panel.grid = element_blank(),
+  axis.title = element_blank(),
+  plot.title = element_text(hjust = 0.5),
+  panel.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F"),
+  plot.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F"),
+  legend.background = element_rect(fill = "#2C3E4F", colour = "#2C3E4F"),
+  text = element_text(colour = "lightgrey")
+)
+
+seamap <- worldmap %>%
+  mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
+  filter(Region == "South Asia") %>%
+  ggplot(mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  ggtitle("Total Emerging Compound Risk Score") +
+  theme_void() +
+  labs(fill = "Total # of risks") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+menamap <- worldmap %>%
+  mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
+  filter(Region == "Middle East & North Africa") %>%
+  ggplot(mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  ggtitle("Total Emerging Compound Risk Score")  +
+  theme_void() +
+  labs(fill = "Total # of risks") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ssamap <- worldmap %>%
+  mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
+  filter(Region == "Sub-Saharan Africa") %>%
+  ggplot(mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  ggtitle("Total Emerging Compound Risk Score")  +
+  theme_void() +
+  labs(fill = "Total # of risks") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("Plots/Seamap.pdf", seamap, width = 8, height = 5)
+ggsave("Plots/Menamap.pdf", menamap, width = 8, height = 5)
+ggsave("Plots/Ssaamap.pdf", ssamap, width = 8, height = 5)

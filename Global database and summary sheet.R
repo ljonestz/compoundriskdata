@@ -71,7 +71,7 @@ riskflags <- globalrisk %>%
       H_Covidgrowth_deathsnorm,
       H_new_cases_smoothed_per_million_norm,
       H_new_deaths_smoothed_per_million_norm,
-      H_Covidproj_Projected_Deaths_._1M_norm,
+      H_add_death_prec_current_norm,
       H_health_acaps,
       H_GovernmentResponseIndexForDisplay_norm,
       na.rm = T
@@ -108,14 +108,13 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
-      Fr_FSI_2019minus2020_norm,
       Fr_REIGN_couprisk3m_norm,
-       Fr_ACLED_event_same_month_difference_perc_norm,
+      Fr_ACLED_event_same_month_difference_perc_norm,
       Fr_ACLED_fatal_same_month_difference_perc_norm,
       Fr_conflict_acaps,
       Fr_state6m_norm,
       Fr_nonstate6m_norm,
-      Fr_oneside6m_norm,
+      #Fr_oneside6m_norm,
       Fr_INFORM_CRISIS_Norm,
       na.rm = T
     )
@@ -238,7 +237,7 @@ names <- c(
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",
   "Fr_INFORM_Fragility_Score_norm","Fr_INFORM_CRISIS_Norm", "Fr_FSI_Score_norm", "Fr_FSI_2019minus2020_norm",
-  "Fr_REIGN_couprisk3m_norm", "H_Covidproj_Projected_Deaths_._1M_norm", "Fr_WB_structural_norm"
+  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_WB_structural_norm"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -255,7 +254,7 @@ altflag <- altflag %>%
       H_Covidgrowth_deathsnorm_plus1,
       H_new_cases_smoothed_per_million_norm_plus1,
       H_new_deaths_smoothed_per_million_norm_plus1,
-      H_Covidproj_Projected_Deaths_._1M_norm_plus1),
+      H_add_death_prec_current_norm_plus1),
     na.rm = T
     ),
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmean(c(M_GDP_IMF_2019minus2020_norm_plus1,
@@ -263,7 +262,6 @@ altflag <- altflag %>%
       na.rm = T
     )),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
-      Fr_FSI_2019minus2020_norm_plus1,
       Fr_REIGN_couprisk3m_norm_plus1,
       Fr_ACLED_event_same_month_difference_perc_norm_plus1,
       Fr_ACLED_fatal_same_month_difference_perc_norm_plus1,
@@ -277,7 +275,7 @@ altflag <- altflag %>%
         altflag$H_Covidgrowth_deathsnorm,
         altflag$H_new_cases_smoothed_per_million_norm,
         altflag$H_new_deaths_smoothed_per_million_norm,
-        altflag$H_Covidproj_Projected_Deaths_._1M_norm,
+        altflag$H_add_death_prec_current,
         altflag$H_health_acaps,
         na.rm = T
       )
@@ -296,7 +294,7 @@ altflag <- altflag %>%
       H_Covidgrowth_deathsnorm_plus1,
       H_new_cases_smoothed_per_million_norm_plus1,
       H_new_deaths_smoothed_per_million_norm_plus1,
-      H_Covidproj_Projected_Deaths_._1M_norm_plus1),
+      H_add_death_prec_current),
     na.rm = T
     ),
     M_coefvar = cv(c(
@@ -425,7 +423,7 @@ reliabilitysheet <- globalrisk %>%
         H_Covidgrowth_deathsnorm,
         H_new_cases_smoothed_per_million_norm,
         H_new_deaths_smoothed_per_million_norm,
-        H_Covidproj_Projected_Deaths_._1M_norm
+        H_add_death_prec_current_norm
       )),
     na.rm = T
     ) / 6,
@@ -472,6 +470,7 @@ reliabilitysheet <- globalrisk %>%
     na.rm = T
     ) / 5
   )
+
 # Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
   mutate(
@@ -761,7 +760,7 @@ cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), w
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"))
-cond("healthsheet", which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"), which(colnames(healthsheet) == "H_Covidproj_Projected_Deaths_._1M_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_add_death_prec_current_norm"), which(colnames(healthsheet) == "H_add_death_prec_current_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
