@@ -695,8 +695,8 @@ gdaclist <- rbind(gdaclist, add)
 gdaclist$status <- ifelse(gdaclist$hazard == "drought" & gdaclist$date == "2020", "active", gdaclist$status)
 
 # Country names
-gdaclist$namesiso <- countrycode(gdaclist$names, origin = "country.name", destination = "iso3c")
-gdaclist$namesfull <- countrycode(gdaclist$names, origin = "country.name", destination = "iso3c", nomatch = NULL)
+gdaclist$namesiso <- suppressWarnings(countrycode(gdaclist$names, origin = "country.name", destination = "iso3c"))
+gdaclist$namesfull <- suppressWarnings(countrycode(gdaclist$names, origin = "country.name", destination = "iso3c", nomatch = NULL))
 
 # Create subset
 gdac <- gdaclist %>%
@@ -714,7 +714,7 @@ gdac <- gdac %>%
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
 # INFORM CRISIS TRACKER
-informcrisis <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv"))
+informcrisis <- suppressWarnings(suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv")))
 
 # Add duplicates
 informcrisis <- informcrisis %>%
