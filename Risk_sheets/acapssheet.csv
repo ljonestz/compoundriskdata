@@ -3,13 +3,13 @@
 "2","Sudan","SDN",10,0,0,0
 "3","Afghanistan","AFG",10,0,0,0
 "4","Mozambique","MOZ",0,0,0,0
-"5","Niger","NER",0,0,0,0
+"5","Niger","NER",10,0,0,0
 "6","Algeria","DZA",0,0,0,0
 "7","Ethiopia","ETH",10,0,0,0
 "8","Iraq","IRQ",10,0,0,0
 "9","South Sudan","SSD",10,0,0,0
 "10","Central African Republic","CAF",0,0,0,0
-"11","Chad","TCD",0,0,0,0
+"11","Chad","TCD",10,0,0,0
 "12","Croatia","HRV",0,0,0,0
 "13","Lebanon","LBN",10,0,0,0
 "14","Maldives","MDV",0,0,0,0
@@ -23,11 +23,11 @@
 "22","Honduras","HND",0,0,0,0
 "23","Peru","PER",0,0,0,0
 "24","Serbia","SRB",0,0,0,0
-"25","Somalia","SOM",10,0,0,0
+"25","Somalia","SOM",10,0,10,0
 "26","Yemen","YEM",10,0,0,0
 "27","Armenia","ARM",0,0,0,0
-"28","Cameroon","CMR",0,0,0,0
-"29","Colombia","COL",0,0,0,0
+"28","Cameroon","CMR",10,0,0,0
+"29","Colombia","COL",10,0,0,0
 "30","Congo DR","COD",10,0,0,0
 "31","Grenada","GRD",0,0,0,0
 "32","Guinea","GIN",0,0,0,0
@@ -97,7 +97,7 @@
 "96","Bhutan","BTN",0,0,0,0
 "97","Burundi","BDI",0,0,0,0
 "98","Cambodia","KHM",0,0,0,0
-"99","China","CHN",0,0,0,0
+"99","China","CHN",0,0,10,0
 "100","Comoros","COM",0,0,0,0
 "101","Congo","COG",0,0,0,0
 "102","France","FRA",0,0,0,0

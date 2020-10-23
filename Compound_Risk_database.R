@@ -154,6 +154,13 @@ covidgrowth <- covid %>%
   ) %>%
   group_by(iso_code) %>%
   filter(!is.na(meandeaths) & !is.na(meancase)) %>%
+  filter(
+    iso_code %in% 
+      as.data.frame(test %>% 
+                      count(iso_code) %>% 
+                      filter(n == 2) %>% 
+                      select(iso_code))$iso_code
+    ) %>%
   mutate(
     growthdeath = meandeaths[previous2week == "twoweek"] - meandeaths,
     growthratedeaths = case_when(
@@ -343,7 +350,7 @@ write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 
 #---------------------------LOAD DEBT DATA----------------------------
 # SCRAPE DEBT DATA
-debtweb <- "https://www.worldbank.org/en/topic/debt/brief/covid-19-debt-service-suspension-initiative"
+debtweb <- "https://www.worldbank.org/en/programs/debt-toolkit/dsa"
 debt <- read_html(debtweb)
 
 debttab <- debt %>%
@@ -355,7 +362,6 @@ colnames(debttab) <- debttab[1, ]
 debttab <- debttab[-1, ]
 
 debttab <- debttab %>%
-  rename(Country = Country4) %>%
   mutate(
     Country = gsub("[0-9]+", "", Country),
     Country = countrycode(Country,
@@ -366,15 +372,12 @@ debttab <- debttab %>%
   ) %>%
   filter(Country != c("TOTAL"))
 
-colnames(debttab) <- gsub("[0-9]+", "", colnames(debttab))
-debttab <- debttab %>%
-  select(Country, `DSSI Participation?`, `Risk of overall debt distress`, `Potential DSSI Savings   (in % of  GDP)`)
-colnames(debttab) <- c("Country", "D_DSSI", "D_WB_Overall_debt_distress", "D_WB_DSSI_Save")
+colnames(debttab) <- c("Country", "D_WB_external_debt_distress", "D_overall_debt_distress", "D_debt_date")
 
-debttab$D_WB_Overall_debt_distress_norm <- ifelse(debttab$D_WB_Overall_debt_distress == "In distress", 10,
-  ifelse(debttab$D_WB_Overall_debt_distress == "High", 10,
-    ifelse(debttab$D_WB_Overall_debt_distress == "Moderate", 7,
-      ifelse(debttab$D_WB_Overall_debt_distress == "Low", 3, NA)
+debttab$D_WB_external_debt_distress_norm <- ifelse(debttab$D_WB_external_debt_distress == "In distress", 10,
+  ifelse(debttab$D_WB_external_debt_distress == "High", 10,
+    ifelse(debttab$D_WB_external_debt_distress == "Moderate", 7,
+      ifelse(debttab$D_WB_external_debt_distress == "Low", 3, NA)
     )
   )
 )
@@ -1010,6 +1013,8 @@ wbstructural <- wbstructural %>%
       TRUE ~ NA_real_
     )
   )
+
+wbstructural <- normfuncpos(wbstructural, 6, 0, "Fr_number_flags")
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
