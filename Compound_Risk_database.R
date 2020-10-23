@@ -9,7 +9,7 @@
 librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, tidyverse, readxl,
-  gsheet, zoo
+  gsheet, zoo, wppExplorer
 )
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
@@ -76,62 +76,6 @@ upperrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.9), na.rm = T)
 lowerrisk <- quantile(OXrollback$H_Oxrollback_score, probs = c(0.1), na.rm = T)
 
 OXrollback <- normfuncpos(OXrollback, upperrisk, lowerrisk, "H_Oxrollback_score")
-
-#-------------------------COVID projections--------------------
-covid <- "https://covid19-projections.com/#view-projections"
-covid <- read_html(covid)
-
-# Scrape tables
-covidtable <- covid %>%
-  html_nodes("table") %>%
-  html_table(fill = TRUE)
-
-# Isolate regional tables
-covideu <- covidtable[[8]]
-covidworld <- covidtable[[9]]
-covidus <- covidtable[[7]][1, ]
-colnames(covidus)[1] <- c("Country")
-colnames(covideu)[1] <- c("Country")
-colnames(covidworld)[1] <- c("Country")
-
-# Merge tables
-covidproj <- merge(covideu, covidworld, all = T)
-covidproj <- merge(covidproj, covidus, all = T)
-covidproj$Country <- countrycode(covidproj$Country,
-  origin = "country.name",
-  destination = "iso3c",
-  nomatch = NULL
-)
-
-# Convert to numeric
-covidproj$`Additional Deaths (% of Current Deaths)` <- gsub("%", "", covidproj$`Additional Deaths (% of Current Deaths)`)
-varname <- c(
-  "Current Deaths", "Projected Deaths - Mean", "Projected Deaths / 1M",
-  "Additional Deaths - Mean", "Additional Deaths (% of Current Deaths)",
-  "Projected Deaths - 2.5th Percentile", "Projected Deaths - 97.5th Percentile"
-)
-
-covidproj[varname] <- lapply(covidproj[varname], function(xx) {
-  gsub(",", "", xx)
-})
-
-covidproj[varname] <- lapply(covidproj[varname], function(xx) {
-  as.numeric(as.character(xx))
-})
-
-# Change colnames to consistent format
-colnames(covidproj) <- c(
-  "Country", "H_Covidproj_Current Deaths", "H_Covidproj_Projected Deaths - Mean", "H_Covidproj_Projected Deaths / 1M",
-  "H_Covidproj_Additional Deaths - Mean", "Additional Deaths / 1M", "H_Covidproj_Additional Deaths (% of Current Deaths)",
-  "H_Covidproj_Projected Deaths - 2.5th Percentile", "H_Covidproj_Projected Deaths - 97.5th Percentile"
-)
-
-colnames(covidproj) <- gsub(" ", "_", colnames(covidproj))
-
-# Add normalised values
-upperrisk <- quantile(covidproj$`H_Covidproj_Projected_Deaths_/_1M`, probs = c(0.80), na.rm = T)
-lowerrisk <- quantile(covidproj$`H_Covidproj_Projected_Deaths_/_1M`, probs = c(0.10), na.rm = T)
-covidproj <- normfuncpos(covidproj, upperrisk, lowerrisk, "H_Covidproj_Projected_Deaths_/_1M")
 
 #------------------------COVID deaths and cases--------------------------
 covidweb <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv")
@@ -203,6 +147,66 @@ colnames(covidcurrent) <- c(
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm"
 )
 
+#-------------------Alternative COVID deaths---------------------------------
+# Load COVID data
+cov <- read.csv("https://raw.githubusercontent.com/scc-usc/ReCOVER-COVID-19/master/results/forecasts/global_deaths_current_0.csv")
+cov_current <- read.csv("https://raw.githubusercontent.com/scc-usc/ReCOVER-COVID-19/master/results/forecasts/global_deaths.csv")
+
+# Summarise country totals (forecast)
+cov_dat <- cov %>%
+  select(Country, colnames(cov)[10],colnames(cov)[9]) %>%
+  rename(
+    w8forecast = colnames(cov)[10], 
+    w7forecast = colnames(cov)[9]
+    ) %>%
+  mutate(Country = suppressWarnings(countrycode(Country, 
+                                                origin = "country.name",
+                                                destination = "iso3c"
+                                                )
+         )) %>%
+  drop_na(Country)
+
+# Summarise country totals (current)
+cov_cur <- cov_current %>%
+  select(Country, last(colnames(cov_current))) %>%
+  rename(
+    current = last(colnames(cov_current)),
+    ) %>%
+  mutate(
+    Country = suppressWarnings(countrycode(Country, 
+                                                origin = "country.name",
+                                                destination = "iso3c"
+                                           )
+      )) %>%
+  drop_na(Country)
+
+# Add population
+pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
+
+pop$charcode <- suppressWarnings(countrycode(pop$charcode, 
+                                             origin = "iso2c", 
+                                             destination = "iso3c"
+                                             )
+                                 )
+
+colnames(pop) <- c("Country", "Population")
+
+# Join datasets
+cov_forcast_alt <- left_join(cov_dat, pop, by = "Country", keep = F) %>%
+  left_join(., cov_cur) %>%
+  drop_na(Country) %>%
+  mutate(
+    week_increase = w8forecast - w7forecast,
+    new_death_per_m = week_increase / (Population / 1000),
+    add_death_prec_current = ((w8forecast / current) * 100) - 100
+    ) %>%
+  rename_with(.fn = ~ paste0("H_", .), 
+              .cols = colnames(.)[-1]
+              )
+
+# Normalise
+cov_forcast_alt <- normfuncpos(cov_forcast_alt, 100, 0, "H_add_death_prec_current")
+
 #--------------------------Oxford Response Tracker----------------------------
 Oxres <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker/master/data/OxCGRT_latest.csv")
 
@@ -229,10 +233,10 @@ countrylist <- countrylist %>%
 
 health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., OXrollback, by = c("Country", "Countryname")) %>%
-  left_join(., covidproj, by = "Country") %>%
   left_join(., covidgrowth, by = "Country") %>%
   left_join(., covidcurrent, by = "Country") %>%
   left_join(., Ox_cov_resp, by = "Country") %>%
+  left_join(., cov_forcast_alt, by = "Country") %>%
   arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
@@ -501,16 +505,9 @@ write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
 macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macro.csv")
 macro <- macro %>%
   mutate(
-    M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc, M_Travel_Tourism_perc)),
-                                           na.rm = T
-                                           ),
-    M_Financial_Resilience_Score = rowMeans(select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)),
-                                            na.rm = T
-                                            )
-  ) %>%
-  mutate(M_Economic_and_Financial_score = rowMeans(select(., c(M_Economic_Dependence_Score, M_Financial_Resilience_Score)),
-                                                   na.rm = T
-  )) %>%
+    M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc, M_Travel_Tourism_perc)), na.rm = T),
+    M_Financial_Resilience_Score = rowMeans(select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)), na.rm = T)) %>%
+  mutate(M_Economic_and_Financial_score = rowMeans(select(., c(M_Economic_Dependence_Score, M_Financial_Resilience_Score)), na.rm = T)) %>%
   select(-X)
 upperrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.9), na.rm = T)
 lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm = T)
@@ -924,7 +921,7 @@ acledjoin <- acledjoin %>%
 aclednorm <- function(df, upperrisk, lowerrisk, col1, number) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 5, 0,
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 20, 0,
                                                ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - 
                                                         (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
                                         )
@@ -940,7 +937,7 @@ acleddata <- aclednorm(acleddata, 600, 0, "Fr_ACLED_fatal_month_threeyear_differ
 aclednorm <- function(df, upperrisk, lowerrisk, col1, number) {
   # Create new column col_name as sum of col1 and col2
   df[[paste0(col1, "_norm")]] <- ifelse(df[[col1]] >= upperrisk, 10,
-                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 25, 0,
+                                        ifelse(df[[col1]] <= lowerrisk | df[[number]] <= 50, 0,
                                                ifelse(df[[col1]] < upperrisk & df[[col1]] > lowerrisk, 10 - 
                                                         (upperrisk - df[[col1]]) / (upperrisk - lowerrisk) * 10, NA)
                                         )
