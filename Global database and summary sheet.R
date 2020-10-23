@@ -238,7 +238,7 @@ names <- c(
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",
   "Fr_INFORM_Fragility_Score_norm","Fr_INFORM_CRISIS_Norm", "Fr_FSI_Score_norm",
   "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm",
-  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_WB_structural_norm"
+  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_WB_number_flags_norm"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -403,7 +403,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_FISCAL = case_when(
-      is.na(D_WB_Overall_debt_distress_norm) ~ 1,
+      is.na(D_WB_external_debt_distress) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY = case_when(
@@ -415,7 +415,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = case_when(
-      is.na(Fr_WB_structural_norm) ~ 1,
+      is.na(Fr_WB_number_flags_norm) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
