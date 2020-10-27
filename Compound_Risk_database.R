@@ -100,7 +100,7 @@ covidgrowth <- covid %>%
   filter(!is.na(meandeaths) & !is.na(meancase)) %>%
   filter(
     iso_code %in% 
-      as.data.frame(test %>% 
+      as.data.frame(covid %>% 
                       count(iso_code) %>% 
                       filter(n == 2) %>% 
                       select(iso_code))$iso_code
@@ -225,6 +225,64 @@ colnames(Ox_cov_resp) <- c("Country", paste0("H_", colnames(Ox_cov_resp[,-1])))
 #Create normalised scores
 Ox_cov_resp <- normfuncneg(Ox_cov_resp, 15, 80, "H_GovernmentResponseIndexForDisplay")
 Ox_cov_resp <- normfuncneg(Ox_cov_resp, 0, 100, "H_EconomicSupportIndexForDisplay")
+
+#------------------------------INFORM COVID------------------------------------------------------
+inform_cov <- read_html("https://drmkc.jrc.ec.europa.eu/inform-index/INFORM-Covid-19/INFORM-Covid-19-Warning-beta-version")
+
+all_dat <- lapply(2:24, function(tt){
+  see <- lapply(c("data-country", "data-value", "style"), function(xx) {
+    inform_cov %>% 
+      html_nodes(paste0("td:nth_child(", paste(tt), ")")) %>%
+      html_attr(xx)
+  })
+  do.call(rbind, Map(data.frame, cname = see[1], Value = see[2], Rating = see[3]))
+})
+
+inform_covid_warning_raw <- do.call(rbind, Map(data.frame, INFORM_rating=all_dat[1], covid_case_rate=all_dat[2], legal_stringency=all_dat[3],
+                                               international_travel=all_dat[4], internal_movement=all_dat[5], stay_home=all_dat[6],
+                                               income_support=all_dat[7], debt_relief=all_dat[8], gdp_change=all_dat[9],
+                                               unemployment=all_dat[10], inflation=all_dat[11], school_close=all_dat[12],
+                                               ipc_3_plus=all_dat[13], growth_events=all_dat[14], public_info=all_dat[15],
+                                               testing_policy=all_dat[16], contact_trace=all_dat[17], growth_conflict=all_dat[18],
+                                               seasonal_flood=all_dat[19], seasonal_cyclone=all_dat[20], seasonal_exposure=all_dat[21],
+                                               ASAP_hotspot=all_dat[22], INFORM_severity=all_dat[23]))
+
+inform_covid_warning <-  inform_covid_warning_raw %>%
+  rename(
+    Countryname = INFORM_rating.cname,
+    holdone = INFORM_severity.Rating
+  ) %>%
+  select(-contains(".cname")) %>%
+  mutate_at(
+    vars(contains(".Rating")),
+    funs(case_when(
+      . == "background:#FF0000;" ~ "High",
+      . == "background:#FFD800;" ~ "Medium",
+      . == "background:#00FF00;" ~ "Low",
+      TRUE ~ NA_character_
+    ))
+  ) %>%
+  mutate(
+    holdone = case_when(
+      holdone == "background:#FF0000;" ~ "High",
+      holdone == "background:#FFD800;" ~ "Medium",
+      is.na(holdone) ~ "Low",
+      TRUE ~ NA_character_
+    )) %>%
+  rename(INFORM_severity.Rating = holdone) %>%
+  mutate(
+    Country = countrycode(
+      Countryname,
+      origin = "country.name",
+      destination = "iso3c",
+      nomatch = NULL
+    )) %>%
+  rename_with(
+    .fn = ~ paste0("H_", .), 
+    .cols = colnames(.)[!colnames(.) %in% c("Countryname", "Country") ]
+  )
+
+write.csv(inform_covid_warning, "Indicator_dataset/inform_covid_warning.csv")
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -515,7 +573,7 @@ igc <- igc %>%
   
 #------------------------------COVID Economic Stimulus Index-------------------------
 # Load file
-url <- "http://web.boun.edu.tr/elgin/CESI_12.xlsx" # Note: may need to check for more recent versions
+url <- "http://web.boun.edu.tr/elgin/CESI_13.xlsx" # Note: may need to check for more recent versions
 destfile <- "Indicator_dataset/cesiraw.xlsx"
 curl::curl_download(url, destfile)
 cesi <- read_excel(destfile)
@@ -640,10 +698,31 @@ inform_data <- inform_data %>%
 inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
 inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
 
+#------------------------Forward-looking socio-economic variables from INFORM---------------------------
+socio_forward <- inform_covid_warning %>%
+  select(
+    Country, H_gdp_change.Value,H_gdp_change.Rating, H_unemployment.Value,
+    H_unemployment.Rating, H_income_support.Value, H_income_support.Rating
+  ) %>%
+  rename_with(
+    .fn = ~ str_replace(., "H_", "S_"),
+    .cols = colnames(.)[-1]
+  ) %>%
+  mutate_at(
+    vars(contains(".Rating")),
+    funs(norm = case_when(
+      . == "High" ~ 10,
+      . == "Medium" ~ 7,
+      . == "Low" ~ 0,
+      TRUE ~ NA_real_
+    ))
+  )
+
 #--------------------------Create Socio-economic sheet -------------------------------------------
 socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
   select(-Countryname) %>%
   left_join(., inform_data, by = "Country") %>%
+  left_join(., socio_forward, by = "Country") %>%
   arrange(Country)
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
@@ -1254,54 +1333,3 @@ acapssheet <- countrylist %>%
 
 # Write ACAPS sheet
 write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
-
-#------------------------------INFORM COVID------------------------------------------------------
-
-all_dat <- lapply(2:24, function(tt){
-  
-  see <- lapply(c("data-country", "data-value", "style"), function(xx) {
-    test %>% 
-     html_nodes(paste0("td:nth_child(", paste(tt), ")")) %>%
-      html_attr(xx)
-  })
-
-  
-  
-  do.call(rbind, Map(data.frame, cname = see[1], Value = see[2], Rating = see[3]))
-  
-})
-  
-inform_covid_warning_raw <- do.call(rbind, Map(data.frame, INFORM_rating=all_dat[1], covid_case_rate=all_dat[2], legal_stringency=all_dat[3],
-                   international_travel=all_dat[4], internal_movement=all_dat[5], stay_home=all_dat[6],
-                   income_support=all_dat[7], debt_relief=all_dat[8], gdp_change=all_dat[9],
-                   unemployment=all_dat[10], inflation=all_dat[11], school_close=all_dat[12],
-                   ipc_3_plus=all_dat[13], growth_events=all_dat[14], public_info=all_dat[15],
-                   testing_policy=all_dat[16], contact_trace=all_dat[17], growth_conflict=all_dat[18],
-                   seasonal_flood=all_dat[19], seasonal_cyclone=all_dat[20], seasonal_exposure=all_dat[21],
-                   ASAP_hotspot=all_dat[22], INFORM_severity=all_dat[23]))
-
-inform_covid_warning <-  inform_covid_warning_raw %>%
-  rename(
-    Countryname = INFORM_rating.cname,
-    holdone = INFORM_severity.Rating
-    ) %>%
-  select(-contains(".cname")) %>%
-  mutate_at(
-    vars(contains(".Rating")),
-    funs(case_when(
-      . == "background:#FF0000;" ~ "High",
-      . == "background:#FFD800;" ~ "Medium",
-      . == "background:#00FF00;" ~ "Low",
-      TRUE ~ NA_character_
-    ))
-  ) %>%
-  mutate(
-    holdone = case_when(
-      holdone == "background:#FF0000;" ~ "High",
-      holdone == "background:#FFD800;" ~ "Medium",
-      is.na(holdone) ~ "Low",
-      TRUE ~ NA_character_
-    )) %>%
-  rename(INFORM_severity.Rating = holdone)
-
-write.csv(inform_covid_warning, "Indicator_dataset/inform_covid_warning.csv")

@@ -99,6 +99,12 @@ riskflags <- globalrisk %>%
       M_GDP_WB_2019minus2020_norm,
       na.rm = T
     ),
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
+      S_gdp_change.Rating,
+      S_unemployment.Rating,
+      S_income_support.Rating,
+      na.rm = T
+    ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
       NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
@@ -124,7 +130,7 @@ riskflags <- globalrisk %>%
     EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
-    EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
+    EMERGING_RISK_FISCAL, EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
     EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS
   )
 
@@ -135,7 +141,8 @@ vars <- c(
   "EXISTING_RISK_FISCAL", "EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY",
   "EXISTING_RISK_NATURAL_HAZARDS", "EXISTING_RISK_FRAGILITY_INSTITUTIONS",
   "EMERGING_RISK_COVID_RESPONSE_CAPACITY", "EMERGING_RISK_FOOD_SECURITY",
-  "EMERGING_RISK_FISCAL", "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID",
+  "EMERGING_RISK_FISCAL","EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY",
+  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID",
   "EMERGING_RISK_NATURAL_HAZARDS", "EMERGING_RISK_FRAGILITY_INSTITUTIONS"
 )
 
@@ -357,6 +364,10 @@ riskflags <- riskflags %>%
       !is.na(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID) ~ sqrt(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID * EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
       TRUE ~ EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID
     ),
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ = case_when(
+      !is.na(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY) ~ sqrt(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY * EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY),
+      TRUE ~ EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY
+    ),
     EMERGING_RISK_FISCAL_SQ = case_when(
       !is.na(EXISTING_RISK_FISCAL) ~ sqrt(EXISTING_RISK_FISCAL * EMERGING_RISK_FISCAL),
       TRUE ~ EMERGING_RISK_FISCAL
@@ -371,7 +382,7 @@ riskflags <- riskflags %>%
 # Calculate total emerging risk scores for SQ
 sqnam <- c(
   "EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
-  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ",
+  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ","EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ",
   "EMERGING_RISK_FISCAL_SQ", "EMERGING_RISK_NATURAL_HAZARDS_SQ",
   "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ"
 )
@@ -410,7 +421,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_NATURAL_HAZARDS = case_when(
-      is.na(NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm) ~ 1,
+      is.na(NH_Hazard_Score_norm) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = case_when(
@@ -445,6 +456,14 @@ reliabilitysheet <- globalrisk %>%
                                                   )),
                                           na.rm = T
     ) / 2,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
+                                                                select(
+                                                                  S_gdp_change.Rating,
+                                                                  S_unemployment.Rating,
+                                                                  S_income_support.Rating
+                                                                )),
+                                                        na.rm = T
+    ) / 3,
     RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
                                                                            select(
                                                                              M_GDP_IMF_2019minus2020_norm,
@@ -484,7 +503,7 @@ reliabilitysheet <- reliabilitysheet %>%
     RELIABILITY_EXISTING_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
     RELIABILITY_EXISTING_NATURAL_HAZARDS, RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
     RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY, RELIABILITY_EMERGING_FOOD_SECURITY,
-    RELIABILITY_EMERGING_FISCAL, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
+    RELIABILITY_EMERGING_FISCAL,EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID,
     RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS
   ) %>%
   arrange(Country)
@@ -533,8 +552,10 @@ riskset <- riskflags %>%
     EXISTING_RISK_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
-    EMERGING_RISK_FISCAL, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
-    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+    EMERGING_RISK_FISCAL, EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,
+    EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
+    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+    TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
     TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK
   )
 
@@ -768,6 +789,7 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_gdp_change.Rating_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_norm"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
