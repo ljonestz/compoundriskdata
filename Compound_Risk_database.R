@@ -284,25 +284,100 @@ artemis <- artemis %>%
     ) %>%
   select(-X)
 
-#------------------FEWSNET-------------------------------
-fews <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fewsnet.csv")
+#------------------FEWSNET (with CRW threshold)-------------------------------
+#Load database
+fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS_raw.csv")
 
-fews <- fews %>%
+#Calculate country totals
+fewsg <- fewswb %>%
   select(-X) %>%
+  group_by(country, year_month) %>%
+  mutate(countrypop = sum(pop)) %>%
+  ungroup()
+
+#Caluclate proportion and number of people in IPC class 
+fewspop <- fewsg %>%
+  group_by(country, year_month) %>%
+  mutate(countryproportion = (pop / countrypop) * 100,
+         ipc3plusabsfor = case_when(fews_proj_med_adjusted >=3 ~ pop,
+                                    TRUE ~ NA_real_),
+         ipc3pluspercfor = case_when(fews_proj_med_adjusted >=3 ~ countryproportion,
+                                     TRUE ~ NA_real_),
+         ipc4plusabsfor = case_when(fews_proj_med_adjusted >= 4 ~ pop,
+                                    TRUE ~ NA_real_),
+         ipc4pluspercfor = case_when(fews_proj_med_adjusted >= 4 ~ countryproportion,
+                                     TRUE ~ NA_real_),
+         ipc3plusabsnow = case_when(fews_ipc_adjusted >=3 ~ pop,
+                                    TRUE ~ NA_real_),
+         ipc3pluspercnow = case_when(fews_ipc_adjusted >=3 ~ countryproportion,
+                                     TRUE ~ NA_real_),
+         ipc4plusabsnow = case_when(fews_ipc_adjusted >= 4 ~ pop,
+                                    TRUE ~ NA_real_),
+         ipc4pluspercnow = case_when(fews_ipc_adjusted >= 4 ~ countryproportion,
+                                     TRUE ~ NA_real_))
+
+#Functions to calculate absolute and geometric growth rates
+pctabs <- function(x) x-lag(x)
+pctperc <- function(x) x-lag(x)/lag(x)
+
+#Summarise country totals per in last round of FEWS
+fewssum <- fewspop %>%
+  filter(year_month == "2020_06" | year_month == "2020_02") %>%
+  group_by(country, year_month) %>%
+  mutate(totalipc3plusabsfor = sum(ipc3plusabsfor, na.rm=T),
+         totalipc3pluspercfor = sum(ipc3pluspercfor, na.rm=T),
+         totalipc4plusabsfor = sum(ipc4plusabsfor, na.rm=T),
+         totalipc4pluspercfor = sum(ipc4pluspercfor, na.rm=T),
+         totalipc3plusabsnow = sum(ipc3plusabsnow, na.rm=T),
+         totalipc3pluspercnow = sum(ipc3pluspercnow, na.rm=T),
+         totalipc4plusabsnow = sum(ipc4plusabsnow, na.rm=T),
+         totalipc4pluspercnow = sum(ipc4pluspercnow, na.rm=T)) %>%
+  distinct(country, year_month, .keep_all = TRUE) %>%
+  select(-ipc3plusabsfor, -ipc3pluspercfor, -ipc4plusabsfor, -ipc4pluspercfor, 
+         -ipc3plusabsnow, -ipc3pluspercnow, -ipc4plusabsnow, -ipc4pluspercnow,
+         -admin_name, -pop) %>%
+  group_by(country) %>%
+  mutate(pctchangeipc3for = pctabs(totalipc3pluspercfor),
+         pctchangeipc4for = pctperc(totalipc4pluspercfor),
+         pctchangeipc3now = pctabs(totalipc3pluspercnow),
+         pctchangeipc4now = pctperc(totalipc4pluspercnow),
+         diffactfor = totalipc3pluspercfor - totalipc3pluspercnow,
+         fshighrisk = case_when((totalipc3plusabsfor >= 5000000 | totalipc3pluspercfor >= 20) & pctchangeipc3for >= 5  ~ "High risk",
+                                (totalipc3plusabsnow >= 5000000 | totalipc3pluspercnow >= 20) & pctchangeipc3now >= 5  ~ "High risk",
+                                totalipc4pluspercfor >= 2.5  & pctchangeipc4for >= 10  ~ "High risk",
+                                totalipc4pluspercnow >= 2.5  & pctchangeipc4now >= 10  ~ "High risk",
+                                TRUE ~ "Not high risk")) %>%
+  select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
+         -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
+  filter(year_month == "2020_06")
+
+# Find max ipc for any region in the country
+fews_summary <- fewsg %>%
+  group_by(country) %>%
+  filter(year == 2020 & max(month, na.rm = T)) %>%
+  summarise(max_ipc = max(fews_proj_med_adjusted, na.rm = T))
+
+# Join the two datasets
+fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
   mutate(
-    F_Fewsnet_Score_norm = case_when(
-      F_Fewsnet_Score == 1 ~ 1,
-      F_Fewsnet_Score == 2 ~ 7,
-      F_Fewsnet_Score >= 3 ~ 10,
+    fews_crm_norm = case_when(
+      fshighrisk == "High risk" ~ 10,
+      fshighrisk != "High risk" & max_ipc == 5 ~ 9,
+      fshighrisk != "High risk" & max_ipc == 4 ~ 8,
+      fshighrisk != "High risk" & max_ipc == 3 ~ 7,
+      fshighrisk != "High risk" & max_ipc == 2 ~ 5,
+      fshighrisk != "High risk" & max_ipc == 1 ~ 3,
       TRUE ~ NA_real_
     ),
     Country = countrycode(
-      Country,
+      country,
       origin = "country.name",
       destination = "iso3c",
       nomatch = NULL
-    )
-  )
+    )) %>%
+  select(-country)
+
+colnames(fews_dataset[-1]) <- paste0("F_", colnames(fews_dataset[-1])) 
 
 #--------------Alternative Food price volatility scopes -----------------------
 fao_fpma <- read_html("http://www.fao.org/giews/food-prices/home/en/")
@@ -336,7 +411,7 @@ countrylist <- countrylist %>%
   select(-X)
 
 foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
-  left_join(., fews, by = "Country") %>%
+  left_join(., fews_dataset, by = "Country") %>%
   #left_join(., fpv, by = "Country") %>%  # Reintroduce if FAO price site comes back online
   left_join(., fpv_alt, by = "Country") %>%
   left_join(., artemis, by = "Country") %>%
