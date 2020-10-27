@@ -692,7 +692,7 @@ addStyle(crxls,
          sheet = 1,
          headerStyle,
          rows = 1,
-         cols = 11:16,
+         cols = 11:17,
          gridExpand = TRUE
 )
 
@@ -713,7 +713,7 @@ addStyle(crxls,
          sheet = 1,
          headerStyle2,
          rows = 1,
-         cols = c(3, 17, 22, 25:52),
+         cols = c(3, 18, 23, 26:53),
          gridExpand = TRUE
 )
 
@@ -727,14 +727,14 @@ negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 # Conditional Cell Formatting for main sheet
-conditionalFormatting(crxls, "riskflags", cols = 4:16, rows = 1:191, rule = "==10", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:16, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:16, rows = 1:191, type = "between", rule = c(0, 6.999), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:16, rows = 1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "riskflags", cols = 23:24, rows = 1:191, type = "between", rule = c(2 / 3, 1), style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols = 23:24, rows = 1:191, type = "between", rule = c(1 / 3, 0.665), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols = 23:24, rows = 1:191, type = "between", rule = c(0, 0.332), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols = 23:24, rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, rule = "==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, type = "between", rule = c(0, 6.999), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(2 / 3, 1), style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(1 / 3, 0.665), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(0, 0.332), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, rule = '=""', style = naStyle)
 
 # Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow) {
@@ -798,19 +798,19 @@ negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 # Conditional Cell Formatting
-conditionalFormatting(crxls, "Reliability_sheet", cols = 5:17, rows = 1:191, rule = "==1", style = negStyle)
-conditionalFormatting(crxls, "Reliability_sheet", cols = 5:17, rows = 1:191, type = "between", rule = c(0.700, 0.999), style = medStyle)
-conditionalFormatting(crxls, "Reliability_sheet", cols = 5:17, rows = 1:191, type = "between", rule = c(0, 0.6999), style = posStyle)
-conditionalFormatting(crxls, "Reliability_sheet", cols = 5:17, rows = 1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:18), rows = 1:191, type = "between", rule = c(7, 10), style = negStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:18), rows = 1:191, type = "between", rule = c(5, 6.9999), style = medStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:18), rows = 1:191, type = "between", rule = c(0, 4.9999), style = posStyle)
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:18), rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols = 5:18, rows = 1:191, rule = "==1", style = negStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols = 5:18, rows = 1:191, type = "between", rule = c(0.700, 0.999), style = medStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols = 5:18, rows = 1:191, type = "between", rule = c(0, 0.6999), style = posStyle)
+conditionalFormatting(crxls, "Reliability_sheet", cols = 5:18, rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19), rows = 1:191, type = "between", rule = c(7, 10), style = negStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19), rows = 1:191, type = "between", rule = c(5, 6.9999), style = medStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19), rows = 1:191, type = "between", rule = c(0, 4.9999), style = posStyle)
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19), rows = 1:191, rule = '=""', style = naStyle)
 
 # DatabarsconditionalFormatting
-conditionalFormatting(crxls, "riskflags", cols = 18:21, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
+conditionalFormatting(crxls, "riskflags", cols = 19:22, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
-conditionalFormatting(crxls, "Alternativeflag_sheet", cols = 20, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
+conditionalFormatting(crxls, "Alternativeflag_sheet", cols = 21, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
 
 #----------------------------------Insert Global Maps---------------------------------------------------------------------
 # install.packages("librarian")     #Run if librarian is not already installed
