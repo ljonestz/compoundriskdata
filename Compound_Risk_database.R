@@ -279,7 +279,7 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
     )) %>%
   rename_with(
     .fn = ~ paste0("H_", .), 
-    .cols = colnames(.)[!colnames(.) %in% c("Countryname", "Country") ]
+    .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
   )
 
 write.csv(inform_covid_warning, "Indicator_dataset/inform_covid_warning.csv")
@@ -433,7 +433,11 @@ fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
       destination = "iso3c",
       nomatch = NULL
     )) %>%
-  select(-country)
+  select(-country) %>%
+  rename_with(
+    .fn = ~ paste0("F_", .),
+    .cols = colnames(.)[!colnames(.) %in% c("Country", "country")]
+  )
 
 colnames(fews_dataset[-1]) <- paste0("F_", colnames(fews_dataset[-1])) 
 
