@@ -84,7 +84,6 @@ riskflags <- globalrisk %>%
       )),
       TRUE ~ as.numeric(pmax(
         F_fpv_alt,
-        F_food_acaps,
         na.rm=T
       ))
     ),
