@@ -62,7 +62,7 @@ riskflags <- globalrisk %>%
     EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
     EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = M_Economic_and_Financial_score_norm,
     EXISTING_RISK_FISCAL = D_WB_external_debt_distress_norm,
-    EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_OCHA_Covid.vulnerability.index_norm,
+    EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
     EXISTING_RISK_NATURAL_HAZARDS = NH_Hazard_Score_norm,
     EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_number_flags_norm,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(
@@ -228,7 +228,7 @@ riskflags <- riskflags %>%
 # Alternativ combined total scores
 altflag <- globalrisk
 names <- c(
-  "S_OCHA_Covid.vulnerability.index_norm", "H_Oxrollback_score_norm",
+  "S_INFORM_vul_norm", "H_Oxrollback_score_norm",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_Fewsnet_Score_norm", "F_Artemis_Score_norm",
   "F_fpv_alt", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
@@ -238,7 +238,7 @@ names <- c(
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",
   "Fr_INFORM_Fragility_Score_norm","Fr_INFORM_CRISIS_Norm", "Fr_FSI_Score_norm",
   "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm",
-  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_WB_number_flags_norm"
+  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -407,7 +407,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY = case_when(
-      is.na(S_OCHA_Covid.vulnerability.index_norm) ~ 1,
+      is.na(S_INFORM_vul_norm) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_NATURAL_HAZARDS = case_when(
@@ -415,7 +415,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = case_when(
-      is.na(Fr_WB_number_flags_norm) ~ 1,
+      is.na(Fr_number_flags_norm) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EMERGING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
@@ -768,7 +768,7 @@ cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
-cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"), which(colnames(Socioeconomic_sheet) == "S_OCHA_Covid.vulnerability.index_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")

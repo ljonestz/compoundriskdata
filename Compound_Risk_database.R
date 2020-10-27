@@ -553,7 +553,28 @@ ocha <- ocha %>%
 upperrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.95), na.rm = T)
 lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na.rm = T)
 ocha <- normfuncpos(ocha, upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index")
+
+#---------------------------Alternative socio-economic data (based on INFORM)----------------------------
+inform_data <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/INFORM_socio_vul.csv"))
+
+colnames(inform_data) <- c('Countryname', 'Country', 'S_INFORM_vul') 
+
+inform_data <- inform_data %>%
+  select(-Countryname)
+
+inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
+inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
+
+#--------------------------Create Socio-economic sheet -------------------------------------------
+socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
+  left_join(., inform_data, by = "Country") %>%
+  arrange(Country)
+
+
+
 write.csv(ocha, "Risk_sheets/Socioeconomic_sheet.csv")
+
+
 
 #
 ##
