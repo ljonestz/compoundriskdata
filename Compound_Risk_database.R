@@ -567,14 +567,11 @@ inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
 
 #--------------------------Create Socio-economic sheet -------------------------------------------
 socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
+  select(-Countryname) %>%
   left_join(., inform_data, by = "Country") %>%
   arrange(Country)
 
-
-
-write.csv(ocha, "Risk_sheets/Socioeconomic_sheet.csv")
-
-
+write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 
 #
 ##

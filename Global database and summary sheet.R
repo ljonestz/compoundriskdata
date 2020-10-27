@@ -846,24 +846,3 @@ insertPlot(crxls, 1, xy = c("AA", 5), width = 11.5, height = 9.5, fileType = "pn
 
 #----------------------------------------Save the final worksheet------------------------------------------------------
 saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Monitor.xlsx", overwrite = TRUE)
-
-#
-##
-### ********************************************************************************************
-####    CREATE CSV WITH ALL DATA IN CRM
-### ********************************************************************************************
-##
-#
-
-globalriskflags <- left_join(riskset %>% select(-contains("RELIABILITY")), debtsheet, by = c("Countryname", "Country")) %>%
-  left_join(., foodsecurity, by = c("Countryname", "Country")) %>%
-  left_join(., fragilitysheet, by = c("Countryname", "Country")) %>%
-  left_join(., healthsheet, by = c("Countryname", "Country")) %>%
-  left_join(., macrosheet, by = c("Countryname", "Country")) %>%
-  left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
-  left_join(., Socioeconomic_sheet, by = c("Country")) %>%
-  left_join(., reliabilitysheet, by = c("Countryname", "Country")) %>%
-  left_join(., alt, by = c("Countryname", "Country")) %>%
-  select(-c("X", contains(c("X.", "x.", "..", " "))))
-
-write.csv(globalriskflags, file = "Risk_sheets/Globalrisksheet.csv")
