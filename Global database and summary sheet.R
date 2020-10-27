@@ -100,9 +100,9 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
-      S_gdp_change.Rating,
-      S_unemployment.Rating,
-      S_income_support.Rating,
+      S_gdp_change.Rating_norm,
+      S_unemployment.Rating_norm,
+      S_income_support.Rating_norm,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
@@ -131,7 +131,7 @@ riskflags <- globalrisk %>%
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
     EMERGING_RISK_FISCAL, EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
-    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS, F_fews_crm_norm
   )
 
 # Create tertiary risk flags
@@ -357,16 +357,16 @@ riskflags <- riskflags %>%
       TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY
     ),
     EMERGING_RISK_FOOD_SECURITY_SQ = case_when(
-      is.na(F_Fewsnet_Score) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
+      is.na(EXISTING_RISK_FOOD_SECURITY) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
       TRUE ~ EMERGING_RISK_FOOD_SECURITY
     ),
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ = case_when(
       !is.na(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID) ~ sqrt(EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID * EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID),
-      TRUE ~ EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID
+      TRUE ~ EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID
     ),
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ = case_when(
       !is.na(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY) ~ sqrt(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY * EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY),
-      TRUE ~ EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY
+      TRUE ~ as.numeric(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)
     ),
     EMERGING_RISK_FISCAL_SQ = case_when(
       !is.na(EXISTING_RISK_FISCAL) ~ sqrt(EXISTING_RISK_FISCAL * EMERGING_RISK_FISCAL),
@@ -458,9 +458,9 @@ reliabilitysheet <- globalrisk %>%
     ) / 2,
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
                                                                 select(
-                                                                  S_gdp_change.Rating,
-                                                                  S_unemployment.Rating,
-                                                                  S_income_support.Rating
+                                                                  S_gdp_change.Rating_norm,
+                                                                  S_unemployment.Rating_norm,
+                                                                  S_income_support.Rating_norm
                                                                 )),
                                                         na.rm = T
     ) / 3,
