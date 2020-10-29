@@ -722,11 +722,35 @@ socio_forward <- inform_covid_warning %>%
     ))
   )
 
+#--------------------------Poverty projections----------------------------------------------------
+mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+
+mpo_data <- mpo %>%
+  rename(Country = Code) %>%
+  left_join(., pop, by= "Country") %>%
+  mutate_at(
+    vars(contains("y20")),
+    funs( prop = . / Population)
+  ) %>%
+  mutate(
+    pov_prop_19_20 = ((y2020_prop / y2019_prop) -1) * 100,
+    pov_abs_19_20 = (y2020_prop - y2019_prop) * 100
+  ) %>%
+  filter(Label == "International poverty rate ($1.9 in 2011 PPP)") %>%
+  rename_with(
+    .fn = ~ paste0("S_", .),
+    .cols = colnames(.)[!colnames(.) %in% c("Country")]
+  ) 
+
+mpo_data <- normfuncpos(mpo_data, 50, 0, "S_pov_prop_19_20")
+mpo_data <- normfuncpos(mpo_data, 0.05, 0, "S_pov_abs_19_20")
+
 #--------------------------Create Socio-economic sheet -------------------------------------------
 socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
   select(-Countryname) %>%
   left_join(., inform_data, by = "Country") %>%
   left_join(., socio_forward, by = "Country") %>%
+  left_join(., mpo_data, by = "Country") %>%
   arrange(Country)
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")

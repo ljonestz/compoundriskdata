@@ -100,7 +100,8 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
-      S_gdp_change.Rating_norm,
+      S_pov_prop_19_20_norm,
+      S_pov_abs_19_20_norm,
       S_unemployment.Rating_norm,
       S_income_support.Rating_norm,
       na.rm = T
@@ -458,7 +459,8 @@ reliabilitysheet <- globalrisk %>%
     ) / 2,
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
                                                                 select(
-                                                                  S_gdp_change.Rating_norm,
+                                                                  S_pov_prop_19_20_norm,
+                                                                  S_pov_abs_19_20_norm,
                                                                   S_unemployment.Rating_norm,
                                                                   S_income_support.Rating_norm
                                                                 )),
@@ -667,12 +669,13 @@ headerStyle <- createStyle(
   textRotation = 90
 )
 
-addStyle(crxls,
-         sheet = 1,
-         headerStyle,
-         rows = 1,
-         cols = 4:10,
-         gridExpand = TRUE
+addStyle(
+  crxls,
+  sheet = 1,
+  headerStyle,
+  rows = 1,
+  cols = 4:10,
+  gridExpand = TRUE
 )
 
 headerStyle <- createStyle(
@@ -789,7 +792,7 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
-cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_gdp_change.Rating_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_norm"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
