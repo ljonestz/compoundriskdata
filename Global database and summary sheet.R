@@ -103,7 +103,7 @@ riskflags <- globalrisk %>%
       S_pov_prop_19_20_norm,
       S_pov_abs_19_20_norm,
       S_unemployment.Rating_norm,
-      S_income_support.Rating_norm,
+      S_income_support.Rating_crm_norm,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(

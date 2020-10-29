@@ -217,7 +217,7 @@ Ox_cov_resp <- Oxres %>%
   select(
     CountryCode, Date, GovernmentResponseIndex, GovernmentResponseIndexForDisplay,
     EconomicSupportIndex, EconomicSupportIndexForDisplay, ContainmentHealthIndex,
-    ContainmentHealthIndexForDisplay
+    ContainmentHealthIndexForDisplay, E1_Income.support, E1_Flag
   )
 
 colnames(Ox_cov_resp) <- c("Country", paste0("H_", colnames(Ox_cov_resp[,-1])))
@@ -250,7 +250,7 @@ inform_covid_warning_raw <- do.call(rbind, Map(data.frame, INFORM_rating=all_dat
 inform_covid_warning <-  inform_covid_warning_raw %>%
   rename(
     Countryname = INFORM_rating.cname,
-    holdone = INFORM_severity.Rating
+    holdone = INFORM_severity.Rating,
   ) %>%
   select(-contains(".cname")) %>%
   mutate_at(
@@ -269,7 +269,7 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
       is.na(holdone) ~ "Low",
       TRUE ~ NA_character_
     )) %>%
-  rename(INFORM_severity.Rating = holdone) %>%
+  rename(S_INFORM_severity.Rating = holdone) %>%
   mutate(
     Country = countrycode(
       Countryname,
@@ -713,14 +713,21 @@ socio_forward <- inform_covid_warning %>%
     .cols = colnames(.)[-1]
   ) %>%
   mutate_at(
-    vars(contains(".Rating")),
+    vars(S_gdp_change.Rating, S_unemployment.Rating),
     funs(norm = case_when(
       . == "High" ~ 10,
       . == "Medium" ~ 7,
       . == "Low" ~ 0,
       TRUE ~ NA_real_
     ))
-  )
+  ) %>%
+  mutate(
+    S_income_support.Rating_crm_norm = case_when(
+      S_income_support.Value == "No income support" ~ 7,
+      S_income_support.Value == "Government is replacing more than 50% of lost salary (or if a flat sum, it  ..." ~ 3,
+      S_income_support.Value == "Government is replacing less than 50% of lost salary (or if a flat sum, it  ..." ~ 0,
+      TRUE ~ NA_real_
+    ))
 
 #--------------------------Poverty projections----------------------------------------------------
 mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
