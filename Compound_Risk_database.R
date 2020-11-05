@@ -9,7 +9,7 @@
 librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, tidyverse, readxl,
-  gsheet, zoo, wppExplorer
+  gsheet, zoo, wppExplorer, haven, EnvStats
 )
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
@@ -250,7 +250,7 @@ inform_covid_warning_raw <- do.call(rbind, Map(data.frame, INFORM_rating=all_dat
 inform_covid_warning <-  inform_covid_warning_raw %>%
   rename(
     Countryname = INFORM_rating.cname,
-    holdone = INFORM_severity.Rating,
+    hold_one = INFORM_severity.Rating
   ) %>%
   select(-contains(".cname")) %>%
   mutate_at(
@@ -263,24 +263,24 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
     ))
   ) %>%
   mutate(
-    holdone = case_when(
-      holdone == "background:#FF0000;" ~ "High",
-      holdone == "background:#FFD800;" ~ "Medium",
-      is.na(holdone) ~ "Low",
+    hold_one = case_when(
+      hold_one == "background:#FF0000;" ~ "High",
+      hold_one == "background:#FFD800;" ~ "Medium",
+      is.na(hold_one) ~ "Low",
       TRUE ~ NA_character_
     )) %>%
-  rename(S_INFORM_severity.Rating = holdone) %>%
+  rename(INFORM_severity.Rating = hold_one) %>%
   mutate(
-    Country = countrycode(
-      Countryname,
-      origin = "country.name",
-      destination = "iso3c",
-      nomatch = NULL
+    INFORM_rating.Value = as.numeric(as.character(INFORM_rating.Value)),
+    Country = countrycode(Countryname, origin = "country.name", destination = "iso3c", nomatch = NULL
     )) %>%
+  select(-Countryname) %>%
   rename_with(
     .fn = ~ paste0("H_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
   )
+
+inform_covid_warning <- normfuncpos(inform_covid_warning, 6, 2, "H_INFORM_rating.Value")
 
 write.csv(inform_covid_warning, "Indicator_dataset/inform_covid_warning.csv")
 
@@ -295,6 +295,7 @@ health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., covidcurrent, by = "Country") %>%
   left_join(., Ox_cov_resp, by = "Country") %>%
   left_join(., cov_forcast_alt, by = "Country") %>%
+  left_join(., inform_covid_warning, by = "Country", "Countryname") %>%
   arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
@@ -692,12 +693,11 @@ lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na
 ocha <- normfuncpos(ocha, upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index")
 
 #---------------------------Alternative socio-economic data (based on INFORM)----------------------------
-inform_data <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_socio_vul.csv"))
+#inform_2021 <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_2021.csv"))
 
-colnames(inform_data) <- c('Countryname', 'Country', 'S_INFORM_vul') 
-
-inform_data <- inform_data %>%
-  select(-Countryname)
+inform_data <- inform_2021 %>%
+  select(Country, Socio.Economic.Vulnerability) %>%
+  rename(S_INFORM_vul = Socio.Economic.Vulnerability)
 
 inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
 inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
@@ -923,35 +923,66 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
-# INFORM CRISIS TRACKER
-informcrisis <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_Crisis_raw.csv"))
+#----------------------------ThinkHazard!------------------------------------------------------
+# Find countries in the ThinkHazard database
+country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
+country <- as.data.frame(country)
+country <- suppressWarnings(country[!is.na(as.numeric(gsub("[^0-9-]","", country[[1]]))),])
+country <- as.data.frame(country)
 
-# Add duplicates
-informcrisis <- informcrisis %>%
-  select(-X1, Country, NH_INFORM_Crisis_name, NH_INFORM_Crisis_Severity_Score, NH_INFORM_Crisis_Type_Number) %>%
-  mutate(Country = strsplit(as.character(Country), ",")) %>%
-  unnest() %>%
-  filter(Country != "") %>%
-  select(Country, NH_INFORM_Crisis_name:NH_INFORM_Crisis_Type_Number) %>%
-  mutate(
-    Country = trimws(Country),
-    NH_INFORM_Crisis_Norm = case_when(
-      NH_INFORM_Crisis_Type_Number == 1 ~ 10,
-      TRUE ~ 0
-    )
-  )
+# Assign country to list
+country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
+country$countrycode <- countrycode(country$country,
+                           origin = "country.name",
+                           destination = "iso3c",
+                           nomatch = NULL)
 
-write.csv(informcrisis, "Indicator_dataset/INFORM_Crisis_normalised.csv")
+#Remove New Zealand duplicate
+country <- country %>% filter(countrycode != "179;New Zealand;;")
+
+# Extract API data on ThinkHazard! (can be slow)
+think_data <- lapply(country$list, function(tt) {
+  dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
+})
+
+# Compile by country
+think_join <- lapply(1:length(think_data), function(yy){
+  frame <- as.data.frame(think_data[yy])
+  frame$Country <- country$countrycode[yy]
+  do.call(data.frame, frame)
+})
+
+# Join list to a single dataframe
+think_hazard <- do.call("rbind", think_join)
+
+# Assign numberic values and calculate geometric mean
+think_hazard <- think_hazard %>%
+  mutate(hazard_num = case_when(hazardlevel.title == "High" ~ 4,
+                                hazardlevel.title == "Medium" ~ 3,
+                                hazardlevel.title == "Low" ~ 2,
+                                hazardlevel.title == "Very low" ~ 1,
+                                TRUE ~ NA_real_
+  )) %>%
+  group_by(Country) %>%
+  mutate(multihazard_risk = geoMean(hazard_num, na.rm = T)) %>%
+  ungroup %>%
+  rename_with(.fn = ~ paste0("NH_", .), 
+              .cols = -contains("Country")
+              )
+
+# Normalise values
+think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
+
+# Save file
+write.csv(think_hazard, "Indicator_dataset/think_hazard.csv")
 
 #----------------------INFORM Natural Hazard and Exposure rating--------------------------
-informnathaz <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Inform_nathaz.csv")
+#inform_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Inform_2021.csv")
 
 # Rename country
-informnathaz <- informnathaz %>%
-  rename(
-    Country = ISO3,
-    NH_Hazard_Score = HAZARD...EXPOSURE
-  ) %>%
+informnathaz <- inform_2021 %>%
+  select(Country, Natural) %>%
+  rename(NH_Hazard_Score = Natural) %>%
   drop_na(Country, NH_Hazard_Score)
 
 # Normalise scores
@@ -964,8 +995,8 @@ countrylist <- countrylist %>%
 
 nathazardfull <- left_join(countrylist, nathaz, by = "Country") %>%
   left_join(., gdac, by = "Country") %>%
-  left_join(., informcrisis, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
+  left_join(., think_hazard, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country) %>%
   arrange(Country)
@@ -1007,16 +1038,6 @@ fsinormneg <- function(df, upperrisk, lowerrisk, col1) {
 }
 
 fsi <- fsinormneg(fsi, upperrisk, lowerrisk, "Fr_FSI_2019minus2020")
-
-
-#-----------------------INFORM-----------------------
-informfragile <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_fragility")
-informfragile <- informfragile %>% select(-X)
-
-upperrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(informfragile$Fr_INFORM_Fragility_Score, probs = c(0.05), na.rm = T)
-
-informfragile <- normfuncpos(informfragile, upperrisk, lowerrisk, "Fr_INFORM_Fragility_Score")
 
 #----------------------REIGN---------------------
 reign <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_8.csv"))
@@ -1221,20 +1242,8 @@ wbstructural <- wbstructural %>%
 wbstructural <- normfuncpos(wbstructural, 6, 0, "Fr_number_flags")
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
-countrylist <- countrylist %>%
-  select(-X)
-
-# Add INFORM fragility indicator (under NH sheet)
-inform_fragile <- nathazardfull %>%
-  select(Country, NH_INFORM_CRISIS_Type)  %>%
-  mutate(Fr_INFORM_CRISIS_Norm = case_when(NH_INFORM_CRISIS_Type %in% c("Complex crisis" , "Conflict") ~ 10,
-                                           TRUE ~ 0)
-         )
-
 # Compile joint database
 fragilitysheet <- left_join(countrylist, fsi, by = "Country") %>%
-  left_join(., informfragile, by = "Country") %>%
   left_join(., reign, by = "Country") %>%
   left_join(., gpi, by = "Country") %>%
   left_join(., acleddata, by = "Country") %>%

@@ -9,7 +9,8 @@
 # install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(
   ggplot2, cowplot, lubridate, rvest, dplyr, compositions, viridis,
-  tidyverse, countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, gsheet
+  tidyverse, countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
+  gsheet
 )
 
 #
@@ -58,12 +59,18 @@ write.csv(globalrisk, "Risk_sheets/Global_compound_risk_database.csv")
 # Add existing and emerging risk scores
 riskflags <- globalrisk %>%
   mutate(
-    EXISTING_RISK_COVID_RESPONSE_CAPACITY = H_HIS_Score_norm,
+    EXISTING_RISK_COVID_RESPONSE_CAPACITY = pmax(
+      H_HIS_Score_norm,
+      H_INFORM_rating.Value_norm
+    ),
     EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
     EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = M_Economic_and_Financial_score_norm,
     EXISTING_RISK_FISCAL = D_WB_external_debt_distress_norm,
     EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
-    EXISTING_RISK_NATURAL_HAZARDS = NH_Hazard_Score_norm,
+    EXISTING_RISK_NATURAL_HAZARDS = pmax(
+      NH_Hazard_Score_norm,
+      NH_multihazard_risk_norm
+    ),
     EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_number_flags_norm,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(
       H_Oxrollback_score_norm,
@@ -109,7 +116,6 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
       NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
-      NH_INFORM_Crisis_Norm,
       NH_natural_acaps,
       na.rm = T
     ),
@@ -236,7 +242,8 @@ riskflags <- riskflags %>%
 altflag <- globalrisk
 names <- c(
   "S_INFORM_vul_norm", "H_Oxrollback_score_norm",
-  "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
+  "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
+  "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm",
   "F_fpv_alt", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
   "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm",
@@ -323,7 +330,7 @@ altflag <- altflag %>%
     ),
     NH_coefvar = cv(c(
       NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
-      NH_GDAC_Hazard_Score_Norm, NH_INFORM_Crisis_Norm,
+      NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps),
       na.rm = T
     ),
@@ -401,10 +408,10 @@ riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >= 7
 # Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
 reliabilitysheet <- globalrisk %>%
   mutate(
-    RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY = case_when(
-      is.na(H_HIS_Score_norm) ~ 1,
-      TRUE ~ 0
-    ),
+    RELIABILITY_EXISTING_COVID_RESPONSE_CAPACITY = rowSums(is.na(globalrisk %>%
+                                                                   select(H_HIS_Score_norm, H_INFORM_rating.Value_norm)),
+                                                           na.rm = T
+    ) / 2,
     RELIABILITY_EXISTING_FOOD_SECURITY = case_when(
       is.na(F_Proteus_Score_norm) ~ 1,
       TRUE ~ 0
@@ -462,7 +469,7 @@ reliabilitysheet <- globalrisk %>%
                                                                   S_pov_prop_19_20_norm,
                                                                   S_pov_abs_19_20_norm,
                                                                   S_unemployment.Rating_norm,
-                                                                  S_income_support.Rating_norm
+                                                                  S_income_support.Rating_crm_norm
                                                                 )),
                                                         na.rm = T
     ) / 3,
@@ -477,7 +484,7 @@ reliabilitysheet <- globalrisk %>%
                                                            select(
                                                              NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
                                                              NH_GDAC_Hazard_Score_Norm,
-                                                             NH_INFORM_Crisis_Norm
+                                                             NH_Hazard_Score_norm
                                                            )),
                                                    na.rm = T
     ) / 3,
@@ -781,6 +788,7 @@ cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"), w
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(fragilitysheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_state6m_norm"), which(colnames(fragilitysheet) == "Fr_nonstate6m_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
+cond("healthsheet", which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"), which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), which(colnames(healthsheet) == "H_Covidgrowth_casesnorm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
@@ -790,9 +798,10 @@ cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"),
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
-cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"), which(colnames(Naturalhazardsheet) == "NH_INFORM_Crisis_Norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"), which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
-cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
