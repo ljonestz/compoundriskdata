@@ -1152,7 +1152,6 @@ ssamap <- worldmap %>%
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))
 
-<<<<<<< HEAD
 lacmap <- worldmap %>%
   mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
   filter(Region == "Latin America & Caribbean") %>%
@@ -1165,13 +1164,9 @@ lacmap <- worldmap %>%
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("Plots/Seamap.pdf", seamap, width = 8, height = 5)
-ggsave("Plots/Menamap.pdf", menamap, width = 8, height = 5)
-ggsave("Plots/Ssaamap.pdf", ssamap, width = 8, height = 5)
-ggsave("Plots/LACamap.pdf", lacmap, width = 8, height = 5)
+ggsave("Plots/Snapshots/Seamap.pdf", seamap, width = 8, height = 5)
+ggsave("Plots/Snapshots/Menamap.pdf", menamap, width = 8, height = 5)
+ggsave("Plots/Snapshots/Ssaamap.pdf", ssamap, width = 8, height = 5)
+ggsave("Plots/Snapshots/LACamap.pdf", lacmap, width = 8, height = 5)
 
-=======
-ggsave("Plots/Seamap.pdf", seamap, width = 8, height = 5)
-ggsave("Plots/Menamap.pdf", menamap, width = 8, height = 5)
-ggsave("Plots/Ssaamap.pdf", ssamap, width = 8, height = 5)
->>>>>>> 775d5c81790eae29e02c2f95cb2c93cf29413f14
+
