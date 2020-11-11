@@ -9,7 +9,7 @@
 librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, tidyverse, readxl,
-  gsheet, zoo, wppExplorer, haven, EnvStats
+  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite
 )
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
@@ -1241,6 +1241,51 @@ wbstructural <- wbstructural %>%
 
 wbstructural <- normfuncpos(wbstructural, 6, 0, "Fr_number_flags")
 
+#------------------INFORM SEVERITY INDEX-------------------------------------------------
+url <- read.xlsx("https://www.acaps.org/sites/acaps/files/crisis/gcsi-download/2020-11/20201105_inform_severity_-_october_2020_1.xlsx",
+                 sheet = "INFORM Severity - all crises", 
+                 startRow = 2)
+
+url <- subset(url, !CRISIS %in% c("Weights", "(a-z)"))
+
+#Add duplicates to countries listed in the same crisis
+url_data <- url %>%
+  mutate(ISO3 = strsplit(as.character(ISO3), ",")) %>%
+  unnest(cols = ISO3) %>% 
+  filter(ISO3 != "") %>%
+  mutate(Country = trimws(ISO3)) %>%
+  mutate_at(vars(Impact.of.the.crisis:Operating.environment, contains("INFORM", )),
+            funs(case_when(. != "x" ~ as.numeric(as.character(.)),
+                           TRUE ~ NA_real_))) %>%
+  select(-COUNTRY, ISO3)
+
+#Filter only severe and worsening crises
+inform_crisis_worse <- url_data %>%
+  mutate(
+    worsening_crisis = case_when(
+      INFORM.Severity.Index >= 3 & `Trend.(last.3.months)` == "Increasing" ~ "Crisis",
+      INFORM.Severity.Index <= 3 & `Trend.(last.3.months)` != "Increasing" ~ "No Crisis",
+      TRUE ~ NA_character_
+    ),
+    crisis_severe = case_when(
+      INFORM.Severity.Index >= 4 ~ "Crisis",
+      INFORM.Severity.Index < 4 ~ "No Crisis",
+      TRUE ~ NA_character_
+    ),
+    combined_crisis = case_when(
+      worsening_crisis == "Crisis" | crisis_severe == "Crisis" ~ "Crisis",
+      TRUE ~ NA_character_
+    ),
+    combined_crisis_norm = case_when(
+      combined_crisis == "Crisis" ~ 10,
+      TRUE ~ NA_real_
+    ),
+  ) %>% rename_with(
+    .fn = ~ paste0("Fr_", .), 
+    .cols = colnames(.)[!colnames(.) %in% c("Country") ]
+  )
+
+
 #-------------------------------------FRAGILITY SHEET--------------------------------------
 # Compile joint database
 fragilitysheet <- left_join(countrylist, fsi, by = "Country") %>%
@@ -1250,7 +1295,9 @@ fragilitysheet <- left_join(countrylist, fsi, by = "Country") %>%
   left_join(., views_6m_proj, by = "Country") %>%
   left_join(., wbstructural, by = "Country") %>%
   left_join(., inform_fragile, by = "Country") %>%
-  arrange(Country)
+  left_join(., inform_crisis_worse, by = "Country") %>%
+  arrange(Country) %>%
+  select(-X)
 
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 
@@ -1283,6 +1330,7 @@ country[which(!is.na(countryisolate)) - 2] <- countrycode(country[which(!is.na(c
   destination = "iso3c",
   nomatch = NULL
 )
+
 # Collect list of all world countries
 world <- map_data("world")
 world <- world %>%
@@ -1377,3 +1425,5 @@ acapssheet <- countrylist %>%
 
 # Write ACAPS sheet
 write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
+
+  

@@ -120,14 +120,15 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
-      Fr_REIGN_couprisk3m_norm,
-      Fr_ACLED_event_same_month_difference_perc_norm,
-      Fr_ACLED_fatal_same_month_difference_perc_norm,
-      Fr_conflict_acaps,
+      #Fr_REIGN_couprisk3m_norm,
+      #Fr_ACLED_event_same_month_difference_perc_norm,
+      #Fr_ACLED_fatal_same_month_difference_perc_norm,
+      #Fr_conflict_acaps,
       Fr_state6m_norm,
       Fr_nonstate6m_norm,
-      #Fr_oneside6m_norm,
-      Fr_INFORM_CRISIS_Norm,
+      Fr_oneside6m_norm,
+      #Fr_INFORM_CRISIS_Norm,
+      Fr_combined_crisis_norm,
       na.rm = T
     )
   ) %>%
@@ -249,10 +250,9 @@ names <- c(
   "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm",
-  "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",
-  "Fr_INFORM_Fragility_Score_norm","Fr_INFORM_CRISIS_Norm", "Fr_FSI_Score_norm",
-  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm",
-  "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm"
+  "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", "Fr_combined_crisis_norm", "Fr_state6m_norm",
+  "Fr_nonstate6m_norm",  "Fr_oneside6m_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", 
+  "Fr_number_flags_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -277,10 +277,10 @@ altflag <- altflag %>%
                                                                        na.rm = T
     )),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
-      Fr_REIGN_couprisk3m_norm_plus1,
-      Fr_ACLED_event_same_month_difference_perc_norm_plus1,
-      Fr_ACLED_fatal_same_month_difference_perc_norm_plus1,
-      Fr_INFORM_CRISIS_Norm,
+      Fr_state6m_norm,
+      Fr_nonstate6m_norm,
+      Fr_oneside6m_norm,
+      Fr_combined_crisis_norm,
       na.rm = T
     ))
     ,
@@ -318,14 +318,10 @@ altflag <- altflag %>%
       na.rm = T
     ),
     Fr_coefvar = cv(c(
-      Fr_FSI_2019minus2020_norm,
-      Fr_REIGN_couprisk3m_norm,
-      Fr_ACLED_event_same_month_difference_perc_norm,
-      Fr_ACLED_fatal_same_month_difference_perc_norm,
-      Fr_conflict_acaps,
       Fr_state6m_norm,
       Fr_nonstate6m_norm,
-      Fr_oneside6m_norm),
+      Fr_oneside6m_norm,
+      Fr_combined_crisis_norm),
       na.rm = T
     ),
     NH_coefvar = cv(c(
@@ -490,11 +486,10 @@ reliabilitysheet <- globalrisk %>%
     ) / 3,
     RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
                                                                   select(
-                                                                    Fr_FSI_2019minus2020_norm,
-                                                                    Fr_REIGN_couprisk3m_norm,
-                                                                    Fr_ACLED_event_same_month_difference_perc_norm,
-                                                                    Fr_ACLED_fatal_same_month_difference_perc_norm,
-                                                                    Fr_INFORM_CRISIS_Norm,
+                                                                    Fr_combined_crisis_norm,  
+                                                                    Fr_state6m_norm,
+                                                                    Fr_nonstate6m_norm,
+                                                                    Fr_oneside6m_norm,
                                                                   )),
                                                           na.rm = T
     ) / 5
@@ -782,11 +777,11 @@ cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_alt"), which(colname
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_number_flags_norm"), which(colnames(fragilitysheet) == "Fr_number_flags_norm"))
-cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"), which(colnames(fragilitysheet) == "Fr_INFORM_Fragility_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"), which(colnames(fragilitysheet) == "Fr_GPI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_ACLED_fatal_same_month_difference_perc_norm"), which(colnames(fragilitysheet) == "Fr_ACLED_event_month_threeyear_difference_perc_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_state6m_norm"), which(colnames(fragilitysheet) == "Fr_nonstate6m_norm"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_combined_crisis_norm"), which(colnames(fragilitysheet) == "Fr_combined_crisis_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"), which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))
@@ -876,6 +871,10 @@ print(jointmap)
 
 # Insert plot into the worksheet
 insertPlot(crxls, 1, xy = c("AA", 5), width = 11.5, height = 9.5, fileType = "png", units = "in")
+
+# Save plots
+ggsave("Plots/Snapshots/global_emerging_map.pdf", map2, width = 11.5, height = 9.5)
+ggsave("Plots/Snapshots/global_existing_map.pdf", map, width = 11.5, height = 9.5)
 
 #----------------------------------------Save the final worksheet------------------------------------------------------
 saveWorkbook(crxls, file = "Risk_sheets/Compound_Risk_Monitor.xlsx", overwrite = TRUE)
