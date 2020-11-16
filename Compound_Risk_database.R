@@ -492,7 +492,7 @@ ag_ob <- ag_ob_data %>%
     is.na(June) & is.na(May) & !is.na(Apr) ~ Apr,
     TRUE ~ NA_real_
   ),
-  fpv_rating_char = case_when(
+  fpv_rating = case_when(
     fpv < 0.02 ~ 1,
     fpv >= 0.02 & fpv < 0.05 ~ 5,
     fpv >= 0.05 & fpv < 0.30 ~ 7,

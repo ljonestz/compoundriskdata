@@ -95,7 +95,7 @@ riskflags <- globalrisk %>%
         na.rm = T
       )),
       TRUE ~ as.numeric(pmax(
-        F_fpv,
+        F_fpv_rating,
         na.rm=T
       ))
     ),
@@ -252,7 +252,7 @@ names <- c(
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm",
-  "F_fpv", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
+  "F_fpv_rating", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
   "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm","D_CPIA.scores_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
@@ -344,7 +344,7 @@ altflag <- altflag %>%
       na.rm = T
     ),
     F_coefvar = cv(c(
-      F_fpv,
+      F_fpv_rating,
       F_Artemis_Score_norm),
       na.rm = T
     )
@@ -455,7 +455,7 @@ reliabilitysheet <- globalrisk %>%
                                                          select(
                                                            F_fews_crm_norm,
                                                            F_Artemis_Score_norm,
-                                                           F_fpv,
+                                                           F_fpv_rating,
                                                          )),
                                                  na.rm = T
     ) / 3,
@@ -783,7 +783,7 @@ cond("debtsheet", which(colnames(debtsheet) == "D_EconomicSupportIndexForDisplay
 cond("debtsheet", which(colnames(debtsheet) == "D_CPIA.scores_norm"), which(colnames(debtsheet) == "D_CPIA.scores_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fews_crm_norm"), which(colnames(foodsecurity) == "F_fews_crm_norm"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv"), which(colnames(foodsecurity) == "F_fpv"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_number_flags_norm"), which(colnames(fragilitysheet) == "Fr_number_flags_norm"))
