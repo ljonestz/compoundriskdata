@@ -65,11 +65,16 @@ riskflags <- globalrisk %>%
     ),
     EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
     EXISTING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = M_Economic_and_Financial_score_norm,
-    EXISTING_RISK_FISCAL = D_WB_external_debt_distress_norm,
+    EXISTING_RISK_FISCAL = pmax(
+      D_WB_external_debt_distress_norm,
+      D_CPIA.scores_norm,
+      na.rm=T
+    ),
     EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
     EXISTING_RISK_NATURAL_HAZARDS = pmax(
       NH_Hazard_Score_norm,
-      NH_multihazard_risk_norm
+      NH_multihazard_risk_norm,
+      na.rm=T
     ),
     EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_number_flags_norm,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY = pmax(
@@ -90,7 +95,7 @@ riskflags <- globalrisk %>%
         na.rm = T
       )),
       TRUE ~ as.numeric(pmax(
-        F_fpv_alt,
+        F_fpv,
         na.rm=T
       ))
     ),
@@ -104,6 +109,7 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID = pmax(
       M_GDP_IMF_2019minus2020_norm,
       M_GDP_WB_2019minus2020_norm,
+      M_macrofin_risk_norm,
       na.rm = T
     ),
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
@@ -246,10 +252,10 @@ names <- c(
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm",
-  "F_fpv_alt", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
-  "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm",
+  "F_fpv", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
+  "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm","D_CPIA.scores_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
-  "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm",
+  "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", "Fr_combined_crisis_norm", "Fr_state6m_norm",
   "Fr_nonstate6m_norm",  "Fr_oneside6m_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", 
   "Fr_number_flags_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm"
@@ -274,6 +280,7 @@ altflag <- altflag %>%
       ),
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_AV = geometricmean(c(M_GDP_IMF_2019minus2020_norm_plus1,
                                                                        M_GDP_WB_2019minus2020_norm_plus1,
+                                                                       M_macrofin_risk_norm,
                                                                        na.rm = T
     )),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
@@ -314,7 +321,8 @@ altflag <- altflag %>%
       ),
     M_coefvar = cv(c(
       M_GDP_IMF_2019minus2020_norm_plus1,
-      M_GDP_WB_2019minus2020_norm_plus1),
+      M_GDP_WB_2019minus2020_norm_plus1,
+      M_macrofin_risk_norm_plus1),
       na.rm = T
     ),
     Fr_coefvar = cv(c(
@@ -336,7 +344,7 @@ altflag <- altflag %>%
       na.rm = T
     ),
     F_coefvar = cv(c(
-      F_fpv_alt,
+      F_fpv,
       F_Artemis_Score_norm),
       na.rm = T
     )
@@ -447,7 +455,7 @@ reliabilitysheet <- globalrisk %>%
                                                          select(
                                                            F_fews_crm_norm,
                                                            F_Artemis_Score_norm,
-                                                           F_fpv_alt,
+                                                           F_fpv,
                                                          )),
                                                  na.rm = T
     ) / 3,
@@ -472,7 +480,8 @@ reliabilitysheet <- globalrisk %>%
     RELIABILITY_EMERGING_MACROECONOMIC_EXPOSURE_TO_COVID = rowSums(is.na(globalrisk %>%
                                                                            select(
                                                                              M_GDP_IMF_2019minus2020_norm,
-                                                                             M_GDP_WB_2019minus2020_norm
+                                                                             M_GDP_WB_2019minus2020_norm,
+                                                                             M_macrofin_risk_norm
                                                                            )),
                                                                    na.rm = T
     ) / 3,
@@ -771,9 +780,10 @@ cond("debtsheet", which(colnames(debtsheet) == "D_WB_external_debt_distress_norm
 cond("debtsheet", which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"), which(colnames(debtsheet) == "D_IMF_debt2020.2019_norm"))
 cond("debtsheet", which(colnames(debtsheet) == "D_CESI_Index_norm"), which(colnames(debtsheet) == "D_CESI_Index_norm"))
 cond("debtsheet", which(colnames(debtsheet) == "D_EconomicSupportIndexForDisplay_norm"), which(colnames(debtsheet) == "D_EconomicSupportIndexForDisplay_norm"))
+cond("debtsheet", which(colnames(debtsheet) == "D_CPIA.scores_norm"), which(colnames(debtsheet) == "D_CPIA.scores_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fews_crm_norm"), which(colnames(foodsecurity) == "F_fews_crm_norm"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_alt"), which(colnames(foodsecurity) == "F_fpv_alt"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv"), which(colnames(foodsecurity) == "F_fpv"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_number_flags_norm"), which(colnames(fragilitysheet) == "Fr_number_flags_norm"))
@@ -790,6 +800,7 @@ cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_mil
 cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_add_death_prec_current_norm"), which(colnames(healthsheet) == "H_add_death_prec_current_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_macrofin_risk_norm"), which(colnames(macrosheet) == "M_macrofin_risk_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))

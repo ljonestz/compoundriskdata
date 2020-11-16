@@ -559,7 +559,7 @@ colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
 colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
 colnames(tab) <- c(
   "COVID", "FOOD", "MACROECO",
-  "FISCAL", "NATURAL", "FRAGILITY",
+  "FISCAL",  "SOCIO VUL", "NATURAL", "FRAGILITY",
   "TOTAL", "TOTAL(+MEDIUM)",
   "RELIABILITY"
 )
@@ -571,7 +571,7 @@ tab %>%
 # Draw table for geometric risks
 sq <- c(
   "EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
-  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", "EMERGING_RISK_FISCAL_SQ",
+  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", "EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ", "EMERGING_RISK_FISCAL_SQ",
   "EMERGING_RISK_NATURAL_HAZARDS_SQ", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ",
   "TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ"
 )
@@ -588,7 +588,7 @@ rankcountry <- bind_rows(rankcountry)
 tab <- rankcountry %>%
   select(contains("EMERGING"))
 colnames(tab) <- c(
-  "COVID", "FOOD", "MACROECO",
+  "COVID", "FOOD","SOCIO_Vul",  "MACROECO",
   "FISCAL", "NATURAL", "FRAGILITY",
   "TOTAL"
 )
@@ -949,7 +949,7 @@ polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Afghanistan", "
     fill = Risk_cat,
     label = two
   ),
-  width = 0.7,
+  width = 0.95,
   position = "identity"
   ) +
   coord_polar(start = pi) +
