@@ -89,9 +89,10 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
-      !is.na(F_fews_crm_norm) ~ as.numeric(pmax(
+      !is.na(F_fews_crm_norm | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
         F_fews_crm_norm,
         F_Artemis_Score_norm,
+        F_fao_wfp_warning,
         na.rm = T
       )),
       TRUE ~ as.numeric(pmax(
@@ -251,7 +252,7 @@ names <- c(
   "S_INFORM_vul_norm", "H_Oxrollback_score_norm",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
-  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm",
+  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm","F_fao_wfp_warning",
   "F_fpv_rating", "Fr_GPI_Score_norm", "Fr_ACLED_event_same_month_difference_perc_norm",
   "Fr_ACLED_fatal_same_month_difference_perc_norm", "D_WB_external_debt_distress_norm","D_CPIA.scores_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm",
@@ -345,7 +346,8 @@ altflag <- altflag %>%
     ),
     F_coefvar = cv(c(
       F_fpv_rating,
-      F_Artemis_Score_norm),
+      F_Artemis_Score_norm,
+      F_fao_wfp_warning),
       na.rm = T
     )
   )
@@ -785,6 +787,7 @@ cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), wh
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fews_crm_norm"), which(colnames(foodsecurity) == "F_fews_crm_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fao_wfp_warning"), which(colnames(foodsecurity) == "F_fao_wfp_warning"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FSI_2019minus2020_norm"), which(colnames(fragilitysheet) == "Fr_FSI_Score_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_number_flags_norm"), which(colnames(fragilitysheet) == "Fr_number_flags_norm"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"), which(colnames(fragilitysheet) == "Fr_REIGN_couprisk3m_norm"))

@@ -509,6 +509,19 @@ ag_ob <- ag_ob_data %>%
     .cols = colnames(.)[!colnames(.) %in% c("Country")]
   )
 
+#-------------------------FAO/WFP HOTSPOTS----------------------------
+fao_wfp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/WFP%3AFAO_food.csv") %>%
+  select(-X2)
+
+fao_wfp <- fao_wfp %>%
+  mutate(Country = countrycode(Country,
+                               origin = "country.name",
+                               destination = "iso3c",
+                               nomatch = NULL
+  ))
+
+fao_wfp$F_fao_wfp_warning <- 10
+
 #------------------------CREATE FOOD SECURITY SHEET--------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
@@ -520,6 +533,7 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fpv_alt, by = "Country") %>%
   left_join(., artemis, by = "Country") %>%
   left_join(., ag_ob, by = "Country") %>%
+  left_join(., fao_wfp, by = "Country") %>%
   arrange(Country)
 
 write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
@@ -833,12 +847,45 @@ mpo_data <- mpo %>%
 mpo_data <- normfuncpos(mpo_data, 50, 0, "S_pov_prop_19_20")
 mpo_data <- normfuncpos(mpo_data, 0.05, 0, "S_pov_abs_19_20")
 
+#-----------------------------HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
+household_risk <- macrosheet %>%
+  select(Country, M_Household.risks) %>%
+  mutate(M_Household.risks = case_when(
+    M_Household.risks == 0.5 ~ 7,
+    M_Household.risks == 1 ~ 10,
+    TRUE ~ M_Household.risks
+  )) %>%
+  rename(S_Household.risks = M_Household.risks)
+
+#------------------------------IMF FORECASTED UNEMPLOYMENT-----------------------------------------
+imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")
+
+imf_un <- imf_un %>%
+  mutate_at(
+    vars(contains("X2")),
+    ~ as.numeric(as.character(.))
+  ) %>%
+  mutate(change_unemp = X2020 - X2019) %>%
+  rename(
+    Countryname = Country,
+    Country = ISO3
+  ) %>%
+  rename_with(
+    .fn = ~ paste0("S_", .), 
+    .cols = -contains("Country")
+  ) %>%
+  select(-Countryname)
+
+imf_un <- normfuncpos(imf_un, 5, 0, "S_change_unemp")
+
 #--------------------------Create Socio-economic sheet -------------------------------------------
 socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
   select(-Countryname) %>%
   left_join(., inform_data, by = "Country") %>%
   left_join(., socio_forward, by = "Country") %>%
   left_join(., mpo_data, by = "Country") %>%
+  left_join(., imf_un, by = "Country") %>%
+  left_join(., household_risk, by = "Country") %>%
   arrange(Country)
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
