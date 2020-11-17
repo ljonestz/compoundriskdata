@@ -116,8 +116,9 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
       S_pov_prop_19_20_norm,
       S_pov_abs_19_20_norm,
-      S_unemployment.Rating_norm,
+      S_change_unemp,
       S_income_support.Rating_crm_norm,
+      S_Household.risks,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
@@ -259,7 +260,8 @@ names <- c(
   "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", "Fr_combined_crisis_norm", "Fr_state6m_norm",
   "Fr_nonstate6m_norm",  "Fr_oneside6m_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", 
-  "Fr_number_flags_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm"
+  "Fr_number_flags_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm",
+  "S_Household.risks"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -474,8 +476,9 @@ reliabilitysheet <- globalrisk %>%
                                                                 select(
                                                                   S_pov_prop_19_20_norm,
                                                                   S_pov_abs_19_20_norm,
-                                                                  S_unemployment.Rating_norm,
-                                                                  S_income_support.Rating_crm_norm
+                                                                  S_change_unemp,
+                                                                  S_income_support.Rating_crm_norm,
+                                                                  S_Household.risks
                                                                 )),
                                                         na.rm = T
     ) / 3,
@@ -811,6 +814,9 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_Hazard_Scor
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_change_unemp"), which(colnames(Socioeconomic_sheet) == "S_change_unemp"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_Household.risks"), which(colnames(Socioeconomic_sheet) == "S_Household.risks"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
