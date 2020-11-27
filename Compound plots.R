@@ -23,10 +23,13 @@ ggthemr("fresh")
 world <- map_data("world")
 world <- world %>%
   dplyr::rename(Country = region) %>%
-  dplyr::mutate(Country = suppressWarnings(countrycode(Country,
-                                                       origin = "country.name",
-                                                       destination = "iso3c"
-  )))
+  dplyr::mutate(Country = suppressWarnings(
+    countrycode(
+      Country,
+      origin = "country.name",
+      destination = "iso3c"
+    )
+  ))
 
 # Join datasets with risk flags
 worldmap <- inner_join(world, riskflags, by = "Country")
@@ -51,7 +54,6 @@ map <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) 
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Blues", direction = 1) + # or direction=1
-  ggtitle("Total Existing Compound Risk Score") +
   plain +
   labs(fill = "Total # of risks")
 
@@ -60,7 +62,6 @@ map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group))
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
-  ggtitle("Total Emerging Compound Risk Score") +
   plain +
   labs(fill = "Total # of risks")
 
@@ -72,50 +73,31 @@ ggsave("Plots/globalmaptwo.pdf", map2, width = 8, height = 12)
 # Subset data
 vars <- globalrisk %>%
   select(
-    S_OCHA_Covid.vulnerability.index_norm, H_Oxrollback_score_norm, H_Covidgrowth_casesnorm,
-    H_Covidgrowth_deathsnorm, H_HIS_Score_norm, F_Proteus_Score_norm, F_Fewsnet_Score_norm,
-    F_Artemis_Score_norm, F_FAO_6mFPV_norm, Fr_ACLED_event_same_month_difference_perc_norm,
-    Fr_ACLED_fatal_same_month_difference_perc_norm, D_WB_Overall_debt_distress_norm, D_IMF_debt2020.2019_norm,
-    M_Economic_and_Financial_score_norm, M_GDP_IMF_2019minus2020_norm, M_GDP_WB_2019minus2020_norm,
-    NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm, NH_GDAC_Hazard_Score_Norm, Fr_INFORM_Fragility_Score_norm, Fr_FSI_Score_norm,
-    Fr_FSI_2019minus2020_norm, Fr_REIGN_couprisk3m_norm
+    H_HIS_Score_norm, H_INFORM_rating.Value_norm, H_Oxrollback_score_norm, H_Covidgrowth_casesnorm, H_Covidgrowth_deathsnorm,
+    H_new_cases_smoothed_per_million_norm, H_new_deaths_smoothed_per_million_norm, H_add_death_prec_current_norm, H_GovernmentResponseIndexForDisplay_norm, F_fews_crm_norm,
+     F_fpv_rating,D_WB_external_debt_distress_norm, D_CPIA.scores_norm, D_IMF_debt2020.2019_norm, D_fiscalgdpnum_norm, D_CESI_Index_norm,
+    D_EconomicSupportIndexForDisplay_norm, M_GDP_IMF_2019minus2020_norm, M_GDP_WB_2019minus2020_norm,
+    M_macrofin_risk_norm, S_pov_prop_19_20_norm, S_pov_abs_19_20_norm, S_income_support.Rating_crm_norm,  NH_Hazard_Score_norm,
+    NH_multihazard_risk_norm, NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
+    NH_la_nina_risk, Fr_state6m_norm, Fr_nonstate6m_norm, Fr_oneside6m_norm
   )
 
-colnames(vars) <- c(
-  "S_VI", "H_OX", "H_CGN", "H_CGD", "H_HIS_norm", "F_PS", "F_FS", "F_AS", "F_FPV",
-  "Fr_AE", "Fr_AF", "D_WBD", "D_IMFD", "M_EFS", "M_IMFG", "M_WBG",
-  "NH_UKMO", "NH_GDAC", "Fr_IFS", "Fr_FSI", "Fr_FSID", "Fr_RE"
-)
-
-# Datasets for the small sector plots
-varsone <- vars %>%
-  select(H_OX, H_CGN, H_CGD, H_HIS_norm)
-
-varstwo <- vars %>%
-  select(F_FS, F_AS, F_FPV)
-
-varsthree <- vars %>%
-  select(Fr_IFS, Fr_FSI, Fr_FSID, Fr_RE, Fr_AE, Fr_AF)
+colnames(vars) <- substring(colnames(vars), 1, 5)
 
 # Correlations
 corr <- round(cor(vars, na.rm = T, use = "pairwise.complete.obs"), 1)
-corrone <- round(cor(varsone, na.rm = T, use = "pairwise.complete.obs"), 1)
-corrtwo <- round(cor(varstwo, na.rm = T, use = "pairwise.complete.obs"), 1)
-corrthree <- round(cor(varsthree, na.rm = T, use = "pairwise.complete.obs"), 1)
 
 # Pvalues
 p.mat <- cor_pmat(vars, na.rm = T, use = "pairwise.complete.obs")
-p.matone <- cor_pmat(varsone, na.rm = T, use = "pairwise.complete.obs")
-p.mattwo <- cor_pmat(varstwo, na.rm = T, use = "pairwise.complete.obs")
-p.matthree <- cor_pmat(varsthree, na.rm = T, use = "pairwise.complete.obs")
 
 # Plots
-plot <- ggcorrplot(corr,
-                   hc.order = FALSE,
-                   type = "lower",
-                   p.mat = p.mat,
-                   outline.col = "white",
-                   colors = c("#6D9EC1", "white", "#E46726")
+plot <- ggcorrplot(
+  corr,
+  hc.order = FALSE,
+  type = "lower",
+  p.mat = p.mat,
+  outline.col = "white",
+  colors = c("#6D9EC1", "white", "#E46726")
 ) +
   theme(
     plot.margin = unit(c(1, 1, 1, -0.5), "cm"),
@@ -125,45 +107,8 @@ plot <- ggcorrplot(corr,
     legend.title = element_blank()
   )
 
-plotone <- ggcorrplot(corrone,
-                      type = "lower",
-                      p.mat = p.matone,
-                      outline.col = "white",
-                      colors = c("#6D9EC1", "white", "#E46726")
-) +
-  theme(
-    legend.position = "none",
-    plot.margin = unit(c(1, -0.5, 1, 1), "cm")
-  )
-
-plottwo <- ggcorrplot(corrtwo,
-                      hc.order = FALSE,
-                      type = "lower",
-                      p.mat = p.mattwo,
-                      outline.col = "white",
-                      colors = c("#6D9EC1", "white", "#E46726")
-) +
-  theme(
-    legend.position = "none",
-    plot.margin = unit(c(1, -0.5, 1, 1), "cm")
-  )
-
-plotthree <- ggcorrplot(corrthree,
-                        hc.order = FALSE,
-                        type = "lower",
-                        p.mat = p.matthree,
-                        outline.col = "white",
-                        colors = c("#6D9EC1", "white", "#E46726")
-) +
-  theme(
-    legend.position = "none",
-    plot.margin = unit(c(1, -0.5, 1, 1), "cm")
-  )
-
 # Join and save
-col <- grid.arrange(plotone, plottwo, plotthree, ncol = 1, heights = c(1.5, 1.2, 1.5))
-colone <- plot_grid(col, plot, ncol = 2, rel_widths = c(1, 5), rel_heights = c(6, 2), align = "h")
-ggsave("Plots/corrplot.pdf", colone, width = 12, height = 10, units = "in")
+ggsave("Plots/corrplot.pdf", plot, width = 12, height = 10, units = "in")
 
 #------------------------------Comparison between different overall risk scores--------------------
 # Subset dataset
@@ -223,59 +168,8 @@ one <- ggplot(rankco) +
   ) +
   ggtitle("COVID Response risk")
 
-# Subset dataset
-rankco <- riskflags %>%
-  select(Countryname, EMERGING_RISK_FOOD_SECURITY_SQ, EMERGING_RISK_FOOD_SECURITY)
-rankco$sign <- ifelse(
-  rankco$EMERGING_RISK_FOOD_SECURITY_SQ - rankco$EMERGING_RISK_FOOD_SECURITY > 0, "red",  "green"
-)
-
-# Country labels
-left_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FOOD_SECURITY), sep = ", ")
-right_label <- paste(rankco$Countryname, round(rankco$EMERGING_RISK_FOOD_SECURITY_SQ), sep = ", ")
-# Find one from each integer
-subset <- unlist(lapply(c(0, 3, 6, 10), function(xx) {
-  which(round(rankco$EMERGING_RISK_FOOD_SECURITY, 0) == xx)[1]
-}))
-
-left_label[-subset] <- " "
-right_label[-subset] <- " "
-
-theme_set(theme_classic())
-
-# Second plot
-two <- ggplot(rankco) +
-  geom_segment(aes(x = 1, xend = 2, y = `EMERGING_RISK_FOOD_SECURITY`, yend = `EMERGING_RISK_FOOD_SECURITY_SQ`, col = sign),
-               size = .75, show.legend = F) +
-  geom_vline(xintercept = 1, linetype = "dashed", size = .1) +
-  geom_vline(xintercept = 2, linetype = "dashed", size = .1) +
-  scale_color_manual(
-    labels = c("Up", "Down"),
-    values = c("green" = "#00ba38", "red" = "#f8766d")
-  ) +
-  labs(x = "", y = "") +
-  xlim(.5, 2.5) +
-  ylim(0, 10.3) +
-  geom_text(label = left_label, y = rankco$EMERGING_RISK_FOOD_SECURITY, x = rep(1, NROW(rankco)), hjust = 1.1, size = 7) +
-  geom_text(label = right_label, y = rankco$EMERGING_RISK_FOOD_SECURITY_SQ, x = rep(2, NROW(rankco)), hjust = -0.1, size = 7) +
-  geom_text(label = "Max Value", x = 0.8, y = 10.3, size = 7) +
-  geom_text(label = "Geometric M", x = 2, y = 10.3, hjust = -0.1, size = 7) +
-  theme(
-    panel.background = element_blank(),
-    panel.grid = element_blank(),
-    axis.ticks = element_blank(),
-    axis.text.x = element_blank(),
-    panel.border = element_blank(),
-    line = element_blank(),
-    axis.text = element_blank(),
-    plot.margin = unit(c(1, -0.5, 1, 1), "cm"),
-    title = element_text(size = 20, hjust = 0.5, face = "bold")
-  ) +
-  ggtitle("Food Security risk")
-
-# Join and save
-together <- cowplot::plot_grid(one, two, ncol = 2)
-ggsave("Plots/rankplot.pdf", together, width = 18, height = 10)
+# Save plot
+ggsave("Plots/rankplot.pdf", one, width = 14, height = 10)
 
 #--------------Correlation plots-----------------------------------
 theme_set(theme_classic())
@@ -296,8 +190,8 @@ one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_
     title = element_text(size = 16, hjust = 0.5, face = "bold")
   ) +
   ggrepel::geom_text_repel(
-    data = riskflags %>%
-      sample_n(5),
+    data = as.data.frame(riskflags) %>%
+      sample_n(3, replace = T),
     aes(label = Countryname),
     arrow = arrow(length = unit(0.01, "npc")),
     size = 5,
@@ -320,8 +214,8 @@ two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_
     title = element_text(size = 16, hjust = 0.5, face = "bold")
   ) +
   ggrepel::geom_text_repel(
-    data = riskflags %>%
-      sample_n(5),
+    data = as.data.frame(riskflags) %>%
+      sample_n(3),
     aes(label = Countryname),
     arrow = arrow(length = unit(0.01, "npc")),
     size = 5,
@@ -381,12 +275,13 @@ rvar <- riskflags %>%
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL,
-    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, EMERGING_RISK_NATURAL_HAZARDS, 
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS
   )
 
 colnames(rvar) <- c(
   "EX_Covid", "EX_FoodS", "EX_Macro", "EX_Fiscal", "EX_Socio", "EX_Natural", "EX_Fragile",
-  "EM_Covid", "EM_FoodS", "EM_Macro", "EM_Fiscal", "EM_Natural", "EM_Fragile"
+  "EM_Covid", "EM_FoodS", "EM_Macro", "EM_Fiscal","EM_Socio",  "EM_Natural", "EM_Fragile"
 )
 
 # Calculate correlations
@@ -394,11 +289,12 @@ rcorr <- round(cor(rvar, na.rm = T, use = "pairwise.complete.obs"), 1)
 rp.mat <- cor_pmat(rvar, na.rm = T, use = "pairwise.complete.obs")
 
 # Plot
-plot <- ggcorrplot(rcorr,
-                   hc.order = FALSE,
-                   p.mat = rp.mat,
-                   outline.col = "white",
-                   colors = c("#6D9EC1", "white", "#E46726")
+plot <- ggcorrplot(
+  rcorr,
+  hc.order = FALSE,
+  p.mat = rp.mat,
+  outline.col = "white",
+  colors = c("#6D9EC1", "white", "#E46726")
 ) +
   theme(
     plot.margin = unit(c(1, 1, 1, -0.5), "cm"),
@@ -425,8 +321,12 @@ countrylab <- as.character(comb$Countryname)
 countrylab[-tennum] <- ""
 
 # Plot
-ploty <- ggplot(comb, aes(x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
-                          y = reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE), group = Countryname)) +
+ploty <- ggplot(comb, aes(
+  x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, 
+  xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+  y = reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM), 
+  group = Countryname
+)) +
   geom_dumbbell(
     color = "#a3c4dc",
     size = 0.75,
@@ -438,14 +338,15 @@ ploty <- ggplot(comb, aes(x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, xend = TOTAL_E
   theme(
     axis.ticks = element_blank(),
     axis.title = element_text(size = 20, hjust = 0.5),
-    axis.text = element_text(size = 16)
+    axis.text = element_text(size = 16),
+    axis.line = element_blank()
   ) +
   geom_text_repel(
     data = as.data.frame(comb) %>% sample_n(10),
     aes(label = Countryname),
     hjust = "left",
     fontface = "bold",
-    color = "darkred",
+    color = "black",
     segment.color = "black",
     segment.alpha = 0.7,
     segment.size = 0.3,
@@ -624,9 +525,13 @@ MySpecial <- list(
   theme(plot.subtitle = element_text(hjust = 0.5))
 )
 
-li <- riskflags[c(1, 9:14)]
+li <- riskflags %>% 
+  select(
+    Countryname, contains("EMERGING") & contains("_SQ"), -contains("SQ_SQ"), 
+    -contains("SQ_ALT"), -contains("MULTIDIMENSIONAL"), -contains("TOTAL")
+  ) 
 
-colnames(li) <- c("Country", "EM_C", "EM_FS", "EM_MACRO", "EM_FISC", "EM_NH", "EM_FR")
+colnames(li) <- c("Country", "EM_C", "EM_FS", "EM_MACRO", "EM_SOCIO", "EM_FISC", "EM_NH", "EM_FR")
 
 countries <- c("Afghanistan", "Algeria", "Nigeria", "Ghana", "Serbia", "Tunisia")
 
@@ -675,13 +580,14 @@ diffs <- riskflags %>%
     EMERGING_RISK_FOOD_SECURITY_diff = EMERGING_RISK_FOOD_SECURITY_SQ - EMERGING_RISK_FOOD_SECURITY,
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_diff = EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ - EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID,
     EMERGING_RISK_FISCAL_diff = EMERGING_RISK_FISCAL_SQ - EMERGING_RISK_FISCAL,
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_diff = EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ - EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_diff = EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ - EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_diff = EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ - EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,
   )
 
 diffs <- diffs %>%
   select(contains("diff")) %>%
   select(contains("EMERGING"))
-colnames(diffs) <- c("EM_COV", "EM_FS", "EM_MACRO", "EM_FIS", "EM_FRAG")
+colnames(diffs) <- c("EM_COV", "EM_FS", "EM_MACRO", "EM_FIS", "EM_FRAG", "EM_SOCIO")
 
 # Draw plots
 plots <- list()
@@ -849,7 +755,9 @@ gtheme <- theme(
   axis.title = element_text(size = 20, hjust = 0.5),
   axis.text = element_text(size = 16),
   legend.text = element_text(size = 16),
-  title = element_text(size = 18, face = "bold")
+  title = element_text(size = 18, face = "bold"),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank()
 )
 
 complot <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE,
@@ -904,7 +812,8 @@ three <- ggplot(riskflags, aes(EMERGING_RISK_FISCAL, D_coefvar)) +
   geom_smooth(method = "lm") +
   gtheme +
   ylab("Coef. of Variation") +
-  xlab("Fiscal")
+  xlab("Fiscal") +
+  xlim(5, 10)
 
 four <- ggplot(riskflags, aes(EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, M_coefvar)) +
   geom_point() +
@@ -922,13 +831,14 @@ plot <- riskflags %>%
     Countryname,
     EMERGING_RISK_COVID_RESPONSE_CAPACITY, EMERGING_RISK_FOOD_SECURITY,
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID, EMERGING_RISK_FISCAL,
-    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY
   )
 
-colnames(plot) <- c("Countryname", "Covid", "FoodS", "Macro", "Fisc.", "Natural", "Fragile")
+colnames(plot) <- c("Countryname", "Covid", "Food", "Macro", "Fisc", "Natural", "Fragile", "Socio")
 
 plotone <- plot %>%
-  gather(one, two, Covid:Fragile) %>%
+  gather(one, two, Covid:Socio) %>%
   mutate(
     Risk_cat = as.factor(case_when(
       two == 10 ~ "high",
@@ -942,7 +852,7 @@ plotone <- plot %>%
     )
   )
 
-polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Afghanistan", "Spain"))) +
+polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Congo DR", "Spain"))) +
   geom_col(aes(
     y = two,
     x = one,
@@ -1123,7 +1033,6 @@ seamap <- worldmap %>%
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
-  ggtitle("Total Emerging Compound Risk Score") +
   theme_void() +
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -1135,7 +1044,6 @@ menamap <- worldmap %>%
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
-  ggtitle("Total Emerging Compound Risk Score")  +
   theme_void() +
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -1147,7 +1055,6 @@ ssamap <- worldmap %>%
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
-  ggtitle("Total Emerging Compound Risk Score")  +
   theme_void() +
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -1159,7 +1066,6 @@ lacmap <- worldmap %>%
   coord_fixed(1.3) +
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
-  ggtitle("Total Emerging Compound Risk Score")  +
   theme_void() +
   labs(fill = "Total # of risks") +
   theme(plot.title = element_text(hjust = 0.5))

@@ -89,16 +89,14 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
-      !is.na(F_fews_crm_norm | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
+      (!is.na(F_fews_crm_norm) | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
         F_fews_crm_norm,
         F_Artemis_Score_norm,
         F_fao_wfp_warning,
         na.rm = T
       )),
-      TRUE ~ as.numeric(pmax(
-        F_fpv_rating,
-        na.rm=T
-      ))
+      (is.na(F_fews_crm_norm) | is.na(F_fao_wfp_warning)) ~  as.numeric(F_fpv_rating),
+      TRUE ~ NA_real_
     ),
     EMERGING_RISK_FISCAL = pmax(
       D_IMF_debt2020.2019_norm,
@@ -119,12 +117,14 @@ riskflags <- globalrisk %>%
       S_change_unemp,
       S_income_support.Rating_crm_norm,
       S_Household.risks,
+      S_phone_average_index,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
       NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps,
+      NH_la_nina_risk,
       na.rm = T
     ),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
@@ -187,7 +187,7 @@ riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(
 )))
 
 riskflags$medium_risk_existing <- as.numeric(unlist(row_count(riskflags,
-                                                              EMERGING_RISK_COVID_RESPONSE_CAPACITY_RISKLEVEL:EMERGING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
+                                                              EXISTING_RISK_COVID_RESPONSE_CAPACITY_RISKLEVEL:EXISTING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
                                                               count = "Medium risk",
                                                               append = F
 )))
@@ -261,7 +261,7 @@ names <- c(
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm", "Fr_combined_crisis_norm", "Fr_state6m_norm",
   "Fr_nonstate6m_norm",  "Fr_oneside6m_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", 
   "Fr_number_flags_norm", "Fr_REIGN_couprisk3m_norm", "H_add_death_prec_current_norm", "Fr_number_flags_norm",
-  "S_Household.risks"
+  "S_Household.risks", "S_phone_average_index",  "NH_la_nina_risk", "NH_natural_acaps"
 )
 
 altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
@@ -338,7 +338,8 @@ altflag <- altflag %>%
     NH_coefvar = cv(c(
       NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
-      NH_natural_acaps),
+      NH_natural_acaps,
+      NH_la_nina_risk),
       na.rm = T
     ),
     D_coefvar = cv(c(
@@ -373,7 +374,7 @@ riskflags <- riskflags %>%
       TRUE ~ EMERGING_RISK_COVID_RESPONSE_CAPACITY
     ),
     EMERGING_RISK_FOOD_SECURITY_SQ = case_when(
-      is.na(EXISTING_RISK_FOOD_SECURITY) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
+      !is.na(EXISTING_RISK_FOOD_SECURITY) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
       TRUE ~ EMERGING_RISK_FOOD_SECURITY
     ),
     EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ = case_when(
@@ -478,7 +479,8 @@ reliabilitysheet <- globalrisk %>%
                                                                   S_pov_abs_19_20_norm,
                                                                   S_change_unemp,
                                                                   S_income_support.Rating_crm_norm,
-                                                                  S_Household.risks
+                                                                  S_Household.risks,
+                                                                  S_phone_average_index
                                                                 )),
                                                         na.rm = T
     ) / 3,
@@ -812,11 +814,13 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"), which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"), which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_change_unemp"), which(colnames(Socioeconomic_sheet) == "S_change_unemp"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_Household.risks"), which(colnames(Socioeconomic_sheet) == "S_Household.risks"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_phone_average_index"), which(colnames(Socioeconomic_sheet) == "S_phone_average_index"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")

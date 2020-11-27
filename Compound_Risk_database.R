@@ -95,16 +95,18 @@ covidgrowth <- covid %>%
   summarise(
     meandeaths = mean(new_deaths_per_million, na.rm = T),
     meancase = mean(new_cases_per_million, na.rm = T)
-  ) %>%
+  )
+
+covidgrowth <- covidgrowth %>%
   group_by(iso_code) %>%
   filter(!is.na(meandeaths) & !is.na(meancase)) %>%
   filter(
     iso_code %in% 
-      as.data.frame(covid %>% 
+      as.data.frame(covidgrowth %>% 
                       count(iso_code) %>% 
-                      filter(n != 2) %>% 
+                      filter(n == 2) %>% 
                       select(iso_code))$iso_code
-    ) %>%
+  ) %>%
   mutate(
     growthdeath = meandeaths[previous2week == "twoweek"] - meandeaths,
     growthratedeaths = case_when(
@@ -245,8 +247,15 @@ inform_covid_warning_raw <- do.call(rbind, Map(data.frame, INFORM_rating=all_dat
                                                ipc_3_plus=all_dat[13], growth_events=all_dat[14], public_info=all_dat[15],
                                                testing_policy=all_dat[16], contact_trace=all_dat[17], growth_conflict=all_dat[18],
                                                seasonal_flood=all_dat[19], seasonal_cyclone=all_dat[20], seasonal_exposure=all_dat[21],
-                                               ASAP_hotspot=all_dat[22], INFORM_severity=all_dat[23]))
+                                               ASAP_hotspot=all_dat[22]))
 
+severity <- as.data.frame(all_dat[23]) %>%
+  rename(INFORM_rating.cname = cname,
+         INFORM_severity.Value = Value,
+         INFORM_severity.Rating = Rating)
+
+inform_covid_warning_raw <- left_join(inform_covid_warning_raw, severity, by = "INFORM_rating.cname")
+  
 inform_covid_warning <-  inform_covid_warning_raw %>%
   rename(
     Countryname = INFORM_rating.cname,
@@ -857,6 +866,63 @@ household_risk <- macrosheet %>%
   )) %>%
   rename(S_Household.risks = M_Household.risks)
 
+#----------------------------WB PHONE SURVEYS-----------------------------------------------------
+phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/formatted_data17 Nov 2020_internal.xlsx")
+
+phone_compile <- phone_data %>%
+  filter(Gender == "All" & `URBAN/RURAL` == "National" & INDUSTRY == "All" ) %>%
+  mutate(survey_no = as.numeric(as.character(str_replace(wave, "WAVE", "")))) %>%
+  group_by(code) %>%
+  mutate(last_survey = max(survey_no, na.rm=T)) %>%
+  ungroup() %>%
+  filter(last_survey == survey_no) 
+  
+phone_data <- phone_compile %>%
+  select(code,IndicatorDescription, indicator_val) %>%
+  pivot_wider(names_from = IndicatorDescription, values_from = indicator_val  )
+
+phone_index <-phone_data %>%
+  select(
+    "code", "% of respondents currently employed/working",  "% of respondents who have stopped working since COVID-19 outbreak", 
+    "% able to access [staple food item] in the past 7 days when needed? - any staple food" ,
+    "% of HHs that saw reduced their remittances" , "% of HHs not able to perform normal farming activities (crop, livestock, fishing)" ,
+    "% of HHs able to pay rent for the next month",
+    "% of respondents who were not able to work as usual last week","Experienced decrease in wage income (% HHs with wage income as a source of livelihood in the past 12 months)",
+    "% of HHs that experienced change in total income - decrease"  ,"% of HHs used money saved for emergencies to cover basic living expenses" ,
+    "% of respondents received government assistance when experiencing labor income/job loss" ,   
+    "% of HHs sold assets such as property during the pandemic in order to pay for basic living expenses" ,
+    "In the last 30 days, you skipped a meal because there was not enough money or other resources for food?(%)"   ,
+    "In the last 30 days, your household worried about running out of food because of a lack of money or other resources?(%)" ,
+  )
+
+# Normalised values
+phone_index <- normfuncpos(phone_index, 70, 0, "% of respondents currently employed/working")
+phone_index <- normfuncpos(phone_index, 50, 0, "% of respondents who have stopped working since COVID-19 outbreak" )
+phone_index <- normfuncneg(phone_index, 80, 100, "% able to access [staple food item] in the past 7 days when needed? - any staple food" )
+phone_index <- normfuncpos(phone_index, 70, 0, "% of HHs that saw reduced their remittances" )
+phone_index <- normfuncpos(phone_index, 25, 0, "% of HHs not able to perform normal farming activities (crop, livestock, fishing)")
+phone_index <- normfuncneg(phone_index, 50, 100, "% of HHs able to pay rent for the next month")
+phone_index <- normfuncpos(phone_index, 25, 0,  "% of respondents who were not able to work as usual last week")
+phone_index <- normfuncpos(phone_index, 50, 0,  "Experienced decrease in wage income (% HHs with wage income as a source of livelihood in the past 12 months)")
+phone_index <- normfuncpos(phone_index, 50, 0,  "% of HHs that experienced change in total income - decrease")
+phone_index <- normfuncpos(phone_index, 25, 0,  "% of HHs used money saved for emergencies to cover basic living expenses" )
+phone_index <- normfuncneg(phone_index, 5, 80,  "% of respondents received government assistance when experiencing labor income/job loss")
+phone_index <- normfuncpos(phone_index, 20, 0,  "% of HHs sold assets such as property during the pandemic in order to pay for basic living expenses"  )
+phone_index <- normfuncpos(phone_index, 50, 0,  "In the last 30 days, you skipped a meal because there was not enough money or other resources for food?(%)"  )
+phone_index <- normfuncpos(phone_index, 50, 0,  "In the last 30 days, your household worried about running out of food because of a lack of money or other resources?(%)")
+           
+# Calculate index
+phone_index_data <- phone_index %>%
+  mutate(
+    phone_average_index = select(., contains("_norm")) %>% rowMeans(na.rm=T)  ) %>%
+  rename(Country = code) %>%
+  rename_with(
+    .fn = ~ paste0("S_", .), 
+    .cols = -contains("Country")
+  )
+
+phone_index_data <- normfuncpos(phone_index_data, 8, 2, "S_phone_average_index")
+
 #------------------------------IMF FORECASTED UNEMPLOYMENT-----------------------------------------
 imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")
 
@@ -886,6 +952,7 @@ socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
   left_join(., mpo_data, by = "Country") %>%
   left_join(., imf_un, by = "Country") %>%
   left_join(., household_risk, by = "Country") %>%
+  left_join(., phone_index_data, by = "Country") %>%
   arrange(Country)
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
@@ -1060,10 +1127,16 @@ country <- as.data.frame(country)
 
 # Assign country to list
 country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
-country$countrycode <- countrycode(country$country,
-                           origin = "country.name",
-                           destination = "iso3c",
-                           nomatch = NULL)
+country$countrycode <- suppressWarnings(countrycode(
+  country$country,
+  origin = "country.name",
+  destination = "iso3c",
+  nomatch = NA
+))
+
+#Remove non-countries
+country <- country %>%
+  filter(!is.na(countrycode))
 
 #Remove New Zealand duplicate
 country <- country %>% filter(countrycode != "179;New Zealand;;")
@@ -1116,6 +1189,26 @@ informnathaz <- inform_2021 %>%
 # Normalise scores
 informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
 
+#----------------------UKMO La Nina--------------------------------------------------------
+La_nina_data <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
+La_nina_data <- as_tibble(La_nina_data)
+
+la_nina <- La_nina_data %>%
+  mutate(
+    risk = case_when(
+      risk == 3 ~ 10,
+      risk == 2 ~ 9, 
+      risk == 1 ~ 7,
+      TRUE ~ NA_real_
+    ),
+    Country = countrycode(
+      Country,
+      origin = "country.name",
+      destination = "iso3c",
+      nomatch = NULL
+    )) %>%
+  rename(NH_la_nina_risk = risk)
+
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
@@ -1125,6 +1218,7 @@ nathazardfull <- left_join(countrylist, nathaz, by = "Country") %>%
   left_join(., gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
   left_join(., think_hazard, by = "Country") %>%
+  left_join(., la_nina, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country) %>%
   arrange(Country)
@@ -1411,7 +1505,9 @@ inform_crisis_worse <- url_data %>%
   ) %>% rename_with(
     .fn = ~ paste0("Fr_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country") ]
-  )
+  ) %>%
+  group_by(Country) %>%
+  filter(Fr_INFORM.Severity.Index == max(Fr_INFORM.Severity.Index))
 
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------

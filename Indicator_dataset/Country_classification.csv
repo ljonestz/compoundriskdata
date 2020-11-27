@@ -1,0 +1,191 @@
+"","Countryname","Country","FCV_status","IDA-status"
+"1","Libya","LBY","High-Intensity conflict",NA
+"2","Sudan","SDN","High-Institutional and Social Fragility","Yes"
+"3","Afghanistan","AFG","High-Intensity conflict","Yes"
+"4","Mozambique","MOZ","Medium-Intensity conflict","Yes"
+"5","Niger","NER","Medium-Intensity conflict","Yes"
+"6","Algeria","DZA",NA,NA
+"7","Ethiopia","ETH",NA,"Yes"
+"8","Iraq","IRQ","Medium-Intensity conflict",NA
+"9","South Sudan","SSD","Medium-Intensity conflict","Yes"
+"10","Central African Republic","CAF","Medium-Intensity conflict","Yes"
+"11","Chad","TCD","Medium-Intensity conflict","Yes"
+"12","Croatia","HRV",NA,NA
+"13","Lebanon","LBN","High-Institutional and Social Fragility",NA
+"14","Maldives","MDV",NA,"Yes"
+"15","Mauritania","MRT",NA,"Yes"
+"16","Ukraine","UKR",NA,NA
+"17","Zimbabwe","ZWE","High-Institutional and Social Fragility","Yes"
+"18","Belarus","BLR",NA,NA
+"19","Brazil","BRA",NA,NA
+"20","Cabo Verde","CPV",NA,"Yes"
+"21","Haiti","HTI","High-Institutional and Social Fragility","Yes"
+"22","Honduras","HND",NA,"Yes"
+"23","Peru","PER",NA,NA
+"24","Serbia","SRB",NA,NA
+"25","Somalia","SOM","High-Intensity conflict","Yes"
+"26","Yemen","YEM","Medium-Intensity conflict","Yes"
+"27","Armenia","ARM",NA,NA
+"28","Cameroon","CMR","Medium-Intensity conflict","Yes"
+"29","Colombia","COL",NA,NA
+"30","Congo DR","COD","Medium-Intensity conflict","Yes"
+"31","Grenada","GRD",NA,"Yes"
+"32","Guinea","GIN",NA,"Yes"
+"33","Iran","IRN",NA,NA
+"34","Kenya","KEN",NA,"Yes"
+"35","Malawi","MWI",NA,"Yes"
+"36","Mali","MLI","Medium-Intensity conflict","Yes"
+"37","Montenegro","MNE",NA,NA
+"38","Nigeria","NGA","Medium-Intensity conflict","Yes"
+"39","Papua New Guinea","PNG","High-Institutional and Social Fragility","Yes"
+"40","Romania","ROU",NA,NA
+"41","South Africa","ZAF",NA,NA
+"42","Tajikistan","TJK",NA,"Yes"
+"43","Zambia","ZMB",NA,"Yes"
+"44","Albania","ALB",NA,NA
+"45","Antigua and Barbuda","ATG",NA,NA
+"46","Argentina","ARG",NA,NA
+"47","Barbados","BRB",NA,NA
+"48","Bolivia","BOL",NA,NA
+"49","Burkina Faso","BFA","Medium-Intensity conflict","Yes"
+"50","Dominica","DMA",NA,"Yes"
+"51","Egypt","EGY",NA,NA
+"52","El Salvador","SLV",NA,NA
+"53","Eritrea","ERI","High-Institutional and Social Fragility","Yes"
+"54","Georgia","GEO",NA,NA
+"55","Guatemala","GTM",NA,NA
+"56","Lesotho","LSO",NA,"Yes"
+"57","Mauritius","MUS",NA,NA
+"58","Myanmar","MMR","Medium-Intensity conflict","Yes"
+"59","Pakistan","PAK",NA,"Yes"
+"60","Seychelles","SYC",NA,NA
+"61","Spain","ESP",NA,NA
+"62","Suriname","SUR",NA,NA
+"63","Syria","SYR","High-Intensity conflict","Yes"
+"64","Timor-Leste","TLS","High-Institutional and Social Fragility","Yes"
+"65","Trinidad and Tobago","TTO",NA,NA
+"66","Tunisia","TUN",NA,NA
+"67","Uganda","UGA",NA,"Yes"
+"68","Venezuela","VEN","High-Institutional and Social Fragility",NA
+"69","Angola","AGO",NA,NA
+"70","Bahamas","BHS",NA,NA
+"71","Belize","BLZ",NA,NA
+"72","Bosnia and Herzegovina","BIH",NA,NA
+"73","Botswana","BWA",NA,NA
+"74","Brunei Darussalam","BRN",NA,NA
+"75","Bulgaria","BGR",NA,NA
+"76","Cyprus","CYP",NA,NA
+"77","Djibouti","DJI",NA,"Yes"
+"78","Ecuador","ECU",NA,NA
+"79","Equatorial Guinea","GNQ",NA,NA
+"80","Fiji","FJI",NA,"Yes"
+"81","Greece","GRC",NA,NA
+"82","Guyana","GUY",NA,"Yes"
+"83","Hungary","HUN",NA,NA
+"84","Kazakhstan","KAZ",NA,NA
+"85","Malaysia","MYS",NA,NA
+"86","Nicaragua","NIC",NA,"Yes"
+"87","Oman","OMN",NA,NA
+"88","Palau","PLW",NA,NA
+"89","Poland","POL",NA,NA
+"90","Saint Lucia","LCA",NA,"Yes"
+"91","Solomon Islands","SLB","High-Institutional and Social Fragility","Yes"
+"92","United Arab Emirates","ARE",NA,NA
+"93","Azerbaijan","AZE",NA,NA
+"94","Bahrain","BHR",NA,NA
+"95","Bangladesh","BGD",NA,"Yes"
+"96","Bhutan","BTN",NA,"Yes"
+"97","Burundi","BDI","High-Institutional and Social Fragility","Yes"
+"98","Cambodia","KHM",NA,"Yes"
+"99","China","CHN",NA,NA
+"100","Comoros","COM","High-Institutional and Social Fragility","Yes"
+"101","Congo","COG","High-Institutional and Social Fragility","Yes"
+"102","France","FRA",NA,NA
+"103","Gabon","GAB",NA,NA
+"104","Gambia","GMB","High-Institutional and Social Fragility","Yes"
+"105","Germany","DEU",NA,NA
+"106","Kiribati","KIR","High-Institutional and Social Fragility","Yes"
+"107","Korea DPR","PRK",NA,NA
+"108","Kuwait","KWT",NA,NA
+"109","Luxembourg","LUX",NA,NA
+"110","Madagascar","MDG",NA,"Yes"
+"111","Malta","MLT",NA,NA
+"112","Mexico","MEX",NA,NA
+"113","Micronesia","FSM","High-Institutional and Social Fragility",NA
+"114","Moldova Republic of","MDA",NA,NA
+"115","Mongolia","MNG",NA,NA
+"116","Morocco","MAR",NA,NA
+"117","Nauru","NRU",NA,NA
+"118","Panama","PAN",NA,NA
+"119","Rwanda","RWA",NA,"Yes"
+"120","Samoa","WSM",NA,"Yes"
+"121","Sao Tome and Principe","STP",NA,"Yes"
+"122","Saudi Arabia","SAU",NA,NA
+"123","Senegal","SEN",NA,"Yes"
+"124","Sierra Leone","SLE",NA,"Yes"
+"125","Tanzania","TZA",NA,"Yes"
+"126","Togo","TGO",NA,"Yes"
+"127","Turkey","TUR",NA,NA
+"128","Turkmenistan","TKM",NA,NA
+"129","Tuvalu","TUV","High-Institutional and Social Fragility","Yes"
+"130","Uzbekistan","UZB",NA,"Yes"
+"131","Vanuatu","VUT",NA,"Yes"
+"132","Australia","AUS",NA,NA
+"133","Austria","AUT",NA,NA
+"134","Belgium","BEL",NA,NA
+"135","Chile","CHL",NA,NA
+"136","Cuba","CUB",NA,NA
+"137","Czech Republic","CZE",NA,NA
+"138","Dominican Republic","DOM",NA,NA
+"139","Estonia","EST",NA,NA
+"140","Iceland","ISL",NA,NA
+"141","India","IND",NA,NA
+"142","Ireland","IRL",NA,NA
+"143","Israel","ISR",NA,NA
+"144","Italy","ITA",NA,NA
+"145","Japan","JPN",NA,NA
+"146","Jordan","JOR",NA,NA
+"147","Latvia","LVA",NA,NA
+"148","Liberia","LBR","High-Institutional and Social Fragility","Yes"
+"149","Lithuania","LTU",NA,NA
+"150","Netherlands","NLD",NA,NA
+"151","New Zealand","NZL",NA,NA
+"152","North Macedonia","MKD",NA,NA
+"153","Philippines","PHL",NA,NA
+"154","Portugal","PRT",NA,NA
+"155","Qatar","QAT",NA,NA
+"156","Saint Kitts and Nevis","KNA",NA,NA
+"157","Saint Vincent and the Grenadines","VCT",NA,"Yes"
+"158","Singapore","SGP",NA,NA
+"159","Slovenia","SVN",NA,NA
+"160","Sweden","SWE",NA,NA
+"161","Switzerland","CHE",NA,NA
+"162","Thailand","THA",NA,NA
+"163","Tonga","TON",NA,"Yes"
+"164","United States of America","USA",NA,NA
+"165","Uruguay","URY",NA,NA
+"166","Benin","BEN",NA,"Yes"
+"167","Canada","CAN",NA,NA
+"168","Costa Rica","CRI",NA,NA
+"169","Côte d'Ivoire","CIV",NA,"Yes"
+"170","Denmark","DNK",NA,NA
+"171","Eswatini","SWZ",NA,NA
+"172","Finland","FIN",NA,NA
+"173","Ghana","GHA",NA,"Yes"
+"174","Guinea-Bissau","GNB","High-Institutional and Social Fragility","Yes"
+"175","Indonesia","IDN",NA,NA
+"176","Jamaica","JAM",NA,NA
+"177","Korea Republic of","KOR",NA,NA
+"178","Kyrgyzstan","KGZ",NA,"Yes"
+"179","Lao PDR","LAO","High-Institutional and Social Fragility","Yes"
+"180","Liechtenstein","LIE",NA,NA
+"181","Marshall Islands","MHL","High-Institutional and Social Fragility","Yes"
+"182","Namibia","NAM",NA,NA
+"183","Nepal","NPL",NA,"Yes"
+"184","Norway","NOR",NA,NA
+"185","Paraguay","PRY",NA,NA
+"186","Russian Federation","RUS",NA,NA
+"187","Slovakia","SVK",NA,NA
+"188","Sri Lanka","LKA",NA,NA
+"189","United Kingdom","GBR",NA,NA
+"190","Viet Nam","VNM",NA,NA
