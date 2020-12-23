@@ -1,0 +1,195 @@
+Countryname,Country,Status on FCS list,FSI Score,"FCV list normalised
+(on FCV list = 10, otherwise = 0). 
+Note could use gradient (high conflict = 10, medium conflict = 7, institutional fragility = 10 or 7, otherwise = 0)","FSI score normalised. 
+Note: done using a bounded normalisation process (above 90 = 10, below 90 = normalised score)",,"Combined CRM score. 
+Note: Calculated as IF FCV_norm = 10 OR FSI_norm = 10 then Final score = 10, otherwise Final Score = FSI_norm"
+Libya,LBY,High-Intensity conflict,95.2,10,10,,10
+Sudan,SDN,High-Institutional and Social Fragility,104.8,10,10,,10
+Afghanistan,AFG,High-Intensity conflict,102.9,10,10,,10
+Mozambique,MOZ,Medium-Intensity conflict,91.7,10,10,,10
+Niger,NER,Medium-Intensity conflict,95.3,10,10,,10
+Algeria,DZA,NA,74.6,0,8.288888889,,8.288888889
+Ethiopia,ETH,NA,94.6,0,10,,10
+Iraq,IRQ,Medium-Intensity conflict,95.9,10,10,,10
+South Sudan,SSD,Medium-Intensity conflict,110.8,10,10,,10
+Central African Republic,CAF,Medium-Intensity conflict,107.5,10,10,,10
+Chad,TCD,Medium-Intensity conflict,106.4,10,10,,10
+Croatia,HRV,NA,46.1,0,5.122222222,,5.122222222
+Lebanon,LBN,High-Institutional and Social Fragility,84.7,10,9.411111111,,10
+Maldives,MDV,NA,66.2,0,7.355555556,,7.355555556
+Mauritania,MRT,NA,88.7,0,9.855555556,,9.855555556
+Ukraine,UKR,NA,69,0,7.666666667,,7.666666667
+Zimbabwe,ZWE,High-Institutional and Social Fragility,99.2,10,10,,10
+Belarus,BLR,NA,65.8,0,7.311111111,,7.311111111
+Brazil,BRA,NA,73,0,8.111111111,,8.111111111
+Cabo Verde,CPV,NA,64.8,0,7.2,,7.2
+Haiti,HTI,High-Institutional and Social Fragility,97.7,10,10,,10
+Honduras,HND,NA,76.8,0,8.533333333,,8.533333333
+Peru,PER,NA,67.6,0,7.511111111,,7.511111111
+Serbia,SRB,NA,66.1,0,7.344444444,,7.344444444
+Somalia,SOM,High-Intensity conflict,110.9,10,10,,10
+Yemen,YEM,Medium-Intensity conflict,112.4,10,10,,10
+Armenia,ARM,NA,64.2,0,7.133333333,,7.133333333
+Cameroon,CMR,Medium-Intensity conflict,97.9,10,10,,10
+Colombia,COL,NA,76.6,0,8.511111111,,8.511111111
+Congo DR,COD,Medium-Intensity conflict,109.4,10,10,,10
+Grenada,GRD,NA,55.2,0,6.133333333,,6.133333333
+Guinea,GIN,NA,97.2,0,10,,10
+Iran,IRN,NA,83.4,0,9.266666667,,9.266666667
+Kenya,KEN,NA,90.3,0,10,,10
+Malawi,MWI,NA,84,0,9.333333333,,9.333333333
+Mali,MLI,Medium-Intensity conflict,96,10,10,,10
+Montenegro,MNE,NA,55.5,0,6.166666667,,6.166666667
+Nigeria,NGA,Medium-Intensity conflict,97.3,10,10,,10
+Papua New Guinea,PNG,High-Institutional and Social Fragility,82.3,10,9.144444444,,10
+Romania,ROU,NA,46.7,0,5.188888889,,5.188888889
+South Africa,ZAF,NA,70.1,0,7.788888889,,7.788888889
+Tajikistan,TJK,NA,75.5,0,8.388888889,,8.388888889
+Zambia,ZMB,NA,84.5,0,9.388888889,,9.388888889
+Albania,ALB,NA,58.8,0,6.533333333,,6.533333333
+Antigua and Barbuda,ATG,NA,52.1,0,5.788888889,,5.788888889
+Argentina,ARG,NA,46.1,0,5.122222222,,5.122222222
+Barbados,BRB,NA,46.4,0,5.155555556,,5.155555556
+Bolivia,BOL,NA,75,0,8.333333333,,8.333333333
+Burkina Faso,BFA,Medium-Intensity conflict,85.9,10,9.544444444,,10
+Dominica,DMA,NA,NA,0,NA,,NA
+Egypt,EGY,NA,86,0,9.555555556,,9.555555556
+El Salvador,SLV,NA,68.9,0,7.655555556,,7.655555556
+Eritrea,ERI,High-Institutional and Social Fragility,95.8,10,10,,10
+Georgia,GEO,NA,71.2,0,7.911111111,,7.911111111
+Guatemala,GTM,NA,79.2,0,8.8,,8.8
+Lesotho,LSO,NA,78.3,0,8.7,,8.7
+Mauritius,MUS,NA,37.2,0,4.133333333,,4.133333333
+Myanmar,MMR,Medium-Intensity conflict,94,10,10,,10
+Pakistan,PAK,NA,92.1,0,10,,10
+Seychelles,SYC,NA,54.7,0,6.077777778,,6.077777778
+Spain,ESP,NA,40.4,0,4.488888889,,4.488888889
+Suriname,SUR,NA,60.1,0,6.677777778,,6.677777778
+Syria,SYR,High-Intensity conflict,110.7,10,10,,10
+Timor-Leste,TLS,High-Institutional and Social Fragility,82.7,10,9.188888889,,10
+Trinidad and Tobago,TTO,NA,51.9,0,5.766666667,,5.766666667
+Tunisia,TUN,NA,68.1,0,7.566666667,,7.566666667
+Uganda,UGA,NA,92.8,0,10,,10
+Venezuela,VEN,High-Institutional and Social Fragility,91.2,10,10,,10
+Angola,AGO,NA,87.3,0,9.7,,9.7
+Bahamas,BHS,NA,49.9,0,5.544444444,,5.544444444
+Belize,BLZ,NA,60.8,0,6.755555556,,6.755555556
+Bosnia and Herzegovina,BIH,NA,70.2,0,7.8,,7.8
+Botswana,BWA,NA,57.1,0,6.344444444,,6.344444444
+Brunei Darussalam,BRN,NA,56.6,0,6.288888889,,6.288888889
+Bulgaria,BGR,NA,49.2,0,5.466666667,,5.466666667
+Cyprus,CYP,NA,56.1,0,6.233333333,,6.233333333
+Djibouti,DJI,NA,82.7,0,9.188888889,,9.188888889
+Ecuador,ECU,NA,69.4,0,7.711111111,,7.711111111
+Equatorial Guinea,GNQ,NA,83,0,9.222222222,,9.222222222
+Fiji,FJI,NA,69.9,0,7.766666667,,7.766666667
+Greece,GRC,NA,52.1,0,5.788888889,,5.788888889
+Guyana,GUY,NA,66,0,7.333333333,,7.333333333
+Hungary,HUN,NA,47.6,0,5.288888889,,5.288888889
+Kazakhstan,KAZ,NA,59.8,0,6.644444444,,6.644444444
+Malaysia,MYS,NA,57.6,0,6.4,,6.4
+Nicaragua,NIC,NA,77.1,0,8.566666667,,8.566666667
+Oman,OMN,NA,48,0,5.333333333,,5.333333333
+Palau,PLW,NA,NA,0,NA,,NA
+Poland,POL,NA,41,0,4.555555556,,4.555555556
+Saint Lucia,LCA,NA,NA,0,NA,,NA
+Solomon Islands,SLB,High-Institutional and Social Fragility,79.7,10,8.855555556,,10
+United Arab Emirates,ARE,NA,38.1,0,4.233333333,,4.233333333
+Azerbaijan,AZE,NA,71.3,0,7.922222222,,7.922222222
+Bahrain,BHR,NA,63.9,0,7.1,,7.1
+Bangladesh,BGD,NA,85.7,0,9.522222222,,9.522222222
+Bhutan,BTN,NA,69.5,0,7.722222222,,7.722222222
+Burundi,BDI,High-Institutional and Social Fragility,97.9,10,10,,10
+Cambodia,KHM,NA,80.3,0,8.922222222,,8.922222222
+China,CHN,NA,69.9,0,7.766666667,,7.766666667
+Comoros,COM,High-Institutional and Social Fragility,81.2,10,9.022222222,,10
+Congo,COG,High-Institutional and Social Fragility,92.1,10,10,,10
+France,FRA,NA,30.5,0,3.388888889,,3.388888889
+Gabon,GAB,NA,69.1,0,7.677777778,,7.677777778
+Gambia,GMB,High-Institutional and Social Fragility,82.2,10,9.133333333,,10
+Germany,DEU,NA,23.2,0,2.577777778,,2.577777778
+Kiribati,KIR,High-Institutional and Social Fragility,NA,10,NA,,10
+Korea DPR,PRK,NA,90.2,0,10,,10
+Kuwait,KWT,NA,50.9,0,5.655555556,,5.655555556
+Luxembourg,LUX,NA,18.8,0,2.088888889,,2.088888889
+Madagascar,MDG,NA,79.5,0,8.833333333,,8.833333333
+Malta,MLT,NA,33.6,0,3.733333333,,3.733333333
+Mexico,MEX,NA,67.2,0,7.466666667,,7.466666667
+Micronesia,FSM,High-Institutional and Social Fragility,NA,10,NA,,10
+Moldova Republic of,MDA,NA,66,0,7.333333333,,7.333333333
+Mongolia,MNG,NA,51.9,0,5.766666667,,5.766666667
+Morocco,MAR,NA,71.2,0,7.911111111,,7.911111111
+Nauru,NRU,NA,NA,0,NA,,NA
+Panama,PAN,NA,46,0,5.111111111,,5.111111111
+Rwanda,RWA,NA,86,0,9.555555556,,9.555555556
+Samoa,WSM,NA,63.3,0,7.033333333,,7.033333333
+Sao Tome and Principe,STP,NA,70.3,0,7.811111111,,7.811111111
+Saudi Arabia,SAU,NA,68.8,0,7.644444444,,7.644444444
+Senegal,SEN,NA,74.6,0,8.288888889,,8.288888889
+Sierra Leone,SLE,NA,84.4,0,9.377777778,,9.377777778
+Tanzania,TZA,NA,78.1,0,8.677777778,,8.677777778
+Togo,TGO,NA,85.8,0,9.533333333,,9.533333333
+Turkey,TUR,NA,79.1,0,8.788888889,,8.788888889
+Turkmenistan,TKM,NA,69.1,0,7.677777778,,7.677777778
+Tuvalu,TUV,High-Institutional and Social Fragility,NA,10,NA,,10
+Uzbekistan,UZB,NA,73.1,0,8.122222222,,8.122222222
+Vanuatu,VUT,NA,NA,0,NA,,NA
+Australia,AUS,NA,19.7,0,2.188888889,,2.188888889
+Austria,AUT,NA,24.1,0,2.677777778,,2.677777778
+Belgium,BEL,NA,27.1,0,3.011111111,,3.011111111
+Chile,CHL,NA,42.5,0,4.722222222,,4.722222222
+Cuba,CUB,NA,59.2,0,6.577777778,,6.577777778
+Czech Republic,CZE,NA,35.7,0,3.966666667,,3.966666667
+Dominican Republic,DOM,NA,64.4,0,7.155555556,,7.155555556
+Estonia,EST,NA,38.5,0,4.277777778,,4.277777778
+Iceland,ISL,NA,17.8,0,1.977777778,,1.977777778
+India,IND,NA,75.3,0,8.366666667,,8.366666667
+Ireland,IRL,NA,19.9,0,2.211111111,,2.211111111
+Israel,ISR,NA,NA,0,NA,,NA
+Italy,ITA,NA,42.4,0,4.711111111,,4.711111111
+Japan,JPN,NA,32.3,0,3.588888889,,3.588888889
+Jordan,JOR,NA,75.4,0,8.377777778,,8.377777778
+Latvia,LVA,NA,42.3,0,4.7,,4.7
+Liberia,LBR,High-Institutional and Social Fragility,90,10,10,,10
+Lithuania,LTU,NA,36.5,0,4.055555556,,4.055555556
+Netherlands,NLD,NA,22.9,0,2.544444444,,2.544444444
+New Zealand,NZL,NA,17.9,0,1.988888889,,1.988888889
+North Macedonia,MKD,NA,62.1,0,6.9,,6.9
+Philippines,PHL,NA,81,0,9,,9
+Portugal,PRT,NA,23.5,0,2.611111111,,2.611111111
+Qatar,QAT,NA,43.7,0,4.855555556,,4.855555556
+Saint Kitts and Nevis,KNA,NA,NA,0,NA,,NA
+Saint Vincent and the Grenadines,VCT,NA,NA,0,NA,,NA
+Singapore,SGP,NA,26.3,0,2.922222222,,2.922222222
+Slovenia,SVN,NA,25.8,0,2.866666667,,2.866666667
+Sweden,SWE,NA,18.2,0,2.022222222,,2.022222222
+Switzerland,CHE,NA,17.1,0,1.9,,1.9
+Thailand,THA,NA,70.8,0,7.866666667,,7.866666667
+Tonga,TON,NA,NA,0,NA,,NA
+United States of America,USA,NA,38.3,0,4.255555556,,4.255555556
+Uruguay,URY,NA,33.4,0,3.711111111,,3.711111111
+Benin,BEN,NA,72.5,0,8.055555556,,8.055555556
+Canada,CAN,NA,18.7,0,2.077777778,,2.077777778
+Costa Rica,CRI,NA,40.2,0,4.466666667,,4.466666667
+Côte d'Ivoire,CIV,NA,89.7,0,9.966666667,,9.966666667
+Denmark,DNK,NA,17.2,0,1.911111111,,1.911111111
+Eswatini,SWZ,NA,83,0,9.222222222,,9.222222222
+Finland,FIN,NA,14.6,0,1.622222222,,1.622222222
+Ghana,GHA,NA,64.2,0,7.133333333,,7.133333333
+Guinea-Bissau,GNB,High-Institutional and Social Fragility,92.9,10,10,,10
+Indonesia,IDN,NA,67.8,0,7.533333333,,7.533333333
+Jamaica,JAM,NA,60,0,6.666666667,,6.666666667
+Korea Republic of,KOR,NA,32,0,3.555555556,,3.555555556
+Kyrgyzstan,KGZ,NA,73.9,0,8.211111111,,8.211111111
+Lao PDR,LAO,High-Institutional and Social Fragility,76.9,10,8.544444444,,10
+Liechtenstein,LIE,NA,NA,0,NA,,NA
+Marshall Islands,MHL,High-Institutional and Social Fragility,NA,10,NA,,10
+Namibia,NAM,NA,65.1,0,7.233333333,,7.233333333
+Nepal,NPL,NA,82.6,0,9.177777778,,9.177777778
+Norway,NOR,NA,16.2,0,1.8,,1.8
+Paraguay,PRY,NA,65.2,0,7.244444444,,7.244444444
+Russian Federation,RUS,NA,72.6,0,8.066666667,,8.066666667
+Slovakia,SVK,NA,38.2,0,4.244444444,,4.244444444
+Sri Lanka,LKA,NA,81.8,0,9.088888889,,9.088888889
+United Kingdom,GBR,NA,38.3,0,4.255555556,,4.255555556
+Viet Nam,VNM,NA,63.9,0,7.1,,7.1

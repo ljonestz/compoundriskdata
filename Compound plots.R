@@ -11,7 +11,7 @@ librarian::shelf(
   ggplot2, cowplot, lubridate, rvest, dplyr, viridis, tidyverse,
   countrycode, corrplot, cttobin / ggthemr, ggalt, gridExtra, ggcorrplot,
   ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer, alluvial, ggforce,
-  ggalluvial, ggparallel, styler
+  ggalluvial, ggparallel, styler, mapview, geojsonio
 )
 
 # Load themes
@@ -55,7 +55,7 @@ map <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) 
   geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Blues", direction = 1) + # or direction=1
   plain +
-  labs(fill = "Total # of risks")
+  labs(fill = "Total # of risks flags")
 
 # Draw map two
 map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group)) +
@@ -63,7 +63,7 @@ map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group))
   geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
   plain +
-  labs(fill = "Total # of risks")
+  labs(fill = "Total # of risk flags")
 
 # Save maps
 ggsave("Plots/globalmapone.pdf", map, width = 8, height = 12)
@@ -1075,4 +1075,18 @@ ggsave("Plots/Snapshots/Menamap.pdf", menamap, width = 8, height = 5)
 ggsave("Plots/Snapshots/Ssaamap.pdf", ssamap, width = 8, height = 5)
 ggsave("Plots/Snapshots/LACamap.pdf", lacmap, width = 8, height = 5)
 
+# Dynamic hazard plots
+#tt <- geojson_sf("https://www.gdacs.org/contentdata/xml/gdacs.geojson")
+tt <- geojson_sf("https://www.gdacs.org/contentdata/xml/gdacsTC.geojson")
+#Label different shape types
+tt$polygontype <- gsub("\\_.*","",tt$polygontype)
+
+#ggplot
+ggplot() + 
+  coord_fixed(1.3) +
+  geom_polygon(data = worldmap, aes(x = long, y = lat, group = group)) + 
+  geom_sf(data = tt, aes(fill = polygontype))
+  
+#Leaflet
+mapview(tt, zcol = tt$polygontype)
 

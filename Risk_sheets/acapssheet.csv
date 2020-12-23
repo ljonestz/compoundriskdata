@@ -75,7 +75,7 @@
 "74","Brunei Darussalam","BRN",0,0,0,0
 "75","Bulgaria","BGR",0,0,0,0
 "76","Cyprus","CYP",0,0,0,0
-"77","Djibouti","DJI",0,0,0,0
+"77","Djibouti","DJI",0,0,10,0
 "78","Ecuador","ECU",0,0,0,0
 "79","Equatorial Guinea","GNQ",0,0,0,0
 "80","Fiji","FJI",0,0,0,0
@@ -105,7 +105,7 @@
 "104","Gambia","GMB",0,0,0,0
 "105","Germany","DEU",0,0,0,0
 "106","Kiribati","KIR",0,0,0,0
-"107","Korea DPR","PRK",10,0,0,0
+"107","Korea DPR","PRK",0,0,0,0
 "108","Kuwait","KWT",0,0,0,0
 "109","Luxembourg","LUX",0,0,0,0
 "110","Madagascar","MDG",0,0,0,0
