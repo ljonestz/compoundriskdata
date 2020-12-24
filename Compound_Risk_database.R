@@ -1284,7 +1284,7 @@ fsi <- fsi %>%
   )
 
 #-------------------------FCS---------------------------------------------
-fcv <- read.csv("Indicator_dataset/Country_classification.csv") %>%
+fcv <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Country_classification.csv") %>%
   select(-X, Countryname, -IDA.status) %>%
   mutate(
     FCV_normalised = case_when(
@@ -1306,7 +1306,7 @@ testing <- testing %>%
     ))
 
 #-----------------------------IDPs--------------------------------------------------------
-idp_data <- read_csv("~/Downloads/query_data (4)/population.csv",
+idp_data <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/population.csv",
                      col_types = cols(
                        `IDPs of concern to UNHCR` = col_number(),
                        `Refugees under UNHCR’s mandate` = col_number(),
@@ -1405,7 +1405,7 @@ acled <- acled %>%
   select(-iso3)
 
 #--------------------------REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("~/Downloads/REIGN_2020_11.csv"))
+reign_data <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_11.csv"))
 
 reign_start <- reign_data %>%
   filter(year == 2020) %>%
@@ -1437,7 +1437,6 @@ reign <- left_join(reign_start, testing %>% select(Country, Final_score), by = "
     )
   ) %>%
   select(-Final_score)
-
 
 #-----------------Join all dataset-----------------------------------
 conflict_dataset_raw <- left_join(testing, reign, by = "Country") %>%
