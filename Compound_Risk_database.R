@@ -99,14 +99,18 @@ covidgrowth <- covid %>%
 
 covidgrowth <- covidgrowth %>%
   group_by(iso_code) %>%
-  filter(!is.na(meandeaths) & !is.na(meancase)) %>%
-  filter(
-    iso_code %in% 
-      as.data.frame(covidgrowth %>% 
-                      count(iso_code) %>% 
-                      filter(n == 2) %>% 
-                      select(iso_code))$iso_code
-  ) %>%
+  filter(!is.na(meandeaths) & !is.na(meancase)) 
+
+# remove countries without two weeks
+covidgrowth <- covidgrowth %>%
+  mutate(remove = iso_code %in% 
+           as.data.frame(covidgrowth %>% 
+                           count(iso_code) %>% 
+                           filter(n == 2) %>% 
+                           select(iso_code))$iso_code)
+
+covidgrowth <- covidgrowth %>%
+  filter(remove == TRUE) %>%
   mutate(
     growthdeath = meandeaths[previous2week == "twoweek"] - meandeaths,
     growthratedeaths = case_when(
@@ -122,7 +126,7 @@ covidgrowth <- covidgrowth %>%
     )
   ) %>%
   dplyr::filter(previous2week != "twoweek") %>%
-  select(-previous2week, -growthcase, -growthdeath, -meandeaths, -meancase)
+  select(-previous2week, -growthcase, -growthdeath, -meandeaths, -meancase, -remove)
 
 # Normalised scores for deaths
 covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
@@ -773,12 +777,8 @@ macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_scor
 gdp <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv"))
 gdp <- gdp %>%
   select(-X1)
-upperrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.2), na.rm = T)
-lowerrisk <- quantile(gdp$M_GDP_WB_2019minus2020, probs = c(0.95), na.rm = T)
-gdp <- normfuncneg(gdp, upperrisk, lowerrisk, "M_GDP_WB_2019minus2020")
-upperrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.2), na.rm = T)
-lowerrisk <- quantile(gdp$M_GDP_IMF_2019minus2020, probs = c(0.95), na.rm = T)
-gdp <- normfuncneg(gdp, upperrisk, lowerrisk, "M_GDP_IMF_2019minus2020")
+gdp <- normfuncneg(gdp, -5, 0, "M_GDP_WB_2019minus2020")
+gdp <- normfuncneg(gdp, -5, 0, "M_GDP_IMF_2019minus2020")
 
 #-------------------------MACRO FIN REVIEW---------------------------------------------
 data <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macrofin.csv")
@@ -958,7 +958,7 @@ phone_index_data <- phone_index %>%
     .cols = -contains("Country")
   )
 
-phone_index_data <- normfuncpos(phone_index_data, 8, 2, "S_phone_average_index")
+phone_index_data <- normfuncpos(phone_index_data, 7, 2, "S_phone_average_index")
 
 #------------------------------IMF FORECASTED UNEMPLOYMENT-----------------------------------------
 imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")

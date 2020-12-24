@@ -89,13 +89,13 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
-      (!is.na(F_fews_crm_norm) | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
+      (!is.na(F_fews_crm_norm) | !is.na(F_fpv_rating)) ~ as.numeric(pmax(
         F_fews_crm_norm,
         F_Artemis_Score_norm,
-        F_fao_wfp_warning,
+        F_fpv_rating,
         na.rm = T
       )),
-      (is.na(F_fews_crm_norm) | is.na(F_fao_wfp_warning)) ~  as.numeric(F_fpv_rating),
+      (is.na(F_fews_crm_norm) | is.na(F_fpv_rating)) ~  as.numeric(F_fpv_rating),
       TRUE ~ NA_real_
     ),
     EMERGING_RISK_MACRO_FISCAL = pmax(
@@ -108,10 +108,10 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
       S_pov_prop_19_20_norm,
       S_pov_abs_19_20_norm,
-      S_change_unemp,
+      S_change_unemp_norm,
       S_income_support.Rating_crm_norm,
       S_Household.risks,
-      S_phone_average_index,
+      S_phone_average_index_norm,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
@@ -238,10 +238,10 @@ names <- c(
   "S_INFORM_vul_norm", "H_Oxrollback_score_norm", "H_wmo_don_alert",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
-  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm","F_fao_wfp_warning", "D_WB_external_debt_distress_norm",
+  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm","F_fpv_rating", "D_WB_external_debt_distress_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",  "H_add_death_prec_current_norm",  "H_add_death_prec_current_norm", 
-  "S_Household.risks", "S_phone_average_index",  "NH_la_nina_risk", "NH_natural_acaps","Fr_FCS_FSI_Normalised", 
+  "S_Household.risks", "S_phone_average_index_norm",  "NH_la_nina_risk", "NH_natural_acaps","Fr_FCS_FSI_Normalised", 
   "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
 )
 
@@ -330,7 +330,7 @@ altflag <- altflag %>%
     F_coefvar = cv(c(
       F_fpv_rating,
       F_Artemis_Score_norm,
-      F_fao_wfp_warning),
+      F_fpv_rating),
       na.rm = T
     )
   )
@@ -443,10 +443,10 @@ reliabilitysheet <- globalrisk %>%
                                                                 select(
                                                                   S_pov_prop_19_20_norm,
                                                                   S_pov_abs_19_20_norm,
-                                                                  S_change_unemp,
+                                                                  S_change_unemp_norm,
                                                                   S_income_support.Rating_crm_norm,
                                                                   S_Household.risks,
-                                                                  S_phone_average_index
+                                                                  S_phone_average_index_norm
                                                                 )),
                                                         na.rm = T
     ) / 3,
@@ -656,7 +656,7 @@ addStyle(
   sheet = 1,
   headerStyle,
   rows = 1,
-  cols = 4:10,
+  cols = 4:9,
   gridExpand = TRUE
 )
 
@@ -677,7 +677,7 @@ addStyle(crxls,
          sheet = 1,
          headerStyle,
          rows = 1,
-         cols = 11:17,
+         cols = 10:15,
          gridExpand = TRUE
 )
 
@@ -698,7 +698,7 @@ addStyle(crxls,
          sheet = 1,
          headerStyle2,
          rows = 1,
-         cols = c(3, 18, 23, 26:53),
+         cols = c(3, 16, 21, 24:51),
          gridExpand = TRUE
 )
 
@@ -712,14 +712,14 @@ negStyle <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
 naStyle <- createStyle(fontColour = "white", bgFill = "white")
 
 # Conditional Cell Formatting for main sheet
-conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, rule = "==10", style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, type = "between", rule = c(0, 6.999), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols = 4:17, rows = 1:191, rule = '=""', style = naStyle)
-conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(2 / 3, 1), style = negStyle)
-conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(1 / 3, 0.665), style = medStyle)
-conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, type = "between", rule = c(0, 0.332), style = posStyle)
-conditionalFormatting(crxls, "riskflags", cols = 24:25, rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:15, rows = 1:191, rule = "==10", style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:15, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:15, rows = 1:191, type = "between", rule = c(0, 6.999), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols = 4:15, rows = 1:191, rule = '=""', style = naStyle)
+conditionalFormatting(crxls, "riskflags", cols = 22:23, rows = 1:191, type = "between", rule = c(2 / 3, 1), style = negStyle)
+conditionalFormatting(crxls, "riskflags", cols = 22:23, rows = 1:191, type = "between", rule = c(1 / 3, 0.665), style = medStyle)
+conditionalFormatting(crxls, "riskflags", cols = 22:23, rows = 1:191, type = "between", rule = c(0, 0.332), style = posStyle)
+conditionalFormatting(crxls, "riskflags", cols = 22:23, rows = 1:191, rule = '=""', style = naStyle)
 
 # Function for the remaining tabs
 cond <- function(sheet, numhigh, numlow) {
@@ -756,7 +756,7 @@ cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), wh
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fews_crm_norm"), which(colnames(foodsecurity) == "F_fews_crm_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_fao_wfp_warning"), which(colnames(foodsecurity) == "F_fao_wfp_warning"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
 cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FCS_FSI_Normalised"), which(colnames(fragilitysheet) == "Fr_Overall_Conflict_Risk_Score"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"), which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"))
@@ -775,10 +775,10 @@ cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"), which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
-cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_change_unemp"), which(colnames(Socioeconomic_sheet) == "S_change_unemp"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_change_unemp_norm"), which(colnames(Socioeconomic_sheet) == "S_change_unemp_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_Household.risks"), which(colnames(Socioeconomic_sheet) == "S_Household.risks"))
-cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_phone_average_index"), which(colnames(Socioeconomic_sheet) == "S_phone_average_index"))
+cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_phone_average_index_norm"), which(colnames(Socioeconomic_sheet) == "S_phone_average_index_norm"))
 
 # Conditional formatting colours
 posStyle <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
@@ -797,7 +797,7 @@ conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19),
 conditionalFormatting(crxls, "Alternativeflag_sheet", cols = c(4:6, 8:9, 11:19), rows = 1:191, rule = '=""', style = naStyle)
 
 # DatabarsconditionalFormatting
-conditionalFormatting(crxls, "riskflags", cols = 19:22, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
+conditionalFormatting(crxls, "riskflags", cols = 17:20, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
 conditionalFormatting(crxls, "Reliability_sheet", cols = 2:4, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
 conditionalFormatting(crxls, "Alternativeflag_sheet", cols = 21, rows = 1:191, type = "databar", style = c("#C6EFCE", "#CD5C5C"))
 

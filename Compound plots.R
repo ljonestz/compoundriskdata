@@ -69,6 +69,66 @@ map2 <- ggplot(data = worldmap, mapping = aes(x = long, y = lat, group = group))
 ggsave("Plots/globalmapone.pdf", map, width = 8, height = 12)
 ggsave("Plots/globalmaptwo.pdf", map2, width = 8, height = 12)
 
+#----------------Map with more than three---------------------
+# Draw map one
+mapcomb <- ggplot(data = filter(worldmap %>% 
+                              mutate(
+                                TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM = case_when(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM >= 4 ~ TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+                                                                                         TRUE ~ NA_real_))),
+              mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette = "Blues", direction = 1) + # or direction=1
+  plain +
+  labs(fill = "Total # of risks flags") +
+  theme(legend.position = "none")
+              
+# Draw map two
+map2comb <- ggplot(data = filter(worldmap %>% 
+                               mutate(
+                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM = case_when(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM >= 3.5 ~ TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,
+                                                                                          TRUE ~ NA_real_))),
+               mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  plain +
+  labs(fill = "Total # of risk flags") +
+  theme(legend.position = "none")
+
+# Save maps
+ggsave("Plots/globalmap_hotspot.pdf", mapcomb, width = 8, height = 12)
+ggsave("Plots/globalmaptwo_hotspot.pdf", map2comb, width = 8, height = 12)
+
+maphigh <- ggplot(data = filter(worldmap %>% 
+                                   mutate(
+                                     TOTAL_EXISTING_COMPOUND_RISK_SCORE = case_when(TOTAL_EXISTING_COMPOUND_RISK_SCORE >= 3 ~ TOTAL_EXISTING_COMPOUND_RISK_SCORE,
+                                                                                    TRUE ~ NA_real_))),
+                   mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  plain +
+  labs(fill = "Total # of risk flags") +
+  theme(legend.position = "none")
+
+map2high <- ggplot(data = filter(worldmap %>% 
+                                   mutate(
+                                     TOTAL_EMERGING_COMPOUND_RISK_SCORE = case_when(TOTAL_EMERGING_COMPOUND_RISK_SCORE >= 3 ~ TOTAL_EMERGING_COMPOUND_RISK_SCORE,
+                                                                                    TRUE ~ NA_real_))),
+                   mapping = aes(x = long, y = lat, group = group)) +
+  coord_fixed(1.3) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE)) +
+  scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
+  plain +
+  labs(fill = "Total # of risk flags") +
+  theme(legend.position = "none")
+
+# Save maps
+ggsave("Plots/globalmap_hotspot_high.pdf", maphigh, width = 8, height = 12)
+ggsave("Plots/globalmaptwo_hotspot_high.pdf", map2high, width = 8, height = 12)
+
+
 #--------------Correlations of all source indicators that feed into the compound risk monitor--------
 # Subset data
 vars <- globalrisk %>%
@@ -443,8 +503,7 @@ tab <- rankcountry %>%
 colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
 colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
 colnames(tab) <- c(
-  "COVID", "FOOD", "MACROECO",
-  "FISCAL", "SOCIO VUL", "NATURAL", "FRAGILITY",
+  "HEALTH", "FOOD", "MACRO", "SOCIO_VUL", "NATURAL", "CONFLICT",
   "TOTAL", "TOTAL(+MEDIUM)",
   "RELIABILITY"
 )
@@ -459,8 +518,7 @@ tab <- rankcountry %>%
 colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
 colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
 colnames(tab) <- c(
-  "COVID", "FOOD", "MACROECO",
-  "FISCAL",  "SOCIO VUL", "NATURAL", "FRAGILITY",
+  "HEALTH", "FOOD", "MACRO", "SOCIO_VUL", "NATURAL", "CONFLICT",
   "TOTAL", "TOTAL(+MEDIUM)",
   "RELIABILITY"
 )
@@ -471,8 +529,8 @@ tab %>%
 
 # Draw table for geometric risks
 sq <- c(
-  "EMERGING_RISK_COVID_RESPONSE_CAPACITY_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
-  "EMERGING_RISK_MACROECONOMIC_EXPOSURE_TO_COVID_SQ", "EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ", "EMERGING_RISK_FISCAL_SQ",
+  "EMERGING_RISK_HEALTH_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
+  "EMERGING_RISK_MACRO_FISCAL_SQ", "EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ",
   "EMERGING_RISK_NATURAL_HAZARDS_SQ", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ",
   "TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ"
 )
@@ -489,8 +547,8 @@ rankcountry <- bind_rows(rankcountry)
 tab <- rankcountry %>%
   select(contains("EMERGING"))
 colnames(tab) <- c(
-  "COVID", "FOOD","SOCIO_Vul",  "MACROECO",
-  "FISCAL", "NATURAL", "FRAGILITY",
+  "HEALTH", "FOOD","SOCIO_VUL",  "MACRO",
+  "FISCAL", "NATURAL", "CONFLICT",
   "TOTAL"
 )
 tab %>%
