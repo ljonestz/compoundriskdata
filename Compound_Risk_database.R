@@ -50,7 +50,7 @@ HIS <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/mas
 
 HIS <- HIS %>%
   rename(Country = H_Country) %>%
-  select(-X)
+  dplyr::select(-X)
 
 #Normalise scores
 HIS <- normfuncneg(HIS, 20, 70, "H_HIS_Score")
@@ -107,7 +107,7 @@ covidgrowth <- covidgrowth %>%
            as.data.frame(covidgrowth %>% 
                            count(iso_code) %>% 
                            filter(n == 2) %>% 
-                           select(iso_code))$iso_code)
+                           dplyr::select(iso_code))$iso_code)
 
 covidgrowth <- covidgrowth %>%
   filter(remove == TRUE) %>%
@@ -126,7 +126,7 @@ covidgrowth <- covidgrowth %>%
     )
   ) %>%
   dplyr::filter(previous2week != "twoweek") %>%
-  select(-previous2week, -growthcase, -growthdeath, -meandeaths, -meancase, -remove)
+  dplyr::select(-previous2week, -growthcase, -growthdeath, -meandeaths, -meancase, -remove)
 
 # Normalised scores for deaths
 covidgrowth <- normfuncpos(covidgrowth, 150, 0, "growthratedeaths")
@@ -141,7 +141,7 @@ colnames(covidgrowth) <- c(
 # Varibles on number of cases
 covidcurrent <- covid %>%
   filter(date == Sys.Date() - 1) %>%
-  select(iso_code, new_cases_smoothed_per_million, new_deaths_smoothed_per_million) %>%
+  dplyr::select(iso_code, new_cases_smoothed_per_million, new_deaths_smoothed_per_million) %>%
   rename(Country = iso_code)
 
 covidcurrent <- normfuncpos(covidcurrent, 50, 0, "new_cases_smoothed_per_million")
@@ -160,7 +160,7 @@ cov_current <- read.csv("https://raw.githubusercontent.com/scc-usc/ReCOVER-COVID
 
 # Summarise country totals (forecast)
 cov_dat <- cov %>%
-  select(Country, colnames(cov)[10],colnames(cov)[9]) %>%
+  dplyr::select(Country, colnames(cov)[10],colnames(cov)[9]) %>%
   rename(
     w8forecast = colnames(cov)[10], 
     w7forecast = colnames(cov)[9]
@@ -174,7 +174,7 @@ cov_dat <- cov %>%
 
 # Summarise country totals (current)
 cov_cur <- cov_current %>%
-  select(Country, last(colnames(cov_current))) %>%
+  dplyr::select(Country, last(colnames(cov_current))) %>%
   rename(
     current = last(colnames(cov_current)),
     ) %>%
@@ -220,7 +220,7 @@ Oxres <- read.csv("https://raw.githubusercontent.com/OxCGRT/covid-policy-tracker
 Ox_cov_resp <- Oxres %>%
   group_by(CountryCode) %>%
   filter(Date == max(Date)) %>%
-  select(
+  dplyr::select(
     CountryCode, Date, GovernmentResponseIndex, GovernmentResponseIndexForDisplay,
     EconomicSupportIndex, EconomicSupportIndexForDisplay, ContainmentHealthIndex,
     ContainmentHealthIndexForDisplay, E1_Income.support, E1_Flag
@@ -265,7 +265,7 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
     Countryname = INFORM_rating.cname,
     hold_one = INFORM_severity.Rating
   ) %>%
-  select(-contains(".cname")) %>%
+  dplyr::select(-contains(".cname")) %>%
   mutate_at(
     vars(contains(".Rating")),
     funs(case_when(
@@ -287,7 +287,7 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
     INFORM_rating.Value = as.numeric(as.character(INFORM_rating.Value)),
     Country = countrycode(Countryname, origin = "country.name", destination = "iso3c", nomatch = NULL
     )) %>%
-  select(-Countryname) %>%
+  dplyr::select(-Countryname) %>%
   rename_with(
     .fn = ~ paste0("H_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
@@ -327,16 +327,16 @@ wmo_don_full <- bind_cols(wmo_text, wmo_date) %>%
 
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 wmo_don <- countrylist %>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
   mutate(wmo_don_alert = case_when(Country %in% wmo_don_full$wmo_country_alert ~ 10,
                                    TRUE ~ 0))  %>%
   rename(H_wmo_don_alert = wmo_don_alert) %>%
-  select(-Countryname)
+  dplyr::select(-Countryname)
 
 #----------------------------------Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
-  select(-X)
+  dplyr::select(-X)
 
 health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., OXrollback, by = c("Country", "Countryname")) %>%
@@ -364,7 +364,7 @@ proteus <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata
 
 proteus <- proteus %>%
   rename(F_Proteus_Score = Proteus.index) %>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
   mutate(
     Country = countrycode(Country,
     origin = "country.name",
@@ -391,7 +391,7 @@ artemis <- artemis %>%
                           nomatch = NULL
       )
     ) %>%
-  select(-X)
+  dplyr::select(-X)
 
 #------------------FEWSNET (with CRW threshold)-------------------------------
 #Load database
@@ -399,7 +399,7 @@ fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/
 
 #Calculate country totals
 fewsg <- fewswb %>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
   group_by(country, year_month) %>%
   mutate(countrypop = sum(pop)) %>%
   ungroup()
@@ -442,7 +442,7 @@ fewssum <- fewspop %>%
          totalipc4plusabsnow = sum(ipc4plusabsnow, na.rm=T),
          totalipc4pluspercnow = sum(ipc4pluspercnow, na.rm=T)) %>%
   distinct(country, year_month, .keep_all = TRUE) %>%
-  select(-ipc3plusabsfor, -ipc3pluspercfor, -ipc4plusabsfor, -ipc4pluspercfor, 
+  dplyr::select(-ipc3plusabsfor, -ipc3pluspercfor, -ipc4plusabsfor, -ipc4pluspercfor, 
          -ipc3plusabsnow, -ipc3pluspercnow, -ipc4plusabsnow, -ipc4pluspercnow,
          -admin_name, -pop) %>%
   group_by(country) %>%
@@ -456,7 +456,7 @@ fewssum <- fewspop %>%
                                 totalipc4pluspercfor >= 2.5  & pctchangeipc4for >= 10  ~ "High risk",
                                 totalipc4pluspercnow >= 2.5  & pctchangeipc4now >= 10  ~ "High risk",
                                 TRUE ~ "Not high risk")) %>%
-  select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
+  dplyr::select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
          -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
   filter(year_month == "2020_06")
 
@@ -484,7 +484,7 @@ fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
       destination = "iso3c",
       nomatch = NULL
     )) %>%
-  select(-country) %>%
+  dplyr::select(-country) %>%
   rename_with(
     .fn = ~ paste0("F_", .),
     .cols = colnames(.)[!colnames(.) %in% c("Country", "country")]
@@ -510,7 +510,7 @@ fpv_alt_raw <- fao_fpma %>%
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 fpv_alt <- countrylist %>%
-  select(-X, -Countryname) %>%
+  dplyr::select(-X, -Countryname) %>%
   mutate(F_fpv_alt = case_when(Country %in% fpv_alt_raw$Country ~ 10,
                                TRUE ~ 0)
   )
@@ -529,7 +529,7 @@ ag_ob_data <- ag_ob_data %>%
 
 ag_ob <- ag_ob_data %>%
   filter(X == "Inflation") %>%
-  select(-Income.Level, -Indicator, -X) %>%
+  dplyr::select(-Income.Level, -Indicator, -X) %>%
   group_by(Country) %>%
   summarise(
     Apr = Apr.20[which(!is.na(Apr.20))[1]],
@@ -561,7 +561,7 @@ ag_ob <- ag_ob_data %>%
 
 #-------------------------FAO/WFP HOTSPOTS----------------------------
 fao_wfp <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/WFP%3AFAO_food.csv") %>%
-  select(-X2)
+  dplyr::select(-X2)
 
 fao_wfp <- fao_wfp %>%
   mutate(Country = countrycode(Country,
@@ -575,7 +575,7 @@ fao_wfp$F_fao_wfp_warning <- 10
 #------------------------CREATE FOOD SECURITY SHEET--------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
-  select(-X)
+  dplyr::select(-X)
 
 foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews_dataset, by = "Country") %>%
@@ -639,7 +639,7 @@ imfdebt <- imfdebt %>%
     destination = "iso3c",
     nomatch = NULL
   )) %>%
-  select(-X)
+  dplyr::select(-X)
 
 names <- c(
   "D_IMF_debt2017", "D_IMF_debt2018", "D_IMF_debt2019",
@@ -680,7 +680,7 @@ igc <- igc[-which(colnames(igc) == "D_Other reputable links")]
 
 igc <- igc %>%
   rename(Country = D_iso3c) %>%
-  select(Country, D_fiscalgdpnum, D_fiscalgdpnum_norm)
+  dplyr::select(Country, D_fiscalgdpnum, D_fiscalgdpnum_norm)
   
 #------------------------------COVID Economic Stimulus Index-------------------------
 # Load file
@@ -698,10 +698,10 @@ cesi <- cesi %>%
     destination = "iso3c",
     nomatch = NULL
   )) %>%
-  select(-D_Country, -D_Date)
+  dplyr::select(-D_Country, -D_Date)
 
 # Perform PCA
-cesipca <- prcomp(cesi %>% select(
+cesipca <- prcomp(cesi %>% dplyr::select(
   D_fiscal, D_ratecut, D_reserve_req,
   D_macrofin, D_othermonetary, D_bopgdp,
   D_otherbop
@@ -720,7 +720,7 @@ cesi <- normfuncneg(cesi, upperrisk, lowerrisk, "D_CESI_Index")
 
 #------------------Import Economic Stimulus Index from the Health Sheet---------------------
 Ox_fiscal <- Ox_cov_resp %>%
-  select(Country, H_EconomicSupportIndexForDisplay_norm) %>%
+  dplyr::select(Country, H_EconomicSupportIndexForDisplay_norm) %>%
   rename(D_EconomicSupportIndexForDisplay_norm = H_EconomicSupportIndexForDisplay_norm)
 
 #-----------------CPIA----------------------------------------------------
@@ -741,7 +741,7 @@ cpia <- normfuncneg(cpia_data, 2.9, 5, "D_CPIA.scores")
 #-------------------------CREATE DEBT SHEET-----------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
-  select(-X)
+  dplyr::select(-X)
 
 debtsheet <- left_join(countrylist, debttab, by = "Country") %>%
   left_join(., imfdebt, by = "Country") %>%
@@ -765,10 +765,10 @@ write.csv(debtsheet, "Risk_sheets/debtsheet.csv")
 macro <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macro.csv")
 macro <- macro %>%
   mutate(
-    M_Economic_Dependence_Score = rowMeans(select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc, M_Travel_Tourism_perc)), na.rm = T),
-    M_Financial_Resilience_Score = rowMeans(select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)), na.rm = T)) %>%
-  mutate(M_Economic_and_Financial_score = rowMeans(select(., c(M_Economic_Dependence_Score, M_Financial_Resilience_Score)), na.rm = T)) %>%
-  select(-X)
+    M_Economic_Dependence_Score = rowMeans(dplyr::select(., c(M_Fuel_Imports_perc, M_Food_Imports_perc, M_Travel_Tourism_perc)), na.rm = T),
+    M_Financial_Resilience_Score = rowMeans(dplyr::select(., c(M_Remittance_perc, M_Reserves, M_ODA_perc, M_Gsavings_perc)), na.rm = T)) %>%
+  mutate(M_Economic_and_Financial_score = rowMeans(dplyr::select(., c(M_Economic_Dependence_Score, M_Financial_Resilience_Score)), na.rm = T)) %>%
+  dplyr::select(-X)
 upperrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.9), na.rm = T)
 lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm = T)
 macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_score")
@@ -776,7 +776,7 @@ macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_scor
 #---------------------------GDP forecast-------------------------------
 gdp <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv"))
 gdp <- gdp %>%
-  select(-X1)
+  dplyr::select(-X1)
 gdp <- normfuncneg(gdp, -5, 0, "M_GDP_WB_2019minus2020")
 gdp <- normfuncneg(gdp, -5, 0, "M_GDP_IMF_2019minus2020")
 
@@ -792,20 +792,20 @@ macrofin <- data %>%
       . == "High" ~ 1,
       TRUE ~ NA_real_
     ))) %>%
-  mutate(macrofin_risk = select(., Spillover.risks.from.the.external.environment.outside.the.region:Household.risks) %>% rowSums(na.rm=T)) %>%
+  mutate(macrofin_risk = dplyr::select(., Spillover.risks.from.the.external.environment.outside.the.region:Household.risks) %>% rowSums(na.rm=T)) %>%
   rename_with(   
     .fn = ~ paste0("M_", .),
     .cols = colnames(.)[!colnames(.) %in% c("Country.Name","ISO3")]
   ) %>%
   rename(Country = ISO3) %>%
-  select(-Country.Name)
+  dplyr::select(-Country.Name)
 
 macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
 
 #-----------------------------CREATE MACRO SHEET-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
-  select(-X)
+  dplyr::select(-X)
 
 macrosheet <- left_join(countrylist, macro, by = "Country") %>%
   left_join(., gdp, by = "Country") %>%
@@ -826,7 +826,7 @@ write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 # Load OCHA database
 ocha <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/OCHA_socioeconomic.csv"))
 ocha <- ocha %>%
-  select(-X1) %>%
+  dplyr::select(-X1) %>%
   arrange(Country)
 
 upperrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.95), na.rm = T)
@@ -837,7 +837,7 @@ ocha <- normfuncpos(ocha, upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.inde
 inform_2021 <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_2021.csv"))
 
 inform_data <- inform_2021 %>%
-  select(Country, "Socio-Economic Vulnerability") %>%
+  dplyr::select(Country, "Socio-Economic Vulnerability") %>%
   rename(S_INFORM_vul = "Socio-Economic Vulnerability")
 
 inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
@@ -845,7 +845,7 @@ inform_data <- normfuncpos(inform_data, 7, 0, "S_INFORM_vul")
 
 #------------------------Forward-looking socio-economic variables from INFORM---------------------------
 socio_forward <- inform_covid_warning %>%
-  select(
+  dplyr::select(
     Country, H_gdp_change.Value,H_gdp_change.Rating, H_unemployment.Value,
     H_unemployment.Rating, H_income_support.Value, H_income_support.Rating
   ) %>%
@@ -895,7 +895,7 @@ mpo_data <- normfuncpos(mpo_data, 0.05, 0, "S_pov_abs_19_20")
 
 #-----------------------------HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
 household_risk <- macrosheet %>%
-  select(Country, M_Household.risks) %>%
+  dplyr::select(Country, M_Household.risks) %>%
   mutate(M_Household.risks = case_when(
     M_Household.risks == 0.5 ~ 7,
     M_Household.risks == 1 ~ 10,
@@ -915,11 +915,11 @@ phone_compile <- phone_data %>%
   filter(last_survey == survey_no) 
   
 phone_data <- phone_compile %>%
-  select(code,IndicatorDescription, indicator_val) %>%
+  dplyr::select(code,IndicatorDescription, indicator_val) %>%
   pivot_wider(names_from = IndicatorDescription, values_from = indicator_val  )
 
 phone_index <-phone_data %>%
-  select(
+  dplyr::select(
     "code", "% of respondents currently employed/working",  "% of respondents who have stopped working since COVID-19 outbreak", 
     "% able to access [staple food item] in the past 7 days when needed? - any staple food" ,
     "% of HHs that saw reduced their remittances" , "% of HHs not able to perform normal farming activities (crop, livestock, fishing)" ,
@@ -951,7 +951,7 @@ phone_index <- normfuncpos(phone_index, 50, 0,  "In the last 30 days, your house
 # Calculate index
 phone_index_data <- phone_index %>%
   mutate(
-    phone_average_index = select(., contains("_norm")) %>% rowMeans(na.rm=T)  ) %>%
+    phone_average_index = dplyr::select(., contains("_norm")) %>% rowMeans(na.rm=T)  ) %>%
   rename(Country = code) %>%
   rename_with(
     .fn = ~ paste0("S_", .), 
@@ -977,13 +977,13 @@ imf_un <- imf_un %>%
     .fn = ~ paste0("S_", .), 
     .cols = -contains("Country")
   ) %>%
-  select(-Countryname)
+  dplyr::select(-Countryname)
 
 imf_un <- normfuncpos(imf_un, 5, 0, "S_change_unemp")
 
 #--------------------------Create Socio-economic sheet -------------------------------------------
 socioeconomic_sheet <- left_join(countrylist, ocha, by = "Country") %>%
-  select(-Countryname) %>%
+  dplyr::select(-Countryname) %>%
   left_join(., inform_data, by = "Country") %>%
   left_join(., socio_forward, by = "Country") %>%
   left_join(., mpo_data, by = "Country") %>%
@@ -1006,7 +1006,7 @@ write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 # Load UKMO dataset
 nathaz <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv"))
 nathaz <- nathaz %>%
-  select(-X1) %>%
+  dplyr::select(-X1) %>%
   rename(Country = NH_UKMO_Country)
 upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.95), na.rm = T)
 lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.05), na.rm = T)
@@ -1142,7 +1142,7 @@ gdaclist$namesfull <- suppressWarnings(countrycode(gdaclist$names, origin = "cou
 
 # Create subset
 gdac <- gdaclist %>%
-  select(date, status, haz, hazard, namesiso)
+  dplyr::select(date, status, haz, hazard, namesiso)
 
 colnames(gdac) <- c("NH_GDAC_Date", "NH_GDAC_Hazard_Status", "NH_GDAC_Hazard_Severity", "NH_GDAC_Hazard_Type", "Country")
 
@@ -1219,7 +1219,7 @@ inform_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 
 # Rename country
 informnathaz <- inform_2021 %>%
-  select(Country, Natural) %>%
+  dplyr::select(Country, Natural) %>%
   rename(NH_Hazard_Score = Natural) %>%
   drop_na(Country, NH_Hazard_Score)
 
@@ -1249,7 +1249,7 @@ la_nina <- La_nina_data %>%
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
-  select(-X)
+  dplyr::select(-X)
 
 nathazardfull <- left_join(countrylist, nathaz, by = "Country") %>%
   left_join(., gdac, by = "Country") %>%
@@ -1274,18 +1274,18 @@ write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fsi_2020.csv")
 
 fsi <- fsi %>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
   drop_na(Country) %>%
   mutate(
-    Country = countrycode(Country,
+    Country = suppressWarnings(countrycode(Country,
                           origin = "country.name",
                           destination = "iso3c",
                           nomatch = NULL)
-  )
+  ))
 
 #-------------------------FCS---------------------------------------------
 fcv <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Country_classification.csv") %>%
-  select(-X, Countryname, -IDA.status) %>%
+  dplyr::select(-X, Countryname, -IDA.status) %>%
   mutate(
     FCV_normalised = case_when(
       FCV_status == "High-Intensity conflict" ~ 10,
@@ -1294,16 +1294,6 @@ fcv <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/mas
       TRUE ~ 0
     )
   )
-
-# Join
-test <- left_join(fcv, fsi %>% select(FSI_Score, Country), by = "Country")
-testing <- normfuncpos(test, 90, 0, "FSI_Score")
-testing <- testing %>%
-  mutate(
-    Final_score = case_when(
-      FCV_normalised == 10 | FSI_Score_norm == 10 ~ 10,
-      TRUE ~ FSI_Score_norm
-    ))
 
 #-----------------------------IDPs--------------------------------------------------------
 idp_data <- read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/population.csv",
@@ -1345,7 +1335,7 @@ idp <- idp_data %>%
     )
   ) %>%
   filter(Year == 2019) %>%
-  select(`Country of origin (ISO)`, refugees, z_refugees, refugees_fragile, idps, z_idps, idps_fragile)
+  dplyr::select(`Country of origin (ISO)`, refugees, z_refugees, refugees_fragile, idps, z_idps, idps_fragile)
 
 # Normalise scores
 idp <- normfuncpos(idp, 1, -1, "z_refugees")
@@ -1368,7 +1358,7 @@ idp <- idp %>%
                           nomatch = NULL
     )
   ) %>%
-  select(-`Country of origin (ISO)`)
+  dplyr::select(-`Country of origin (ISO)`)
 
 #-------------------------ACLED data---------------------------------------------
 acled_data <- fromJSON("https://api.acleddata.com/acled/read/?key=*9t-89Rn*bDb4qFXBAmO&email=ljones12@worldbank.org&event_date=2017-12-01&event_date_where=>&fields=iso3|fatalities|event_date&limit=0")
@@ -1402,7 +1392,7 @@ acled <- acled %>%
                           nomatch = NULL
     )
   ) %>%
-  select(-iso3)
+  dplyr::select(-iso3)
 
 #--------------------------REIGN--------------------------------------------
 reign_data <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/REIGN_2020_11.csv"))
@@ -1411,7 +1401,7 @@ reign_start <- reign_data %>%
   filter(year == 2020) %>%
   group_by(country) %>%
   slice(which.max(month)) %>%
-  select(country, month, pt_suc, pt_attempt, delayed, irreg_lead_ant) %>%
+  dplyr::select(country, month, pt_suc, pt_attempt, delayed, irreg_lead_ant) %>%
   mutate(
     country = countrycode(country,
                           origin = "country.name",
@@ -1421,10 +1411,10 @@ reign_start <- reign_data %>%
   rename(Country = country)
 
 # Add FSI/BRD threshold
-reign <- left_join(reign_start, testing %>% select(Country, Final_score), by = "Country") %>%
+reign <- left_join(reign_start, fcv %>% dplyr::select(Country, FCV_normalised), by = "Country") %>%
   mutate(
     delayed_adj = case_when(
-      Final_score == 10 ~ delayed,
+      FCV_normalised == 10 ~ delayed,
       TRUE ~ 0
     ),
     pol_trigger = case_when(
@@ -1436,46 +1426,43 @@ reign <- left_join(reign_start, testing %>% select(Country, Final_score), by = "
       TRUE ~ 0
     )
   ) %>%
-  select(-Final_score)
+  dplyr::select(-FCV_normalised)
 
 #-----------------Join all dataset-----------------------------------
 conflict_dataset_raw <- left_join(testing, reign, by = "Country") %>%
   left_join(., idp, by = "Country") %>%
   left_join(., acled, by = "Country") %>%
-  select(Countryname, Final_score, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
+  dplyr::select(Countryname, FCV_normalised, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
 
 conflict_dataset <- conflict_dataset_raw %>%
   mutate(
-    flag_count = as.numeric(unlist(row_count(.,
-                                             Final_score:fatal_z_norm,
-                                             count = 10,
-                                             append = F
+    flag_count = as.numeric(unlist(row_count(
+      .,
+      pol_trigger_norm:fatal_z_norm,
+      count = 10,
+      append = F
     ))),
     fragile_1_flag = case_when(
       flag_count >= 1 ~ 10,
-      TRUE ~ apply(conflict_dataset_raw %>% select(Final_score:fatal_z_norm), 1, FUN = max, na.rm = T)
-    ),
-    fragile_2_flags = case_when(
-      flag_count >= 2 ~ 10,
-      TRUE ~ 0
-    ),
-    fragile_flag_seq = case_when(
-      flag_count >= 2 ~ 10,
-      flag_count == 1 ~ 7,
-      TRUE ~ 0
-    )
-  ) %>%
-  rename(FCS_FSI_Normalised = Final_score, REIGN_Normalised = pol_trigger_norm,
+      TRUE ~ suppressWarnings(apply(conflict_dataset_raw %>% dplyr::select(pol_trigger_norm:fatal_z_norm), 
+                   1,
+                   FUN = max,
+                   na.rm = T)
+    )),
+    fragile_1_flag = case_when(
+      fragile_1_flag == -Inf ~ NA_real_,
+      TRUE ~ fragile_1_flag
+    )) %>%
+  rename(FCS_Normalised = FCV_normalised, REIGN_Normalised = pol_trigger_norm,
          Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm,
-         Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag) %>%
-  select(-fragile_2_flags, -fragile_flag_seq)
+         Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag) 
 
 #-------------------------------------FRAGILITY SHEET--------------------------------------
 # Compile joint database
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 fragilitysheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %>%
-  select(-X, -Number_of_High_Risk_Flags) %>%
+  dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
   rename_with(
     .fn = ~ paste0("Fr_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
@@ -1554,14 +1541,14 @@ conflictnams <- acapslist %>%
   filter(str_detect(acapslist$country, c("conflict|Crisis|crisis|Conflict|Refugees|refugees|
                                          Migration|migration|violence|violence|Boko Haram"))) %>%
   filter(risk >= 4) %>%
-  select(gaplist)
+  dplyr::select(gaplist)
 
 conflictnams <- unique(conflictnams)
 
 # Food security countries
 foodnams <- acapslist[str_detect(acapslist$country, c("Food|food|famine|famine")), ] %>%
   filter(risk >= 4) %>%
-  select(gaplist)
+  dplyr::select(gaplist)
 
 foodnams <- unique(foodnams)
 
@@ -1570,14 +1557,14 @@ naturalnams <- acapslist[str_detect(acapslist$country, c("Floods|floods|Drought|
                                                           Flooding|flooding|Landslides|landslides|
                                                           Earthquake|earthquake")), ] %>%
   filter(risk >= 3) %>%
-  select(gaplist)
+  dplyr::select(gaplist)
 
 naturalnams <- unique(naturalnams)
 
 # Epidemic countries
 healthnams <- acapslist[str_detect(acapslist$country, c("Epidemic|epidemic")), ] %>%
   filter(risk >= 3) %>%
-  select(gaplist)
+  dplyr::select(gaplist)
 
 healthnams <- unique(healthnams)
 
@@ -1585,7 +1572,7 @@ healthnams <- unique(healthnams)
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 acapssheet <- countrylist %>%
-  select(-X) %>%
+  dplyr::select(-X) %>%
   mutate(
     Fr_conflict_acaps = case_when(
       Country %in% unlist(as.list(conflictnams)) ~ 10,

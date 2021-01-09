@@ -41,7 +41,7 @@ globalrisk <- left_join(countrylist, healthsheet, by = c("Countryname", "Country
   left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
   left_join(., Socioeconomic_sheet, by = c("Country")) %>%
   left_join(., acapssheet, by = c("Country", "Countryname")) %>%
-  select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y, -X) %>%
+  dplyr::select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y, -X) %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country)
 
@@ -75,7 +75,7 @@ riskflags <- globalrisk %>%
       NH_multihazard_risk_norm,
       na.rm=T
     ),
-    EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_FCS_FSI_Normalised,
+    EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_FCS_Normalised,
     EMERGING_RISK_HEALTH = pmax(
       H_Oxrollback_score_norm,
       H_Covidgrowth_casesnorm,
@@ -89,13 +89,12 @@ riskflags <- globalrisk %>%
       na.rm = T
     ),
     EMERGING_RISK_FOOD_SECURITY = case_when(
-      (!is.na(F_fews_crm_norm) | !is.na(F_fpv_rating)) ~ as.numeric(pmax(
+      (!is.na(F_fews_crm_norm) | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
         F_fews_crm_norm,
-        F_Artemis_Score_norm,
-        F_fpv_rating,
+        F_fao_wfp_warning,
         na.rm = T
       )),
-      (is.na(F_fews_crm_norm) | is.na(F_fpv_rating)) ~  as.numeric(F_fpv_rating),
+      ((is.na(F_fews_crm_norm) | is.na(F_fao_wfp_warning)) & !is.na(F_fpv_rating)) ~  as.numeric(F_fpv_rating),
       TRUE ~ NA_real_
     ),
     EMERGING_RISK_MACRO_FISCAL = pmax(
@@ -128,7 +127,7 @@ riskflags <- globalrisk %>%
       na.rm = T
     )
   ) %>%
-  select(
+  dplyr::select(
     Countryname, Country, EXISTING_RISK_HEALTH, EXISTING_RISK_FOOD_SECURITY,
     EXISTING_RISK_MACRO_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
@@ -188,7 +187,7 @@ riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(risk
 
 # Drop teritiary rates (may want to reinstate in the future)
 riskflags <- riskflags %>%
-  select(
+  dplyr::select(
     -medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))
   ) %>%
   distinct(Country, .keep_all = TRUE) %>%
@@ -230,7 +229,7 @@ riskflags <- riskflags %>%
 
 # remove unnecessary variables
 riskflags <- riskflags %>%
-  select(-contains("_plus1"))
+  dplyr::select(-contains("_plus1"))
 
 # Alternativ combined total scores
 altflag <- globalrisk
@@ -238,10 +237,10 @@ names <- c(
   "S_INFORM_vul_norm", "H_Oxrollback_score_norm", "H_wmo_don_alert",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
-  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_Artemis_Score_norm","F_fpv_rating", "D_WB_external_debt_distress_norm",
+  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm",
   "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
   "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",  "H_add_death_prec_current_norm",  "H_add_death_prec_current_norm", 
-  "S_Household.risks", "S_phone_average_index_norm",  "NH_la_nina_risk", "NH_natural_acaps","Fr_FCS_FSI_Normalised", 
+  "S_Household.risks", "S_phone_average_index_norm",  "NH_la_nina_risk", "NH_natural_acaps","Fr_FCS_Normalised", 
   "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
 )
 
@@ -329,7 +328,6 @@ altflag <- altflag %>%
     ),
     F_coefvar = cv(c(
       F_fpv_rating,
-      F_Artemis_Score_norm,
       F_fpv_rating),
       na.rm = T
     )
@@ -394,7 +392,7 @@ riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >= 7
 reliabilitysheet <- globalrisk %>%
   mutate(
     RELIABILITY_EXISTING_HEALTH = rowSums(is.na(globalrisk %>%
-                                                                   select(H_HIS_Score_norm, H_INFORM_rating.Value_norm)),
+                                                                   dplyr::select(H_HIS_Score_norm, H_INFORM_rating.Value_norm)),
                                                            na.rm = T
     ) / 2,
     RELIABILITY_EXISTING_FOOD_SECURITY = case_when(
@@ -402,7 +400,7 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
-                                                        select(
+                                                        dplyr::select(
                                                           M_Economic_and_Financial_score_norm,
                                                           D_WB_external_debt_distress_norm,
                                                         )),
@@ -417,11 +415,11 @@ reliabilitysheet <- globalrisk %>%
       TRUE ~ 0
     ),
     RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = case_when(
-      is.na(Fr_FCS_FSI_Normalised) ~ 1,
+      is.na(Fr_FCS_Normalised) ~ 1,
       TRUE ~ 0
     ),
     RELIABILITY_EMERGING_HEALTH = rowSums(is.na(globalrisk %>%
-                                                                   select(
+                                                                   dplyr::select(
                                                                      H_Oxrollback_score_norm,
                                                                      H_Covidgrowth_casesnorm,
                                                                      H_Covidgrowth_deathsnorm,
@@ -432,15 +430,15 @@ reliabilitysheet <- globalrisk %>%
                                                            na.rm = T
     ) / 6,
     RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
-                                                         select(
+                                                         dplyr::select(
                                                            F_fews_crm_norm,
-                                                           F_Artemis_Score_norm,
+                                                           F_fao_wfp_warning,
                                                            F_fpv_rating,
                                                          )),
                                                  na.rm = T
-    ) / 3,
+    ) / 2,
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
-                                                                select(
+                                                                dplyr::select(
                                                                   S_pov_prop_19_20_norm,
                                                                   S_pov_abs_19_20_norm,
                                                                   S_change_unemp_norm,
@@ -451,7 +449,7 @@ reliabilitysheet <- globalrisk %>%
                                                         na.rm = T
     ) / 3,
     RELIABILITY_EMERGING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
-                                                        select(
+                                                        dplyr::select(
                                                           M_GDP_IMF_2019minus2020_norm,
                                                           M_GDP_WB_2019minus2020_norm,
                                                           M_macrofin_risk_norm,
@@ -460,7 +458,7 @@ reliabilitysheet <- globalrisk %>%
                                                 na.rm = T
     ) / 4,
     RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
-                                                           select(
+                                                           dplyr::select(
                                                              NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
                                                              NH_GDAC_Hazard_Score_Norm,
                                                              NH_Hazard_Score_norm
@@ -468,7 +466,7 @@ reliabilitysheet <- globalrisk %>%
                                                    na.rm = T
     ) / 3,
     RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
-                                                                  select(
+                                                                  dplyr::select(
                                                                     Fr_REIGN_Normalised,
                                                                     Fr_Displaced_UNHCR_Normalised,
                                                                     Fr_BRD_Normalised,
@@ -480,10 +478,10 @@ reliabilitysheet <- globalrisk %>%
 # Create total reliability variabiles
 reliabilitysheet <- reliabilitysheet %>%
   mutate(
-    RELIABILITY_SCORE_EXISTING_RISK = round(rowMeans(select(., starts_with("RELIABILITY_EXISTING"))), 1),
-    RELIABILITY_SCORE_EMERGING_RISK = round(rowMeans(select(., starts_with("RELIABILITY_EMERGING"))), 1)
+    RELIABILITY_SCORE_EXISTING_RISK = round(rowMeans(dplyr::select(., starts_with("RELIABILITY_EXISTING"))), 1),
+    RELIABILITY_SCORE_EMERGING_RISK = round(rowMeans(dplyr::select(., starts_with("RELIABILITY_EMERGING"))), 1)
   ) %>%
-  select(
+  dplyr::select(
     Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_HEALTH, RELIABILITY_EXISTING_FOOD_SECURITY,
     RELIABILITY_EXISTING_MACRO_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
     RELIABILITY_EXISTING_NATURAL_HAZARDS, RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
@@ -498,7 +496,7 @@ write.csv(reliabilitysheet, "Risk_sheets/reliabilitysheet.csv")
 
 #------------------------------Combine the reliability sheet with the global database------------------------------------
 reliable <- reliabilitysheet %>%
-  select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+  dplyr::select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
 globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
@@ -507,10 +505,10 @@ write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
 
 #------------------------------Combine the reliability sheet with the summary risk flag sheet-----------------------------
 reliable <- reliabilitysheet %>%
-  select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+  dplyr::select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
 
 riskflags <- left_join(riskflags %>%
-                         select(
+                         dplyr::select(
                            "Countryname", "Country",
                            contains(c("_AV", "_SQ", "_ALT", "EXISTING_", "EMERGING_", "coefvar"))
                          ),
@@ -529,9 +527,9 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 ##
 #
 
-# Select relevant variables
+# dplyr::select relevant variables
 riskset <- riskflags %>%
-  select(
+  dplyr::select(
     Countryname, Country, EXISTING_RISK_HEALTH,
     EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_MACRO_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
@@ -573,9 +571,9 @@ writeData(crxls, "Reliability_sheet", reliabilitysheet, colNames = TRUE)
 
 # Insert alternative flag sheet
 addWorksheet(crxls, "Alternativeflag_sheet", tabColour = "#9999CC")
-# Select relevant variables
+# dplyr::select relevant variables
 alt <- riskflags %>%
-  select(Countryname, Country, contains("_AV"), contains("_MULTIDIMENSIONAL"), contains("SQ"), contains("coefvar"), -contains("OCHA")) %>%
+  dplyr::select(Countryname, Country, contains("_AV"), contains("_MULTIDIMENSIONAL"), contains("SQ"), contains("coefvar"), -contains("OCHA")) %>%
   arrange(Country)
 # Add blank columns
 alt <- alt %>%
@@ -754,10 +752,9 @@ cond("debtsheet", which(colnames(debtsheet) == "D_EconomicSupportIndexForDisplay
 cond("debtsheet", which(colnames(debtsheet) == "D_CPIA.scores_norm"), which(colnames(debtsheet) == "D_CPIA.scores_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_Proteus_Score_norm"), which(colnames(foodsecurity) == "F_Proteus_Score_norm"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fews_crm_norm"), which(colnames(foodsecurity) == "F_fews_crm_norm"))
+cond("foodsecurity", which(colnames(foodsecurity) == "F_fao_wfp_warning"), which(colnames(foodsecurity) == "F_fao_wfp_warning"))
 cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_Artemis_Score_norm"), which(colnames(foodsecurity) == "F_Artemis_Score_norm"))
-cond("foodsecurity", which(colnames(foodsecurity) == "F_fpv_rating"), which(colnames(foodsecurity) == "F_fpv_rating"))
-cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FCS_FSI_Normalised"), which(colnames(fragilitysheet) == "Fr_Overall_Conflict_Risk_Score"))
+cond("fragilitysheet", which(colnames(fragilitysheet) == "Fr_FCS_Normalised"), which(colnames(fragilitysheet) == "Fr_Overall_Conflict_Risk_Score"))
 cond("healthsheet", which(colnames(healthsheet) == "H_HIS_Score_norm"), which(colnames(healthsheet) == "H_HIS_Score_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"), which(colnames(healthsheet) == "H_INFORM_rating.Value_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_Oxrollback_score_norm"), which(colnames(healthsheet) == "H_Oxrollback_score_norm"))

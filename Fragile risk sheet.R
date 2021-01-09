@@ -64,6 +64,7 @@ testing <- testing %>%
   mutate(
     Final_score = case_when(
       FCV_normalised == 10 | FSI_Score_norm == 10 ~ 10,
+      FCV_normalised == 0 & is.na(FSI_Score_norm) ~ 0, 
       TRUE ~ FSI_Score_norm
     ))
 
@@ -212,18 +213,25 @@ reign <- left_join(reign_start, testing %>% select(Country, Final_score), by = "
 conflict_dataset_raw <- left_join(testing, reign, by = "Country") %>%
   left_join(., idp, by = "Country") %>%
   left_join(., acled, by = "Country") %>%
-  select(Countryname, Final_score, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
+  select(Countryname, FSI_Score_norm, FCV_normalised, Final_score, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
 
 conflict_dataset <- conflict_dataset_raw %>%
-   mutate(
-    flag_count = as.numeric(unlist(row_count(.,
-      Final_score:fatal_z_norm,
+  mutate(
+    flag_count = as.numeric(unlist(row_count(
+      .,
+      pol_trigger_norm:fatal_z_norm,
       count = 10,
       append = F
-      ))),
+    ))),
     fragile_1_flag = case_when(
       flag_count >= 1 ~ 10,
-      TRUE ~ apply(conflict_dataset_raw %>% select(Final_score:fatal_z_norm), 1, FUN = max, na.rm = T)
+      TRUE ~ suppressWarnings(
+        apply(conflict_dataset_raw %>% select(pol_trigger_norm:fatal_z_norm), 1, FUN = max, na.rm = T)
+        )
+    ),
+    fragile_1_flag = case_when(
+      is.infinite(fragile_1_flag) ~ NA_real_,
+      TRUE ~ fragile_1_flag
     ),
     fragile_2_flags = case_when(
       flag_count >= 2 ~ 10,
@@ -235,9 +243,9 @@ conflict_dataset <- conflict_dataset_raw %>%
       TRUE ~ 0
     )
   ) %>%
-  rename(FCS_FSI_Normalised = Final_score, REIGN_Normalised = pol_trigger_norm,
+  rename(REIGN_Normalised = pol_trigger_norm,
          Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm,
-         Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag) %>%
+         Number_of_High_Risk_Flags = flag_count, Existing_Conflict_Risk_Score = Final_score, Emerging_Conflict_Risk_Score = fragile_1_flag) %>%
   select(-fragile_2_flags, -fragile_flag_seq)
 
 

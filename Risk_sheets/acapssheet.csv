@@ -27,7 +27,7 @@
 "26","Yemen","YEM",10,0,0,0
 "27","Armenia","ARM",0,0,0,0
 "28","Cameroon","CMR",10,0,0,0
-"29","Colombia","COL",10,0,0,0
+"29","Colombia","COL",0,0,0,0
 "30","Congo DR","COD",10,0,0,0
 "31","Grenada","GRD",0,0,0,0
 "32","Guinea","GIN",0,0,0,0
@@ -47,7 +47,7 @@
 "46","Argentina","ARG",0,0,0,0
 "47","Barbados","BRB",0,0,0,0
 "48","Bolivia","BOL",0,0,0,0
-"49","Burkina Faso","BFA",0,0,0,0
+"49","Burkina Faso","BFA",10,0,0,0
 "50","Dominica","DMA",0,0,0,0
 "51","Egypt","EGY",10,0,0,0
 "52","El Salvador","SLV",0,0,0,0
