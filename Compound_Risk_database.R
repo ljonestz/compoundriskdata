@@ -8,8 +8,9 @@
 # install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
-  clipr, awalker89 / openxlsx, dplyr, tidyverse, readxl,
-  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite
+  clipr, awalker89 / openxlsx, dplyr, readxl,
+  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, natrixStats,
+  ggalt, raster, sf, mapview, maptools, ggthemes,tidyverse
 )
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
@@ -395,7 +396,7 @@ artemis <- artemis %>%
 
 #------------------FEWSNET (with CRW threshold)-------------------------------
 #Load database
-fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS_raw.csv")
+fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20October%202020%20Update_01-11-21.csv")
 
 #Calculate country totals
 fewsg <- fewswb %>%
@@ -407,23 +408,25 @@ fewsg <- fewswb %>%
 #Caluclate proportion and number of people in IPC class 
 fewspop <- fewsg %>%
   group_by(country, year_month) %>%
-  mutate(countryproportion = (pop / countrypop) * 100,
-         ipc3plusabsfor = case_when(fews_proj_med_adjusted >=3 ~ pop,
-                                    TRUE ~ NA_real_),
-         ipc3pluspercfor = case_when(fews_proj_med_adjusted >=3 ~ countryproportion,
-                                     TRUE ~ NA_real_),
-         ipc4plusabsfor = case_when(fews_proj_med_adjusted >= 4 ~ pop,
-                                    TRUE ~ NA_real_),
-         ipc4pluspercfor = case_when(fews_proj_med_adjusted >= 4 ~ countryproportion,
-                                     TRUE ~ NA_real_),
-         ipc3plusabsnow = case_when(fews_ipc_adjusted >=3 ~ pop,
-                                    TRUE ~ NA_real_),
-         ipc3pluspercnow = case_when(fews_ipc_adjusted >=3 ~ countryproportion,
-                                     TRUE ~ NA_real_),
-         ipc4plusabsnow = case_when(fews_ipc_adjusted >= 4 ~ pop,
-                                    TRUE ~ NA_real_),
-         ipc4pluspercnow = case_when(fews_ipc_adjusted >= 4 ~ countryproportion,
-                                     TRUE ~ NA_real_))
+  mutate(
+    countryproportion = (pop / countrypop) * 100,
+    ipc3plusabsfor = case_when(fews_proj_med_adjusted >=3 ~ pop,
+                               TRUE ~ NA_real_),
+    ipc3pluspercfor = case_when(fews_proj_med_adjusted >=3 ~ countryproportion,
+                                TRUE ~ NA_real_),
+    ipc4plusabsfor = case_when(fews_proj_med_adjusted >= 4 ~ pop,
+                               TRUE ~ NA_real_),
+    ipc4pluspercfor = case_when(fews_proj_med_adjusted >= 4 ~ countryproportion,
+                                TRUE ~ NA_real_),
+    ipc3plusabsnow = case_when(fews_ipc_adjusted >=3 ~ pop,
+                               TRUE ~ NA_real_),
+    ipc3pluspercnow = case_when(fews_ipc_adjusted >=3 ~ countryproportion,
+                                TRUE ~ NA_real_),
+    ipc4plusabsnow = case_when(fews_ipc_adjusted >= 4 ~ pop,
+                               TRUE ~ NA_real_),
+    ipc4pluspercnow = case_when(fews_ipc_adjusted >= 4 ~ countryproportion,
+                                TRUE ~ NA_real_)
+  )
 
 #Functions to calculate absolute and geometric growth rates
 pctabs <- function(x) x-lag(x)
@@ -431,7 +434,7 @@ pctperc <- function(x) x-lag(x)/lag(x)
 
 #Summarise country totals per in last round of FEWS
 fewssum <- fewspop %>%
-  filter(year_month == "2020_06" | year_month == "2020_02") %>%
+  filter(year_month == "2020_10" | year_month == "2020_06") %>%
   group_by(country, year_month) %>%
   mutate(totalipc3plusabsfor = sum(ipc3plusabsfor, na.rm=T),
          totalipc3pluspercfor = sum(ipc3pluspercfor, na.rm=T),
@@ -458,7 +461,7 @@ fewssum <- fewspop %>%
                                 TRUE ~ "Not high risk")) %>%
   dplyr::select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
          -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
-  filter(year_month == "2020_06")
+  filter(year_month == "2020_10")
 
 # Find max ipc for any region in the country
 fews_summary <- fewsg %>%
@@ -773,12 +776,70 @@ upperrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.9), na.r
 lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm = T)
 macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_score")
 
-#---------------------------GDP forecast-------------------------------
+#---------------------------GDP forecast 2020-------------------------------
 gdp <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/gdp.csv"))
 gdp <- gdp %>%
   dplyr::select(-X1)
 gdp <- normfuncneg(gdp, -5, 0, "M_GDP_WB_2019minus2020")
 gdp <- normfuncneg(gdp, -5, 0, "M_GDP_IMF_2019minus2020")
+
+# Load GDP data for 2021
+wb_gdp_2021 <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/WB_GEP_Jan_2021.csv", 
+                                         skip = 1)) %>%
+  dplyr::select(-X1, -ISO3)
+
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+countrylist <- countrylist %>%
+  dplyr::select(-X)
+
+wb_gdp_2021 <- wb_gdp_2021 %>%
+  mutate(
+    Country = countrycode(`Country Names`,
+                          origin = "country.name",
+                          destination = "iso3c",
+                          nomatch = NULL),
+    M_WB_gdp_2021 = `2021f` + `2020e`,
+    mean = rowMeans(dplyr::select(.,  `2019`, `2018`), na.rm= T),
+    sd = rowSds(as.matrix(dplyr::select(.,`2019`, `2018`), na.rm= T)),
+    mean_20_21 =  rowMeans(dplyr::select(., `2021f` , `2020e`), na.rm= T),
+    M_mean_gdp_20_21_diff =  rowMeans(dplyr::select(., `2021f` , `2020e`), na.rm= T) - mean,
+    M_WB_gdp_2021_z = (mean_20_21 - mean) / sd) %>%
+  dplyr::select(-`Country Names`)
+
+wb_gdp_2021 <- normfuncneg(wb_gdp_2021, -5, 0, "M_mean_gdp_20_21_diff")
+
+# Integrate into GDP data
+gdp <- left_join(gdp, 
+                 wb_gdp_2021 %>% dplyr::select(Country, M_mean_gdp_20_21_diff_norm),
+                 by = "Country")
+
+# Load IMF gdp data
+imf_gdp_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/IMF_GDP.csv")
+
+imf_gdp_2021 <- imf_gdp_2021 %>%
+  filter(WEO.Subject.Code == "NGDP_RPCH") %>%
+  mutate_at(
+    vars(contains("X19"), contains("X20")),
+    ~ as.numeric(as.character(.))
+          ) %>%
+  mutate(
+    M_IMF_gdp_2021 = X2021 + X2020,
+    mean = rowMeans(dplyr::select(.,  X2019, X2020), na.rm= T),
+    sd = rowSds(as.matrix(dplyr::select(.,X2019, X2020), na.rm= T)),
+    mean_20_21 =  rowMeans(dplyr::select(., X2021 , X2020), na.rm= T),
+    M_mean_gdp_imf_20_21_diff =  rowMeans(dplyr::select(., X2021 , X2020), na.rm= T) - mean,
+    M_IMF_gdp_2021_z = (mean_20_21 - mean) / sd) %>%
+  dplyr::select(ISO, M_IMF_gdp_2021, mean, sd, mean_20_21, 
+                M_mean_gdp_imf_20_21_diff, M_IMF_gdp_2021_z) %>%
+  rename(Country = ISO) 
+
+#Normalise gdp change
+imf_gdp_2021 <- normfuncneg(imf_gdp_2021, -5, 0, "M_mean_gdp_imf_20_21_diff")
+
+# Integrate into GDP data
+gdp <- left_join(gdp, 
+                 imf_gdp_2021 %>% dplyr::select(Country, M_mean_gdp_imf_20_21_diff_norm),
+                 by = "Country")
 
 #-------------------------MACRO FIN REVIEW---------------------------------------------
 data <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macrofin.csv")
@@ -875,14 +936,10 @@ mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
 
 mpo_data <- mpo %>%
   rename(Country = Code) %>%
-  left_join(., pop, by= "Country") %>%
-  mutate_at(
-    vars(contains("y20")),
-    funs( prop = . / Population)
-  ) %>%
+  left_join(., pop, by= "Country")  %>%
   mutate(
-    pov_prop_19_20 = ((y2020_prop / y2019_prop) -1) * 100,
-    pov_abs_19_20 = (y2020_prop - y2019_prop) * 100
+    pov_prop_19_20 = y2020 - y2019,
+    pov_abs_19_20 = ((y2020 / y2019) - 1) * 100
   ) %>%
   filter(Label == "International poverty rate ($1.9 in 2011 PPP)") %>%
   rename_with(
@@ -890,8 +947,8 @@ mpo_data <- mpo %>%
     .cols = colnames(.)[!colnames(.) %in% c("Country")]
   ) 
 
-mpo_data <- normfuncpos(mpo_data, 50, 0, "S_pov_prop_19_20")
-mpo_data <- normfuncpos(mpo_data, 0.05, 0, "S_pov_abs_19_20")
+mpo_data <- normfuncpos(mpo_data, 2, 0, "S_pov_prop_19_20")
+mpo_data <- normfuncpos(mpo_data, 50, 0, "S_pov_abs_19_20")
 
 #-----------------------------HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
 household_risk <- macrosheet %>%
@@ -1015,7 +1072,7 @@ upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.95),
 lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.05), na.rm = T)
 nathaz <- normfuncpos(nathaz, upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS")
 
-# Load GDACS database
+#------------------------------Load GDACS database--------------------------------------------------
 gdacweb <- "https://www.gdacs.org/"
 gdac <- read_html(gdacweb)
 
@@ -1179,7 +1236,7 @@ country <- country %>%
 country <- country %>% filter(countrycode != "179;New Zealand;;")
 
 # Extract API data on ThinkHazard! (can be slow)
-think_data <- lapply(country$list, function(tt) {
+think_data <- lapply(country$list[1:236], function(tt) {
   dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
 })
 
@@ -1206,7 +1263,8 @@ think_hazard <- think_hazard %>%
   ungroup %>%
   rename_with(.fn = ~ paste0("NH_", .), 
               .cols = -contains("Country")
-              )
+              ) %>%
+  distinct(Country, NH_multihazard_risk)
 
 # Normalise values
 think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
@@ -1246,16 +1304,84 @@ la_nina <- La_nina_data %>%
     )) %>%
   rename(NH_la_nina_risk = risk)
 
+#---------------------------------- IRI Seasonal Forecast ------------------------------------------
+# Load image
+t <- raster("https://github.com/ljonestz/compoundriskdata/blob/master/Indicator_dataset/palettecolor.tiff?raw=true")
+
+# Edit values by colour band (values can be accessed via attr(rrr[[1]], "colors"))
+values(t)[values(t== 0)] <- NA
+values(t)[values(t>=1 & t <=43)] <- -5
+values(t)[values(t>= 44 & t <=55)] <- -4
+values(t)[values(t>= 56 & t <=68)] <- -3
+values(t)[values(t>= 69 & t<=74)] <- -2
+values(t)[values(t>= 75 & t<=80)] <- -1
+values(t)[values(t>= 81 & t<=126)] <- 0
+values(t)[values(t>= 127 & t<=129)] <- 0
+values(t)[values(t>= 130 & t<=175)] <- 0
+values(t)[values(t>= 176 & t<=181)] <- 1
+values(t)[values(t>= 182 & t<=187)] <- 2
+values(t)[values(t>= 188 & t<=201)] <- 3
+values(t)[values(t>= 201 & t<=212)] <- 4
+values(t)[values(t>= 213 & t<=254)] <- 5
+values(t)[values(t>= 254)] <- NA
+
+librarian::shelf(ggalt, raster, sf, mapview, maptools)
+
+# Create dataframe
+tt <- as.data.frame(t, xy= T)
+
+# Load world map data
+data("wrld_simpl")
+wrld_simpl_sf <- sf::st_as_sf(wrld_simpl) 
+
+# Function to calculate cells above/below range (60 likelihood)
+ex <- extract(t, wrld_simpl, 
+              fun=function(x,...)(sum(na.omit(x) >= 3) / length(x)), 
+              na.rm= TRUE, 
+              df= T,
+              weights = F) %>%
+  dplyr::select(-ID)
+
+xe <- extract(t, wrld_simpl,
+              fun=function(x,...)(sum(na.omit(x) <= -3) / length(x)), 
+              na.rm= TRUE, 
+              df= T, 
+              weights = F) %>%
+  dplyr::select(-ID)
+
+# Create and join the coverage datasets
+fortyhigh <- cbind.data.frame(wrld_simpl_sf$ISO3, ex)
+fortylow <- cbind.data.frame(wrld_simpl_sf$ISO3, xe)
+join <- left_join(fortyhigh,
+                  fortylow, 
+                  by = "wrld_simpl_sf$ISO3" )
+
+# Calculate area coverage either wet or dry
+ex_cov <- join %>% 
+  mutate(Forecast = palettecolor.tiff.raw.true.x + palettecolor.tiff.raw.true.y) 
+
+# Bind max coverage to world sf
+binding <- cbind(wrld_simpl_sf, ex_cov$Forecast)  
+
+# Compile seasonal risk index
+seasonl_risk <- binding %>%
+  mutate(NH_seasonal_risk_norm = case_when(ex_cov.Forecast < 0.2 ~ 0,
+                                           ex_cov.Forecast >= 0.2 & ex_cov.Forecast < 0.8 ~ 7,
+                                           ex_cov.Forecast >= 0.8 ~ 10,
+                                           TRUE ~ NA_real_)) %>%
+  rename(Country = ISO3) %>%
+  as_tibble(.) %>%
+  dplyr::select(Country, NH_seasonal_risk_norm, -geometry) 
+  
 #-------------------------------------------CREATE NATURAL HAZARD SHEET------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
-nathazardfull <- left_join(countrylist, nathaz, by = "Country") %>%
-  left_join(., gdac, by = "Country") %>%
+nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
   left_join(., think_hazard, by = "Country") %>%
-  left_join(., la_nina, by = "Country") %>%
+  left_join(., seasonl_risk, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country) %>%
   arrange(Country)

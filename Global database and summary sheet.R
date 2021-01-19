@@ -98,8 +98,8 @@ riskflags <- globalrisk %>%
       TRUE ~ NA_real_
     ),
     EMERGING_RISK_MACRO_FISCAL = pmax(
-      M_GDP_IMF_2019minus2020_norm,
-      M_GDP_WB_2019minus2020_norm,
+      M_mean_gdp_imf_20_21_diff_norm,
+      M_mean_gdp_20_21_diff_norm,
       M_macrofin_risk_norm,
       D_IMF_debt2020.2019_norm,
       na.rm = T
@@ -107,17 +107,15 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
       S_pov_prop_19_20_norm,
       S_pov_abs_19_20_norm,
-      S_change_unemp_norm,
       S_income_support.Rating_crm_norm,
       S_Household.risks,
       S_phone_average_index_norm,
       na.rm = T
     ),
     EMERGING_RISK_NATURAL_HAZARDS = pmax(
-      NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps,
-      NH_la_nina_risk,
+      NH_seasonal_risk_norm,
       na.rm = T
     ),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
@@ -238,9 +236,9 @@ names <- c(
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
   "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm",
-  "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", "M_GDP_IMF_2019minus2020_norm", "M_GDP_WB_2019minus2020_norm","M_macrofin_risk_norm",
-  "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm", "NH_GDAC_Hazard_Score_Norm",  "H_add_death_prec_current_norm",  "H_add_death_prec_current_norm", 
-  "S_Household.risks", "S_phone_average_index_norm",  "NH_la_nina_risk", "NH_natural_acaps","Fr_FCS_Normalised", 
+  "D_IMF_debt2020.2019_norm", "M_Economic_and_Financial_score_norm", "M_mean_gdp_imf_20_21_diff_norm", "M_mean_gdp_20_21_diff_norm","M_macrofin_risk_norm",
+   "NH_GDAC_Hazard_Score_Norm",  "H_add_death_prec_current_norm",  "H_add_death_prec_current_norm", 
+  "S_Household.risks", "S_phone_average_index_norm",  "NH_seasonal_risk_norm", "NH_natural_acaps","Fr_FCS_Normalised", 
   "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
 )
 
@@ -263,8 +261,8 @@ altflag <- altflag %>%
       na.rm = T
       ),
     EMERGING_RISK_MACRO_FISCAL_AV = geometricmean(c(
-      M_GDP_IMF_2019minus2020_norm,
-      M_GDP_WB_2019minus2020_norm,
+      M_mean_gdp_imf_20_21_diff_norm,
+      M_mean_gdp_20_21_diff_norm,
       M_macrofin_risk_norm,
       D_IMF_debt2020.2019_norm,
       na.rm = T
@@ -307,8 +305,8 @@ altflag <- altflag %>%
       na.rm = T
       ),
     M_coefvar = cv(c(
-      M_GDP_IMF_2019minus2020_norm,
-      M_GDP_WB_2019minus2020_norm,
+      M_mean_gdp_imf_20_21_diff_norm,
+      M_mean_gdp_20_21_diff_norm,
       M_macrofin_risk_norm,
       D_IMF_debt2020.2019_norm),
       na.rm = T
@@ -320,10 +318,9 @@ altflag <- altflag %>%
       na.rm = T
     ),
     NH_coefvar = cv(c(
-      NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
       NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps,
-      NH_la_nina_risk),
+      NH_seasonal_risk_norm),
       na.rm = T
     ),
     F_coefvar = cv(c(
@@ -450,8 +447,8 @@ reliabilitysheet <- globalrisk %>%
     ) / 3,
     RELIABILITY_EMERGING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
                                                         dplyr::select(
-                                                          M_GDP_IMF_2019minus2020_norm,
-                                                          M_GDP_WB_2019minus2020_norm,
+                                                          M_mean_gdp_imf_20_21_diff_norm,
+                                                          M_mean_gdp_20_21_diff_norm,
                                                           M_macrofin_risk_norm,
                                                           D_IMF_debt2020.2019_norm,
                                                         )),
@@ -459,7 +456,6 @@ reliabilitysheet <- globalrisk %>%
     ) / 4,
     RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
                                                            dplyr::select(
-                                                             NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm,
                                                              NH_GDAC_Hazard_Score_Norm,
                                                              NH_Hazard_Score_norm
                                                            )),
@@ -762,14 +758,13 @@ cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), 
 cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_add_death_prec_current_norm"), which(colnames(healthsheet) == "H_add_death_prec_current_norm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_GDP_WB_2019minus2020_norm"), which(colnames(macrosheet) == "M_GDP_IMF_2019minus2020_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_mean_gdp_20_21_diff_norm"), which(colnames(macrosheet) == "M_mean_gdp_imf_20_21_diff_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_macrofin_risk_norm"), which(colnames(macrosheet) == "M_macrofin_risk_norm"))
 cond("macrosheet", which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"), which(colnames(macrosheet) == "M_Economic_and_Financial_score_norm"))
-cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS_norm"), which(colnames(Naturalhazardsheet) == "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"), which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"))
-cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"), which(colnames(Naturalhazardsheet) == "NH_la_nina_risk"))
+cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_seasonal_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_seasonal_risk_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"), which(colnames(Socioeconomic_sheet) == "S_INFORM_vul_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_pov_prop_19_20_norm"), which(colnames(Socioeconomic_sheet) == "S_income_support.Rating_crm_norm"))
 cond("Socioeconomic_sheet", which(colnames(Socioeconomic_sheet) == "S_change_unemp_norm"), which(colnames(Socioeconomic_sheet) == "S_change_unemp_norm"))
