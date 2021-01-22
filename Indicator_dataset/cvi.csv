@@ -1,0 +1,74 @@
+﻿Country Name,ISO3,"CVI (higher=more vulnerable, 0 to 1)"
+Argentina,ARG,0.164
+Bahamas,BHS,0.003
+Bahrain,BHR,0.105
+Bangladesh,BGD,0.109
+Bolivia,BOL,0.151
+Bosnia And Herzegovina,BIH,0.283
+Botswana,BWA,0
+Brazil,BRA,0.081
+Bulgaria,BGR,0.151
+Cambodia,KHM,0
+Chile,CHL,0.071
+China,CHN,0.11
+Colombia,COL,0.004
+Costa Rica,CRI,0.033
+Croatia,HRV,0.134
+Czech Republic,CZE,0.009
+Ecuador,ECU,0.046
+"Egypt, Arab Rep.",EGY,0.173
+Estonia,EST,0.01
+Georgia,GEO,0.15
+Ghana,GHA,0.105
+Hungary,HUN,0.003
+India,IND,0.279
+Indonesia,IDN,0.107
+Israel,ISR,0.139
+Ivory Coast,CIV,0.16
+Jamaica,JAM,0.038
+Jordan,JOR,0.177
+Kazakhstan,KAZ,0.035
+Kenya,KEN,0.197
+Kuwait,KWT,0.122
+Lao PDR,LAO,0.424
+Latvia,LVA,0.234
+Lithuania,LTU,0.172
+Macedonia,MKD,0.243
+Malawi,MWI,0
+Malaysia,MYS,0.132
+Mauritius,MUS,0.195
+Mexico,MEX,0.066
+Mongolia,MNG,0.106
+Montenegro,MNE,0.308
+Morocco,MAR,0.147
+Nigeria,NGA,0.148
+Oman,OMN,0.05
+Pakistan,PAK,0.148
+Palestine,PSE,0.048
+Panama,PAN,0.278
+Paraguay,PRY,0.014
+Peru,PER,0.112
+Philippines,PHL,0.06
+Poland,POL,0.105
+Qatar,QAT,0.103
+Romania,ROU,0.174
+Russian Federation,RUS,0.116
+Saudi Arabia,SAU,0.159
+Serbia,SRB,0.139
+Slovak Republic,SVK,0.117
+Slovenia,SVN,0.193
+South Africa,ZAF,0.049
+Sri Lanka,LKA,0.115
+Tanzania,FALSE,0.684
+Thailand,THA,0.091
+Trinidad and Tobago,TTO,0.002
+Tunisia,TUN,0.159
+Turkey,TUR,0.103
+Uganda,UGA,0.138
+Ukraine,UKR,0.178
+United Arab Emirates,ARE,0.132
+Uruguay,URY,0.143
+Venezuela,VEN,0.235
+Vietnam,VNM,0.146
+Zambia,ZMB,0.028
+Zimbabwe,ZWE,0.102
