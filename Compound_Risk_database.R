@@ -1650,8 +1650,8 @@ idp <- idp %>%
   dplyr::select(-`Country of origin (ISO)`)
 
 #-------------------------ACLED data---------------------------------------------
-# Three years plus two month (date to retrieve ACLED data)
-three_year <- as.Date(as.yearmon(Sys.Date()) - 3.2)
+# Select date as three years plus two month (date to retrieve ACLED data)
+three_year <- as.Date(as.yearmon(Sys.Date() - 45) - 3.2)
 
 # Get ACLED API URL
 acled_url <- paste0("https://api.acleddata.com/acled/read/?key=*9t-89Rn*bDb4qFXBAmO&email=ljones12@worldbank.org&event_date=", 
@@ -1668,6 +1668,8 @@ acled <- acled_data$data %>%
     date = as.Date(event_date),
     month_yr = as.yearmon(date)
   ) %>%
+  # Remove dates for the latest month (or month that falls under the prior 6 weeks)
+  filter(date <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
   group_by(iso3, month_yr) %>%
   summarise(fatal_month = sum(fatalities, na.rm = T),
             fatal_month_log = log(fatal_month + 1)) %>%
@@ -1695,7 +1697,7 @@ acled <- acled_data$data %>%
 #  mutate(previous_comments=lag(cumsum(fatal_day),k=90, default=0))
 
 # Normalise scores
-acled <- normfuncpos(acled, 1, 0, "fatal_z")
+acled <- normfuncpos(acled, 1, -1, "fatal_z")
 
 # Correct for countries with 0
 acled <- acled %>%
