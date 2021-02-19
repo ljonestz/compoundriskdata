@@ -1,97 +1,97 @@
 "","country","gaplist","risk"
 "1","Complex crisis","AFG",4.6
-"2","Boko Haram ","TCD",3.6
-"3","CAR refugees","TCD",3.3
-"4","Darfur refugees","TCD",3.2
-"5","Tibesti conflict","TCD",2.5
-"6","Regional Boko Haram","TCD",4.1
-"7","Floods","TCD",2.6
-"8","Complex crisis","COD",4.5
-"9","Floods","COD",2.6
-"10","Complex crisis","ETH",4.1
-"11","Tigray Crisis","ETH",4.1
-"12","Floods","ETH",2.4
-"13","International Displacement","ETH",2.8
-"14","Complex crisis","LBY",4.2
-"15","Mixed Migration","LBY",3
-"16","Central Mediterranean Route","LBY",3
-"17","Complex crisis","SSD",4.2
-"18","Complex crisis","SDN",4.5
-"19","Refugees","SDN",4.1
-"20","Floods","SDN",2.6
-"21","Refugee influx from Tigray","SDN",2.9
-"22","Conflict","SYR",4.9
-"23","Syrian Regional Crisis","SYR",4.3
-"24","Complex crisis","VEN",4.1
-"25","Venezuela Regional Crisis","VEN",3.6
-"26","Complex crisis","YEM",4.6
-"27","Mixed Migration","YEM",2.9
-"28","Rohingya Refugees","BGD",3.3
-"29","Rohingya Regional Crisis","BGD",3.6
-"30","Conflict","BFA",4
-"31","Floods","BFA",2.4
-"32","Complex crisis ","BDI",3.3
-"33","Boko Haram","CMR",3.2
-"34","Anglophone crisis","CMR",3.4
-"35","CAR refugees","CMR",2.6
-"36","Regional Boko Haram","CMR",4.1
-"37","CAR","CMR",4.1
-"38","Complex crisis","CMR",4
-"39","Complex crisis","COL",3.9
-"40","Venezuelan refugees ","COL",3.4
-"41","Hurricane Eta/Iota","COL",2
-"42","Venezuela Regional Crisis","COL",3.6
-"43","Complex crisis","COG",3.2
-"44","Floods","COG",2.2
-"45","Complex crisis","PRK",3.7
-"46","Complex crisis","ERI",3.7
-"47","Complex crisis","GTM",3.4
-"48","Hurricane Eta/Iota","GTM",2.7
-"49","Complex crisis","HTI",3.5
-"50","Complex crisis","HND",3.2
-"51","Hurricane Eta/Iota","HND",3.1
-"52","Afghan Refugees","IRN",3.4
-"53","Conflict","IRQ",4.1
-"54","Syrian Refugees","IRQ",2.8
-"55","Syrian Regional Crisis","IRQ",4.3
-"56","Socioeconomic crisis","LBN",3.5
-"57","Beirut Explosion","LBN",3.2
-"58","Syrian refugees","LBN",3.2
-"59","Syrian Regional Crisis","LBN",4.3
-"60","Drought","MDG",2.5
-"61","Southern Africa Regional Food Security Crisis","MDG",3.5
-"62","Complex","MWI",2.8
-"63","Southern Africa Regional Food Security Crisis","MWI",3.5
-"64","Complex crisis","MLI",3.8
-"65","Complex crisis in Mozambique","MOZ",3.3
-"66","Violent Insurgency in Cabo Delgado","MOZ",2
-"67","Food Security Crisis in Mozambique","MOZ",2.9
-"68","Southern Africa Regional Food Security Crisis","MOZ",3.5
-"69","Rakhine conflict","MMR",3.5
-"70","Kachin and Shan conflict","MMR",2.6
-"71","Rohingya Regional Crisis","MMR",3.6
-"72","Food Security Crisis in Namibia","NAM",2.1
-"73","Southern Africa Regional Food Security Crisis","NAM",3.5
-"74","Boko Haram","NER",3.4
+"2","Complex crisis","TCD",4.1
+"3","Boko Haram ","TCD",3.6
+"4","CAR refugees","TCD",3.3
+"5","Darfur refugees","TCD",3.2
+"6","Tibesti conflict","TCD",2.5
+"7","Regional Boko Haram","TCD",4.1
+"8","Floods","TCD",2.6
+"9","Complex crisis","COD",4.5
+"10","Floods","COD",2.6
+"11","Complex crisis","ETH",4.1
+"12","Crisis in Tigray","ETH",3.6
+"13","Floods","ETH",2.4
+"14","International Displacement","ETH",2.8
+"15","Complex crisis","LBY",4.2
+"16","Mixed Migration","LBY",3
+"17","Central Mediterranean Route","LBY",3
+"18","Complex crisis","SSD",4.2
+"19","Complex crisis","SDN",4.5
+"20","Refugees","SDN",4
+"21","Floods","SDN",2.6
+"22","Refugee influx from Tigray","SDN",2.9
+"23","Conflict","SYR",4.7
+"24","Syrian Regional Crisis","SYR",4.3
+"25","Complex crisis","VEN",4.1
+"26","Venezuela Regional Crisis","VEN",3.6
+"27","Complex crisis","YEM",4.6
+"28","Mixed Migration","YEM",2.9
+"29","Rohingya Refugees","BGD",3.2
+"30","Rohingya Regional Crisis","BGD",3.6
+"31","Conflict","BFA",3.9
+"32","Floods","BFA",2.4
+"33","Multiple crises","BFA",3.8
+"34","Complex crisis ","BDI",3.3
+"35","Boko Haram","CMR",3.2
+"36","Anglophone crisis","CMR",3.3
+"37","CAR refugees","CMR",2.8
+"38","Regional Boko Haram","CMR",4.1
+"39","CAR","CMR",4.1
+"40","Complex crisis","CMR",4
+"41","Complex crisis","COL",3.9
+"42","Hurricane Eta and Iota","COL",2.1
+"43","Venezuelan refugees ","COL",3.4
+"44","Venezuela Regional Crisis","COL",3.6
+"45","Complex crisis","COG",3.2
+"46","Floods","COG",2.2
+"47","Complex crisis","PRK",3.7
+"48","Syrian refugees","EGY",3.1
+"49","Syrian Regional Crisis","EGY",4.3
+"50","Complex crisis","ERI",3.7
+"51","Complex crisis","GTM",3.4
+"52","Hurricane Eta and Iota","GTM",3.1
+"53","Complex crisis","HTI",3.5
+"54","Complex crisis","HND",3.2
+"55","Hurricane Eta and Iota","HND",3.3
+"56","Afghan Refugees","IRN",3.4
+"57","Conflict","IRQ",4.1
+"58","Syrian Refugees","IRQ",2.8
+"59","Syrian Regional Crisis","IRQ",4.3
+"60","Syrian refugees","JOR",3.2
+"61","Syrian Regional Crisis","JOR",4.3
+"62","Socioeconomic crisis","LBN",3.5
+"63","Syrian refugees","LBN",3.4
+"64","Syrian Regional Crisis","LBN",4.3
+"65","Complex crisis","MLI",3.8
+"66","Complex crisis","MOZ",3.6
+"67","Food Security Crisis","MOZ",3.2
+"68","Tropical Cyclone Eloise","MOZ",2.2
+"69","Violent Insurgency in Cabo Delgado","MOZ",3.5
+"70","Southern Africa Regional Food Security Crisis","MOZ",3.5
+"71","Rakhine conflict","MMR",3.5
+"72","Kachin and Shan conflict","MMR",2.6
+"73","Rohingya Regional Crisis","MMR",3.6
+"74","Boko Haram","NER",2.9
 "75","Cross-border violence ","NER",3.2
 "76","Regional Boko Haram","NER",4.1
-"77","Nigerian Refugees","NER",2.4
+"77","Nigerian Refugees","NER",2.6
 "78","Floods","NER",2.9
 "79","Complex crisis","NGA",4
-"80","Middle Belt","NGA",2.5
-"81","Boko Haram ","NGA",4.1
-"82","Regional Boko Haram","NGA",4.1
-"83","Northwest Banditry","NGA",2.6
-"84","Cameroonian Refugees in Nigeria","NGA",2.1
+"80","Boko Haram ","NGA",4.1
+"81","Northwest Banditry","NGA",2.6
+"82","Cameroonian Refugees","NGA",2.1
+"83","Middle Belt","NGA",2.5
+"84","Regional Boko Haram","NGA",4.1
 "85","Complex crisis","PAK",3.4
 "86","Kashmir conflict","PAK",3.4
 "87","Regional Kashmir conflict","PAK",3.4
 "88","Complex crisis","SOM",4
 "89","Mixed Migration","SOM",1.9
-"90","Floods","SOM",3
+"90","Floods","SOM",3.2
 "91","Complex","PSE",3.9
-"92","Refugees","TZA",1.7
-"93","Southern Africa Regional Food Security Crisis","TZA",3.5
+"92","Venezuelan refugees","TTO",1.8
+"93","Venezuela Regional Crisis","TTO",3.6
 "94","Syrian refugees","TUR",3.3
 "95","Mixed Migration","TUR",3.2
 "96","Kurdish conflict","TUR",3.2
@@ -103,73 +103,76 @@
 "102","Southern Africa Regional Food Security Crisis","ZMB",3.5
 "103","Complex crisis","ZWE",3.5
 "104","Southern Africa Regional Food Security Crisis","ZWE",3.5
-"105","Venezuelan refugees","BRA",2.3
+"105","Venezuelan refugees","BRA",2.4
 "106","Venezuela Regional Crisis","BRA",3.6
 "107","Drought","DJI",3
 "108","Mixed Migration","DJI",1.7
-"109","Venezuelan refugees ","ECU",2.4
+"109","Venezuelan refugees ","ECU",2.3
 "110","Venezuela Regional Crisis","ECU",3.6
-"111","Syrian refugees","EGY",2.4
-"112","Syrian Regional Crisis","EGY",4.3
-"113","Complex crisis","SLV",3
-"114","Southern Africa Regional Food Security Crisis","SWZ",3.5
-"115","Food Security Crisis in Swaziland","SWZ",2.7
-"116","Kashmir conflict ","IND",2.8
-"117","Regional Kashmir conflict","IND",2.8
-"118","Syrian refugees","JOR",2.8
-"119","Syrian Regional Crisis","JOR",4.3
-"120","Country level ","KEN",3
-"121","Refugee situation","KEN",2.7
-"122","Drought","KEN",2.8
-"123","Flooding and Landslides","KEN",2.2
-"124","Drought","LSO",2.5
-"125","Southern Africa Regional Food Security Crisis","LSO",3.5
-"126","Food security","MRT",2.8
-"127","Malian refugees","MRT",2.2
-"128","Venezuelan refugees","PER",2.6
+"111","Complex crisis","SLV",3
+"112","Food Security Crisis","SWZ",2.7
+"113","Southern Africa Regional Food Security Crisis","SWZ",3.5
+"114","Country level ","KEN",3
+"115","Refugee situation","KEN",2.7
+"116","Drought","KEN",2.8
+"117","Flooding and Landslides","KEN",2.2
+"118","Drought","LSO",2.5
+"119","Southern Africa Regional Food Security Crisis","LSO",3.5
+"120","Drought","MDG",3
+"121","Southern Africa Regional Food Security Crisis","MDG",3.5
+"122","Complex","MWI",2.8
+"123","Southern Africa Regional Food Security Crisis","MWI",3.5
+"124","Food security","MRT",2.8
+"125","Malian refugees","MRT",2.2
+"126","Food Security Crisis","NAM",2.1
+"127","Southern Africa Regional Food Security Crisis","NAM",3.5
+"128","Venezuelan refugees","PER",2.7
 "129","Venezuela Regional Crisis","PER",3.6
 "130","Mindanao Conflict","PHL",2.3
 "131","Mindanao Earthquake","PHL",1.8
-"132","Typhoon Goni and Typhoon Vamco","PHL",2.5
+"132","Typhoon Goni (Rolly) and Typhoon Vamco (Ulysses)","PHL",2.5
 "133","Drought","SEN",2.4
-"134","Conflict","THA",2.1
-"135","Refugees","THA",2.3
-"136","Floods","VNM",2.4
+"134","Floods in central Vietnam","VNM",2.4
+"135","Nagorno-Karabakh Conflict in Armenia","ARM",1.7
+"136","Regional Nagorno-Karabakh Conflict","ARM",1.7
 "137","Nicaraguan refugees","CRI",1.1
-"138","Mixed Migration","GRC",1.8
-"139","Eastern Mediterranean Route ","GRC",1.8
-"140","Refugees","RWA",2
-"141","Venezuelan refugees","TTO",1.8
-"142","Venezuela Regional Crisis","TTO",3.6
-"143","Cyclone Harold","VUT",2
-"144","Algeria","VUT",2
-"145","Sahrawi refugees","VUT",2.3
-"146","Mixed Migration","VUT",2.3
-"147","Western Mediterranean Route","VUT",2.3
-"148","Central Mediterranean Route","VUT",2.3
-"149","Armenia","VUT",2.3
-"150","Conflict","VUT",2.3
-"151","Regional conflict","VUT",2.3
-"152","Azerbaijan","VUT",2.3
-"153","Conflict","VUT",2.3
-"154","Regional conflict","VUT",2.3
-"155","Fiji","VUT",2.3
-"156","Tropical cyclone Yasa","VUT",2.3
-"157","Italy","VUT",2.3
-"158","Mixed Migration","VUT",2.3
-"159","Central Mediterranean Route","VUT",2.3
-"160","Mexico","VUT",2.3
-"161","Criminal Violence","VUT",2.3
-"162","Mixed Migration","VUT",2.3
-"163","Hurricane Eta/Iota","VUT",1.7
-"164","Morocco","VUT",1.7
-"165","Mixed Migration","VUT",1.7
-"166","Western Mediterranean Route","VUT",1.7
-"167","Nicaragua","VUT",1.7
-"168","Socioeconomic crisis","VUT",1.7
-"169","Hurricane Eta/Iota","VUT",2.2
-"170","Mixed Migration","ESP",1.2
-"171","Western Mediterranean Route","ESP",1.2
-"172","Tunisia","ESP",1.2
-"173","Mixed Migration","ESP",1.2
-"174","Central Mediterranean Route","ESP",1.2
+"138","Tropical cyclone Yasa","FJI",1.4
+"139","Mixed Migration","GRC",1.8
+"140","Eastern Mediterranean Route ","GRC",1.8
+"141","Refugees","RWA",1.9
+"142","Mixed Migration","ESP",1.5
+"143","Western Mediterranean Route","ESP",1.5
+"144","Refugees","TZA",1.7
+"145","Southern Africa Regional Food Security Crisis","TZA",3.5
+"146","Conflict","THA",1.9
+"147","Refugees","THA",2.3
+"148","Cyclone Harold","VUT",2
+"149","Algeria","VUT",2
+"150","Sahrawi refugees","VUT",2.3
+"151","Mixed Migration","VUT",2.3
+"152","Western Mediterranean Route","VUT",2.3
+"153","Central Mediterranean Route","VUT",2.3
+"154","Azerbaijan","VUT",2.3
+"155","Nagorno-Karabakh conflict in Azerbaijan","VUT",2.3
+"156","Regional Nagorno-Karabakh Conflict","VUT",2.3
+"157","India","VUT",2.3
+"158","Kashmir conflict ","VUT",2.3
+"159","Regional Kashmir conflict","VUT",2.3
+"160","Papua Conflict","IDN",2.1
+"161","Sulawesi Earthquake","IDN",2.1
+"162","Italy","IDN",2.1
+"163","Mixed Migration","IDN",2.1
+"164","Central Mediterranean Route","IDN",2.1
+"165","Mexico","IDN",2.1
+"166","Criminal Violence","IDN",2.1
+"167","Mixed Migration","IDN",2.1
+"168","Hurricane Eta and Iota","IDN",1.7
+"169","Morocco","IDN",1.7
+"170","Mixed Migration","IDN",1.7
+"171","Western Mediterranean Route","IDN",1.7
+"172","Nicaragua","IDN",1.7
+"173","Socioeconomic crisis","IDN",1.7
+"174","Hurricane Eta and Iota","IDN",2.2
+"175","Tunisia","IDN",2.2
+"176","Mixed Migration","IDN",2.2
+"177","Central Mediterranean Route","IDN",2.2
