@@ -1722,7 +1722,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_1.csv"))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_2.csv"))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
