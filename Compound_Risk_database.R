@@ -962,11 +962,18 @@ eiu_joint <- left_join(eiu_latest_month, eiu_three_month, by = "Country") %>%
     .fn = ~ paste0("M_", .)
   ) %>%
   rename(M_EIU_Score = `M_Overall Evaluation`,
-         M_EIU_Score_12m = `M_Overall Evaluation_12`)
-
-eiu_joint <- normfuncpos(eiu_joint, 70, 0, "M_EIU_Score")
+         M_EIU_Score_12m = `M_Overall Evaluation_12`) %>%
+  # Add Country name
+  mutate(
+    Country = suppressWarnings(countrycode(Country,
+                                      origin = "country.name",
+                                      destination = "iso3c",
+                                      nomatch = NULL))
+    )
+  
+eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score")
 eiu_joint <- normfuncpos(eiu_joint, 2, -2, "M_EIU_12m_change")
-eiu_joint <- normfuncpos(eiu_joint, 70, 0, "M_EIU_Score_12m")
+eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score_12m")
 
 #-----------------------------Corporate Vulnerability Index-----------------------------
 cvi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/cvi.csv")
@@ -988,7 +995,7 @@ countrylist <- countrylist %>%
 macrosheet <- left_join(countrylist, macro, by = "Country") %>%
   left_join(., gdp, by = "Country") %>%
   left_join(., macrofin, by = "Country") %>%
-  left_join(., eiu_data, by = "Country") %>%
+  left_join(., eiu_joint, by = "Country") %>%
   left_join(., cvi, by = "Country") %>%
   arrange(Country) 
 

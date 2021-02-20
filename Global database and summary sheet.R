@@ -64,12 +64,7 @@ riskflags <- globalrisk %>%
       H_INFORM_rating.Value_norm
     ),
     EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
-    EXISTING_RISK_MACRO_FISCAL = pmax(
-      M_EIU_risk_norm,
-      D_WB_external_debt_distress_norm,
-      M_cvi_risk_norm,
-      na.rm = T
-    ),
+    EXISTING_RISK_MACRO_FISCAL = M_EIU_Score_12m_norm,
     EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
     EXISTING_RISK_NATURAL_HAZARDS = pmax(
       NH_Hazard_Score_norm,
@@ -97,13 +92,7 @@ riskflags <- globalrisk %>%
       ((is.na(F_fews_crm_norm) | is.na(F_fao_wfp_warning)) & !is.na(F_fpv_rating)) ~  as.numeric(F_fpv_rating),
       TRUE ~ NA_real_
     ),
-    EMERGING_RISK_MACRO_FISCAL = pmax(
-      M_imf_gdp_diff_norm,
-      M_WB_gdp_20_21_norm,
-      M_macrofin_risk_norm,
-      D_IMF_debt2020.2019_norm,
-      na.rm = T
-    ),
+    EMERGING_RISK_MACRO_FISCAL = M_EIU_12m_change_norm,
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
       S_pov_comb_norm,
       S_change_unemp_20_norm,
@@ -236,8 +225,8 @@ names <- c(
   "S_INFORM_vul_norm", "H_Oxrollback_score_norm", "H_wmo_don_alert",
   "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
-  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm", "M_EIU_risk_norm","M_cvi_risk_norm",
-  "D_IMF_debt2020.2019_norm", "M_imf_gdp_diff_norm", "M_WB_gdp_20_21_norm","M_macrofin_risk_norm",
+  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm",
+  "M_EIU_12m_change_norm", "M_EIU_Score_12m_norm",
    "NH_GDAC_Hazard_Score_Norm",  "H_GovernmentResponseIndexForDisplay_norm",  "H_GovernmentResponseIndexForDisplay_norm", 
   "S_Household.risks", "S_phone_average_index_norm",  "NH_seasonal_risk_norm","NH_seasonal_risk_norm", "NH_natural_acaps","Fr_FCS_Normalised", 
   "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
@@ -261,13 +250,7 @@ altflag <- altflag %>%
       H_wmo_don_alert_plus1,
       na.rm = T
       )),
-    EMERGING_RISK_MACRO_FISCAL_AV = geometricmean(c(
-      M_imf_gdp_diff_norm,
-      M_WB_gdp_20_21_norm,
-      M_macrofin_risk_norm,
-      D_IMF_debt2020.2019_norm,
-      na.rm = T
-    )),
+    EMERGING_RISK_MACRO_FISCAL_AV = M_EIU_12m_change_norm,
     EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
       Fr_REIGN_Normalised,
       Fr_Displaced_UNHCR_Normalised,
@@ -305,11 +288,7 @@ altflag <- altflag %>%
       H_wmo_don_alert),
       na.rm = T
       ),
-    M_coefvar = cv(c(
-      M_imf_gdp_diff_norm,
-      M_WB_gdp_20_21_norm,
-      M_macrofin_risk_norm,
-      D_IMF_debt2020.2019_norm),
+    M_coefvar = cv(c(M_EIU_12m_change_norm),
       na.rm = T
     ),
     Fr_coefvar = cv(c(
@@ -410,9 +389,7 @@ reliabilitysheet <- globalrisk %>%
     ),
     RELIABILITY_EXISTING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
                                                         dplyr::select(
-                                                          M_EIU_risk_norm,
-                                                          D_WB_external_debt_distress_norm,
-                                                          M_cvi_risk_norm
+                                                          M_EIU_Score_12m_norm 
                                                         )),
                                                 na.rm = T
     ) / 4,
@@ -459,10 +436,7 @@ reliabilitysheet <- globalrisk %>%
     ) / 3,
     RELIABILITY_EMERGING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
                                                         dplyr::select(
-                                                          M_imf_gdp_diff_norm,
-                                                          M_WB_gdp_20_21_norm,
-                                                          M_macrofin_risk_norm,
-                                                          D_IMF_debt2020.2019_norm,
+                                                          M_EIU_12m_change_norm
                                                         )),
                                                 na.rm = T
     ) / 4,
@@ -772,10 +746,8 @@ cond("healthsheet", which(colnames(healthsheet) == "H_Covidgrowth_deathsnorm"), 
 cond("healthsheet", which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_cases_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"), which(colnames(healthsheet) == "H_new_deaths_smoothed_per_million_norm"))
 cond("healthsheet", which(colnames(healthsheet) == "H_GovernmentResponseIndexForDisplay_norm"), which(colnames(healthsheet) == "H_GovernmentResponseIndexForDisplay_norm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_WB_gdp_20_21_norm"), which(colnames(macrosheet) == "M_imf_gdp_diff_norm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_macrofin_risk_norm"), which(colnames(macrosheet) == "M_macrofin_risk_norm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_EIU_risk_norm"), which(colnames(macrosheet) == "M_EIU_risk_norm"))
-cond("macrosheet", which(colnames(macrosheet) == "M_cvi_risk_norm"), which(colnames(macrosheet) == "M_cvi_risk_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_EIU_12m_change_norm"), which(colnames(macrosheet) == "M_EIU_12m_change_norm"))
+cond("macrosheet", which(colnames(macrosheet) == "M_EIU_Score_12m_norm"), which(colnames(macrosheet) == "M_EIU_Score_12m_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"), which(colnames(Naturalhazardsheet) == "NH_GDAC_Hazard_Score_Norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"), which(colnames(Naturalhazardsheet) == "NH_Hazard_Score_norm"))
 cond("Naturalhazardsheet", which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"), which(colnames(Naturalhazardsheet) == "NH_multihazard_risk_norm"))
