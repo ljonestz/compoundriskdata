@@ -605,7 +605,6 @@ tab %>%
   kable_styling(full_width = F, html_font = "Arial") %>%
   save_kable(file = "Plots/top20countriesesgeo.html", self_contained = T)
 
-
 #---------------------Slope graph--------------------------------
 MySpecial <- list(
   # move the x axis labels up top
