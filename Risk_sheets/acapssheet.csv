@@ -47,7 +47,7 @@
 "46","Argentina","ARG",0,0,0,0
 "47","Barbados","BRB",0,0,0,0
 "48","Bolivia","BOL",0,0,0,0
-"49","Burkina Faso","BFA",10,0,0,0
+"49","Burkina Faso","BFA",0,0,0,0
 "50","Dominica","DMA",0,0,0,0
 "51","Egypt","EGY",10,0,0,0
 "52","El Salvador","SLV",0,0,0,0
@@ -108,7 +108,7 @@
 "107","Korea DPR","PRK",0,0,0,0
 "108","Kuwait","KWT",0,0,0,0
 "109","Luxembourg","LUX",0,0,0,0
-"110","Madagascar","MDG",0,0,0,0
+"110","Madagascar","MDG",0,0,10,0
 "111","Malta","MLT",0,0,0,0
 "112","Mexico","MEX",0,0,0,0
 "113","Micronesia","FSM",0,0,0,0
