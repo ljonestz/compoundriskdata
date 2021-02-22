@@ -70,7 +70,6 @@ riskflags <- globalrisk %>%
     EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
     EXISTING_RISK_NATURAL_HAZARDS = pmax(
       NH_Hazard_Score_norm,
-      NH_multihazard_risk_norm,
       na.rm=T
     ),
     EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_FCS_Normalised,
@@ -631,15 +630,15 @@ quadrant_plot_arithmetic <- function(xname, yname, countryname) {
   # Names to label
   one <- as.data.frame(riskflags) %>%
     dplyr::select(Countryname, !!xname, !!yname) %>%
-    filter(!!xname > 7 & !!yname > 7) %>%
+    filter( !!xname > 7 & !!yname > 7) %>%
     sample_n(1)
   two <- as.data.frame(riskflags) %>%
     dplyr::select(Countryname, !!xname, !!yname) %>%
-    filter(!!xname < 7 & !!yname > 7) %>%
+    filter( !!xname < 7 & !!yname > 7) %>%
     sample_n(1)
   three <- as.data.frame(riskflags) %>%
     dplyr::select(Countryname, !!xname, !!yname) %>%
-    filter(!!xname > 7 & !!yname < 7) %>%
+    filter( !!xname > 7 & !!yname < 7) %>%
     sample_n(1)
   nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
     full_join(., two) %>%
@@ -673,15 +672,15 @@ quadrant_plot_arithmetic <- function(xname, yname, countryname) {
   # To add Quadrant use this
   # plot <- plot + annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  +  annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2) +
   
-  # To use arithmetic/geometric mean use this
-  #Draw contour lines
-  cc <- emdbook::curve3d(
-    #geometricmean(c(x,y)),  # To use of geometric mean process
-    mean(c(x,y)),  # To change to a mean process
-    xlim=c(0,10), 
-    ylim=c(0,10), 
-    sys3d="none"
-  )
+    # To use arithmetic/geometric mean use this
+    #Draw contour lines
+    cc <- emdbook::curve3d(
+      #geometricmean(c(x,y)),  # To use of geometric mean process
+      mean(c(x,y)),  # To change to a mean process
+      xlim=c(0,10), 
+      ylim=c(0,10), 
+      sys3d="none"
+    )
   
   dimnames(cc$z) <- list(cc$x,cc$y)
   mm <- reshape2::melt(cc$z)
@@ -702,19 +701,12 @@ quadrant_plot_arithmetic <- function(xname, yname, countryname) {
                  "#f26c64")
     )
   
- # Change NAs in 0s
-  riskset_na <- riskset %>%
-    mutate(
-      !!xname := case_when(is.na(!!xname) & !is.na(!!yname) ~ 0, TRUE ~ as.numeric(!!xname)),
-      !!yname := case_when(is.na(!!yname) & !is.na(!!xname) ~ 0, TRUE ~ as.numeric(!!yname))
-    )
-  
-   # Add other country data to plot
+  # Add other country data to plot
   plot <- plot +
-    geom_point_interactive(data = riskset_na, 
-               aes(x = !!xname,
+    geom_point_interactive(data = riskset, 
+               aes(x =  !!xname,
                    y = !!yname,
-                   tooltip == !!countryname),
+                   tooltip = !!countryname),
                alpha = 0.2) +
     ylim(0,10) +
     xlim(0,10)
@@ -802,7 +794,7 @@ girafe(ggobj = macro)
 
 ```{r interactive plot conflict, echo=FALSE, message=FALSE, warning=FALSE}
 
-conflict <- quadrant_plot_geo(
+conflict <- quadrant_plot_arithmetic(
   quo(EXISTING_RISK_FRAGILITY_INSTITUTIONS),
   quo(EMERGING_RISK_FRAGILITY_INSTITUTIONS),
   quo(Countryname)

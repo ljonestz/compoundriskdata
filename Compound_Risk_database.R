@@ -380,7 +380,7 @@ lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm = T)
 proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
 # Artemis
-artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/artemis.csv")
+artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
 
 upperrisk <- 0.2
 lowerrisk <- 0
@@ -1099,10 +1099,11 @@ household_risk <- macrosheet %>%
   rename(S_Household.risks = M_Household.risks)
 
 #----------------------------WB PHONE SURVEYS-----------------------------------------------------
-phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/formatted_data17 Nov 2020_internal.xlsx")
+phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Feb.xlsx", 
+                         sheet = "3. Indicator Availability")
 
 phone_compile <- phone_data %>%
-  filter(Gender == "All" & `URBAN/RURAL` == "National" & INDUSTRY == "All" ) %>%
+  filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
   mutate(survey_no = as.numeric(as.character(str_replace(wave, "WAVE", "")))) %>%
   group_by(code) %>%
   mutate(last_survey = max(survey_no, na.rm=T)) %>%
@@ -1110,7 +1111,7 @@ phone_compile <- phone_data %>%
   filter(last_survey == survey_no) 
   
 phone_data <- phone_compile %>%
-  dplyr::select(code,IndicatorDescription, indicator_val) %>%
+  dplyr::select(code, IndicatorDescription, indicator_val) %>%
   pivot_wider(names_from = IndicatorDescription, values_from = indicator_val  )
 
 phone_index <-phone_data %>%

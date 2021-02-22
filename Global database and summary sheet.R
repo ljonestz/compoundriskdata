@@ -68,7 +68,6 @@ riskflags <- globalrisk %>%
     EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
     EXISTING_RISK_NATURAL_HAZARDS = pmax(
       NH_Hazard_Score_norm,
-      NH_multihazard_risk_norm,
       na.rm=T
     ),
     EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_FCS_Normalised,
