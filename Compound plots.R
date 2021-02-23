@@ -1747,7 +1747,7 @@ quadrant_plot_geo <- function(xname, yname) {
     geom_count(data = riskset, 
                aes(x =  !!xname,
                    y = !!yname),
-               alpha = 0.2) +
+               alpha = 0.4) +
     ylim(0,10) +
     xlim(0,10)
   
@@ -1856,7 +1856,7 @@ quadrant_plot_arithmetic <- function(xname, yname) {
     geom_count(data = riskset_na, 
                aes(x = !!xname,
                    y = !!yname),
-               alpha = 0.2) +
+               alpha = 0.4) +
     ylim(0,10) +
     xlim(0,10)
   
@@ -1940,6 +1940,7 @@ ploty <- cowplot::plot_grid(covid, food, socio, macro, conflict, natural, ncol =
 ggsave("Plots/quad_plot.pdf", ploty, height = 12, width = 8)
 
 #------------------------------Highlight country-----------------------------------  
+
 quad_plot <- function(country_plot){
   
   country_name <- country_plot
@@ -1949,16 +1950,40 @@ quad_plot <- function(country_plot){
     # Names to label
     nams <- as.data.frame(riskflags) %>%
       filter(Countryname == countrynam)
+    # To use arithmetic/geometric mean use this
+    #Draw contour lines
+    cc <- emdbook::curve3d(
+      geometricmean(c(x,y)),  # To use of geometric mean process
+      #mean(c(x,y)),  # To change to a mean process
+      xlim=c(0,10), 
+      ylim=c(0,10), 
+      sys3d="none"
+    )
+    
+    dimnames(cc$z) <- list(cc$x,cc$y)
+    mm <- reshape2::melt(cc$z)
+    
+    #Draw contour lines on plot
+    plot <- ggplot() +
+      geom_contour_filled(
+      data=mm,
+      aes(x=Var1,y=Var2,z=value),
+      breaks = c(0,5,7,10),
+      colour="white",
+      alpha = 0.3,
+      show.legend = F
+    ) +
+      scale_fill_manual(
+        values = c("#9fcd99", 
+                   "#ffdd71",
+                   "#f26c64")
+      )
     
     # Graph
-    plot <- ggplot() +
+    plot <- plot +
       theme_minimal() +
-      labs(x = expression('Vulnerability (high score = high vul)' %->% "") ,
+      labs(x = expression('Underlying vulnerability (high score = high vul)' %->% "") ,
            y = expression("Emerging threats (high score = severe threat)" %->% "")) +
-      annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  + 
-      annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + 
-      annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + 
-      annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2)+
       theme(panel.border = element_rect(colour = "white",
                                         fill= NA, 
                                         size= 0.5),
@@ -1973,17 +1998,12 @@ quad_plot <- function(country_plot){
                                       face= "bold"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
-            legend.position = "none")  +
-      geom_hline(yintercept= 7, 
-                 color = "white", 
-                 size= 1) +
-      geom_vline(xintercept= 7, 
-                 color = "white", 
-                 size= 1) +
+            legend.position = "none") +
       geom_count(data = riskset, 
                  aes(x = xg,
                      y = yg),
-                 alpha = 0.1) +
+                 alpha = 0.1,
+                 colour = "black") +
       ylim(0,10) +
       xlim(0,10)
     
@@ -2005,6 +2025,91 @@ quad_plot <- function(country_plot){
     }
     
     plot
+    
+  }
+  
+  quadrant_plot_geo <- function(xg, yg, xname, yname, countrynam) {
+    
+    # Names to label
+    nams <- as.data.frame(riskflags) %>%
+      filter(Countryname == countrynam)
+    
+    # To use arithmetic/geometric mean use this
+    #Draw contour lines
+    cc <- emdbook::curve3d(
+      #geometricmean(c(x,y)),  # To use of geometric mean process
+      mean(c(x,y)),  # To change to a mean process
+      xlim=c(0,10), 
+      ylim=c(0,10), 
+      sys3d="none"
+    )
+    
+    dimnames(cc$z) <- list(cc$x,cc$y)
+    mm <- reshape2::melt(cc$z)
+    
+    #Draw contour lines on plot
+    plot <- ggplot() +
+      geom_contour_filled(
+      data=mm,
+      aes(x=Var1,y=Var2,z=value),
+      breaks = c(0,5,7,10),
+      colour="white",
+      alpha = 0.3,
+      show.legend = F
+    ) +
+      scale_fill_manual(
+        values = c("#9fcd99", 
+                   "#ffdd71",
+                   "#f26c64")
+      )
+    
+    # Graph
+    plot <- plot +
+      theme_minimal() +
+      labs(x = expression('Underlying vulnerability (high score = high vul)' %->% "") ,
+           y = expression("Emerging threats (high score = severe threat)" %->% "")) +
+      theme(panel.border = element_rect(colour = "white",
+                                        fill= NA, 
+                                        size= 0.5),
+            axis.ticks.x=element_blank(), 
+            axis.text.x=element_blank(),
+            axis.ticks.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.title = element_text(hjust = 0, 
+                                      vjust= 4, 
+                                      colour= "black",
+                                      size= 10,
+                                      face= "bold"),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            legend.position = "none") +
+      geom_count(data = riskset, 
+                 aes(x = xg,
+                     y = yg),
+                 alpha = 0.1,
+                 colour = "black") +
+      ylim(0,10) +
+      xlim(0,10)
+    
+    # Need to include if statement for countries where there is an NA in either Emerging or Existing
+    if ( !is.na(nams[xname]) & !is.na(nams[yname])) {
+      
+      plot <- plot  +
+        geom_count(aes(x = as.numeric(nams[xname]),
+                       y = as.numeric(nams[yname]))) +
+        ggrepel::geom_text_repel(
+          data = as.data.frame(nams),
+          aes(x = as.numeric(nams[xname]),
+              y = as.numeric(nams[yname]),
+              label = countrynam),
+          size = 4,
+          box.padding = 3,
+          fontface= "bold"
+        ) 
+    }
+    
+    plot
+    
   }
   
   # Draw plots
@@ -2050,7 +2155,7 @@ quad_plot <- function(country_plot){
                                     size= 16,
                                     face= "bold"))
   
-  conflict <- quadrant_plot(riskset$EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+  conflict <- quadrant_plot_geo(riskset$EXISTING_RISK_FRAGILITY_INSTITUTIONS,
                             riskset$EMERGING_RISK_FRAGILITY_INSTITUTIONS,
                             "EXISTING_RISK_FRAGILITY_INSTITUTIONS",
                             "EMERGING_RISK_FRAGILITY_INSTITUTIONS",
@@ -2080,296 +2185,6 @@ quad_plot <- function(country_plot){
 
 # Run function with all the countries that work in the countrlist database and save graph
 get_data2 <- possibly(quad_plot, otherwise = NA)
-
-for(i in countrylist$Countryname) {
-  res <- get_data2(i)
-}
-
-#-------------------------Contour plot with geometric mean-------------------------------
-
-# Function to loop plots by country
-quad_plot_geo <- function(country_plot){
-  
-  country_name <- country_plot
-  
-  # Function to create geometric mean plots
-  quadrant_plot_geo <- function(xname, yname) {
-    
-    # Names to label
-    one <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter( !!xname > 7 & !!yname > 7) %>%
-      sample_n(1)
-    two <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter( !!xname < 7 & !!yname > 7) %>%
-      sample_n(1)
-    three <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter( !!xname > 7 & !!yname < 7) %>%
-      sample_n(1)
-    nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
-      full_join(., two) %>%
-      full_join(., three) %>%
-      dplyr::select(-X) 
-    
-    nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
-    nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
-    
-    # Graph
-    plot <- ggplot() +
-      theme_minimal() +
-      labs(x = expression('Vulnerability (high score = high vul)' %->% "") ,
-           y = expression("Emerging threats (high score = severe threat)" %->% "")) +
-      theme(panel.border = element_rect(colour = "white",
-                                        fill= NA, 
-                                        size= 0.5),
-            axis.ticks.x=element_blank(), 
-            axis.text.x=element_blank(),
-            axis.ticks.y=element_blank(),
-            axis.text.y=element_blank(),
-            axis.title = element_text(hjust = 0, 
-                                      vjust= 4, 
-                                      colour= "black",
-                                      size= 10,
-                                      face= "bold"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.position = "none")  
-    
-    # To add Quadrant use this
-    # plot <- plot + annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  +  annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2) +
-    
-    # To use arithmetic/geometric mean use this
-    #Draw contour lines
-    cc <- emdbook::curve3d(
-      geometricmean(c(x,y)),  # To use of geometric mean process
-      #mean(c(x,y)),  # To change to a mean process
-      xlim=c(0,10), 
-      ylim=c(0,10), 
-      sys3d="none"
-    )
-    
-    dimnames(cc$z) <- list(cc$x,cc$y)
-    mm <- reshape2::melt(cc$z)
-    
-    #Draw contour lines on plot
-    plot <- plot + 
-      geom_contour_filled(
-        data=mm,
-        aes(x=Var1,y=Var2,z=value),
-        breaks = c(0,5,7,10),
-        colour="white",
-        alpha = 0.3,
-        show.legend = F
-      ) +
-      scale_fill_manual(
-        values = c("#9fcd99", 
-                   "#ffdd71",
-                   "#f26c64")
-      )
-    
-    # Add other country data to plot
-    plot <- plot +
-      geom_count(data = riskset, 
-                 aes(x =  !!xname,
-                     y = !!yname),
-                 alpha = 0.2) +
-      ylim(0,10) +
-      xlim(0,10)
-    
-    # Add country labels
-    plot <- plot +
-      ggrepel::geom_text_repel(
-        data = as.data.frame(nams),
-        aes(x = unlist(nams[2]),
-            y = unlist(nams[3]),
-            label = unlist(nams[1])),
-        size = 4,
-        box.padding = 3,
-        fontface= "bold"
-      ) 
-    
-    plot
-    
-  }
-  
-  # Create plot for arithmetic mean
-  quadrant_plot_arithmetic <- function(xname, yname) {
-    
-    # Names to label
-    one <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter(!!xname > 7 & !!yname > 7) %>%
-      sample_n(1)
-    two <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter(!!xname < 7 & !!yname > 7) %>%
-      sample_n(1)
-    three <- as.data.frame(riskflags) %>%
-      dplyr::select(Countryname, !!xname, !!yname) %>%
-      filter(!!xname > 7 & !!yname < 7) %>%
-      sample_n(1)
-    nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
-      full_join(., two) %>%
-      full_join(., three) %>%
-      dplyr::select(-X) 
-    
-    nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
-    nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
-    
-    # Graph
-    plot <- ggplot() +
-      theme_minimal() +
-      labs(x = expression('Vulnerability (high score = high vul)' %->% "") ,
-           y = expression("Emerging threats (high score = severe threat)" %->% "")) +
-      theme(panel.border = element_rect(colour = "white",
-                                        fill= NA, 
-                                        size= 0.5),
-            axis.ticks.x=element_blank(), 
-            axis.text.x=element_blank(),
-            axis.ticks.y=element_blank(),
-            axis.text.y=element_blank(),
-            axis.title = element_text(hjust = 0, 
-                                      vjust= 4, 
-                                      colour= "black",
-                                      size= 10,
-                                      face= "bold"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            legend.position = "none")  
-    
-    # To add Quadrant use this
-    # plot <- plot + annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  +  annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2) +
-    
-    # To use arithmetic/geometric mean use this
-    #Draw contour lines
-    cc <- emdbook::curve3d(
-      #geometricmean(c(x,y)),  # To use of geometric mean process
-      mean(c(x,y)),  # To change to a mean process
-      xlim=c(0,10), 
-      ylim=c(0,10), 
-      sys3d="none"
-    )
-    
-    dimnames(cc$z) <- list(cc$x,cc$y)
-    mm <- reshape2::melt(cc$z)
-    
-    #Draw contour lines on plot
-    plot <- plot + 
-      geom_contour_filled(
-        data=mm,
-        aes(x=Var1,y=Var2,z=value),
-        breaks = c(0,5,7,10),
-        colour="white",
-        alpha = 0.3,
-        show.legend = F
-      ) +
-      scale_fill_manual(
-        values = c("#9fcd99", 
-                   "#ffdd71",
-                   "#f26c64")
-      )
-    
-    # Change NAs in 0s
-    riskset_na <- riskset %>%
-      mutate(
-        !!xname := case_when(is.na(!!xname) & !is.na(!!yname) ~ 0, TRUE ~ as.numeric(!!xname)),
-        !!yname := case_when(is.na(!!yname) & !is.na(!!xname) ~ 0, TRUE ~ as.numeric(!!yname))
-      )
-    
-    # Add other country data to plot
-    plot <- plot +
-      geom_count(data = riskset_na, 
-                 aes(x = !!xname,
-                     y = !!yname),
-                 alpha = 0.2) +
-      ylim(0,10) +
-      xlim(0,10)
-    
-    # Add country labels
-    plot <- plot +
-      ggrepel::geom_text_repel(
-        data = as.data.frame(nams),
-        aes(x = unlist(nams[2]),
-            y = unlist(nams[3]),
-            label = unlist(nams[1])),
-        size = 4,
-        box.padding = 3,
-        fontface= "bold"
-      ) 
-    
-    plot
-    
-  }
-  
-  # Draw plots
-  covid <- quadrant_plot_geo(
-    quo(EXISTING_RISK_HEALTH), 
-    quo(EMERGING_RISK_HEALTH)
-  ) +
-    ggtitle("a) HEALTH") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  food <- quadrant_plot_geo(
-    quo(EXISTING_RISK_FOOD_SECURITY), 
-    quo(EMERGING_RISK_FOOD_SECURITY)
-  ) +
-    ggtitle("b) FOOD SECURITY") +
-    labs(x = "", y = "") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  socio <- quadrant_plot_geo(
-    quo(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY),
-    quo(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)
-  ) +
-    ggtitle("c) SOCIO_VUL") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  macro <- quadrant_plot_geo(
-    quo(EXISTING_RISK_MACRO_FISCAL), 
-    quo(EMERGING_RISK_MACRO_FISCAL)
-  ) +
-    labs(x = "", y = "") +
-    ggtitle("d) MACRO") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  conflict <- quadrant_plot_arithmetic(
-    quo(EXISTING_RISK_FRAGILITY_INSTITUTIONS),
-    quo(EMERGING_RISK_FRAGILITY_INSTITUTIONS)
-  ) +
-    ggtitle("e) CONFLICT") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  natural <- quadrant_plot_geo(
-    quo(EXISTING_RISK_NATURAL_HAZARDS), 
-    quo(EMERGING_RISK_NATURAL_HAZARDS)
-  ) +
-    labs(x = "", y = "") +
-    ggtitle("f) NAT_HAZ") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  # Arrange together
-  ploty_country <- cowplot::plot_grid(covid, food, socio, macro, conflict, natural, ncol = 2, nrow = 3)
-  
-  ggsave(paste0("Plots/Heatmaps/Geometric mean/quad_plot_geo", country_name, ".pdf"), ploty_country, height = 12, width = 8)
-  
-}
-
-# Run function with all the countries that work in the countrlist database and save graph
-get_data2 <- possibly(quad_plot_geo, otherwise = NA)
 
 for(i in countrylist$Countryname) {
   res <- get_data2(i)

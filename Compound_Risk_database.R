@@ -379,23 +379,6 @@ upperrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.90), na.rm = T)
 lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm = T)
 proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
-# Artemis
-artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
-
-upperrisk <- 0.2
-lowerrisk <- 0
-artemis <- normfuncpos(artemis, upperrisk, lowerrisk, "F_Artemis_Score")
-
-artemis <- artemis %>%
-  mutate(
-    Country = countrycode(Country,
-                          origin = "country.name",
-                          destination = "iso3c",
-                          nomatch = NULL
-      )
-    ) %>%
-  dplyr::select(-X)
-
 #------------------FEWSNET (with CRW threshold)-------------------------------
 #Load database
 fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20October%202020%20Update_01-11-21.csv")
@@ -586,7 +569,6 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews_dataset, by = "Country") %>%
   #left_join(., fpv, by = "Country") %>%  # Reintroduce if FAO price site comes back online
   left_join(., fpv_alt, by = "Country") %>%
-  left_join(., artemis, by = "Country") %>%
   left_join(., ag_ob, by = "Country") %>%
   left_join(., fao_wfp, by = "Country") %>%
   arrange(Country)
@@ -1213,19 +1195,6 @@ write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 ##
 #
 
-#-------------------------------NATURAL HAZARDS SHEET------------------------------------------------
-# Load UKMO dataset
-nathaz <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv"))
-nathaz <- nathaz %>%
-  dplyr::select(-X1) %>%
-  rename(Country = NH_UKMO_Country)
-upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.05), na.rm = T)
-nathaz <- normfuncpos(nathaz, upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS")
-upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.05), na.rm = T)
-nathaz <- normfuncpos(nathaz, upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS")
-
 #------------------------------Load GDACS database--------------------------------------------------
 gdacweb <- "https://www.gdacs.org/"
 gdac <- read_html(gdacweb)
@@ -1366,66 +1335,6 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
-#----------------------------ThinkHazard!------------------------------------------------------
-# Find countries in the ThinkHazard database
-country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
-country <- as.data.frame(country)
-country <- suppressWarnings(country[!is.na(as.numeric(gsub("[^0-9-]","", country[[1]]))),])
-country <- as.data.frame(country)
-
-# Assign country to list
-country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
-country$countrycode <- suppressWarnings(countrycode(
-  country$country,
-  origin = "country.name",
-  destination = "iso3c",
-  nomatch = NA
-))
-
-#Remove non-countries
-country <- country %>%
-  filter(!is.na(countrycode))
-
-#Remove New Zealand duplicate
-country <- country %>% filter(countrycode != "179;New Zealand;;")
-
-# Extract API data on ThinkHazard! (can be slow)
-think_data <- lapply(country$list[1:236], function(tt) {
-  dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
-})
-
-# Compile by country
-think_join <- lapply(1:length(think_data), function(yy){
-  frame <- as.data.frame(think_data[yy])
-  frame$Country <- country$countrycode[yy]
-  do.call(data.frame, frame)
-})
-
-# Join list to a single dataframe
-think_hazard <- do.call("rbind", think_join)
-
-# Assign numberic values and calculate geometric mean
-think_hazard <- think_hazard %>%
-  mutate(hazard_num = case_when(hazardlevel.title == "High" ~ 4,
-                                hazardlevel.title == "Medium" ~ 3,
-                                hazardlevel.title == "Low" ~ 2,
-                                hazardlevel.title == "Very low" ~ 1,
-                                TRUE ~ NA_real_
-  )) %>%
-  group_by(Country) %>%
-  mutate(multihazard_risk = geoMean(hazard_num, na.rm = T)) %>%
-  ungroup %>%
-  rename_with(.fn = ~ paste0("NH_", .), 
-              .cols = -contains("Country")
-              ) %>%
-  distinct(Country, NH_multihazard_risk)
-
-# Normalise values
-think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
-
-# Save file
-write.csv(think_hazard, "Indicator_dataset/think_hazard.csv")
-
 #----------------------INFORM Natural Hazard and Exposure rating--------------------------
 inform_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_2021.csv")
 
@@ -1437,26 +1346,6 @@ informnathaz <- inform_2021 %>%
 
 # Normalise scores
 informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
-
-#----------------------UKMO La Nina--------------------------------------------------------
-La_nina_data <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
-La_nina_data <- as_tibble(La_nina_data)
-
-la_nina <- La_nina_data %>%
-  mutate(
-    risk = case_when(
-      risk == 3 ~ 10,
-      risk == 2 ~ 9, 
-      risk == 1 ~ 7,
-      TRUE ~ NA_real_
-    ),
-    Country = countrycode(
-      Country,
-      origin = "country.name",
-      destination = "iso3c",
-      nomatch = NULL
-    )) %>%
-  rename(NH_la_nina_risk = risk)
 
 #---------------------------------- IRI Seasonal Forecast ------------------------------------------
 # Load image
@@ -1566,19 +1455,6 @@ write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 ### ********************************************************************************************
 ##
 #
-
-#-----------------------FSI score---------------------------------
-fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fsi_2020.csv")
-
-fsi <- fsi %>%
-  dplyr::select(-X) %>%
-  drop_na(Country) %>%
-  mutate(
-    Country = suppressWarnings(countrycode(Country,
-                          origin = "country.name",
-                          destination = "iso3c",
-                          nomatch = NULL)
-  ))
 
 #-------------------------FCS---------------------------------------------
 fcv <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Country_classification.csv") %>%
