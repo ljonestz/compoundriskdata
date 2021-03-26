@@ -574,15 +574,16 @@ writeData(crxls, "Alternativeflag_sheet", alt, colNames = TRUE)
 Map(function(number, tab) {
   headerStyle <- createStyle(
     fontSize = 10,
-    fontColour = "#FFFFFF",
-    textDecoration = "bold",
+    # fontColour = "#FFFFFF",
+    # textDecoration = "bold",
     halign = "center",
-    valign = "center",
-    fgFill = "#001933",
-    border = "TopBottom",
-    borderColour = "white",
+    # valign = "center",
+    # fgFill = "#000000",
+    border = c("bottom", "left", "right"),
+    borderColour = c("black", "white", "white"),
+    borderStyle = c("thin", "thick", "thick"),
     wrapText = TRUE,
-    textRotation = 90
+    # textRotation = 90
   )
   
   addStyle(crxls,
@@ -595,7 +596,7 @@ Map(function(number, tab) {
   
   bodyStyle <- createStyle(
     fgFill = "white",
-    border = "TopBottomLeftRight",
+    border = "TopBottomLeftRight", # might drop Top to not over ride header black border
     borderColour = "white",
     halign = "center"
   )
@@ -621,15 +622,16 @@ Map(function(number, tab) {
 # Set specific style for the risk tab sheet
 headerStyle <- createStyle(
   fontSize = 10,
-  fontColour = "white",
-  textDecoration = "bold",
+  # fontColour = "white",
+  # textDecoration = "bold",
   halign = "center",
-  valign = "center",
-  fgFill = "lightslategray",
-  border = "TopBottom",
-  borderColour = "white",
+  # valign = "center",
+  # fgFill = "lightslategray",
+  border = c("bottom", "left", "right"),
+  borderColour = c("black", "white", "white"),
+  borderStyle = c("thin", "thick", "thick"),
   wrapText = TRUE,
-  textRotation = 90
+  # textRotation = 90
 )
 
 addStyle(
@@ -637,42 +639,8 @@ addStyle(
   sheet = 1,
   headerStyle,
   rows = 1,
-  cols = 4:9,
+  cols = 3:16,
   gridExpand = TRUE
-)
-
-headerStyle <- createStyle(
-  fontSize = 10,
-  fontColour = "black",
-  textDecoration = "bold",
-  halign = "center",
-  valign = "center",
-  fgFill = "sandybrown",
-  border = "TopBottom",
-  borderColour = "white",
-  wrapText = TRUE,
-  textRotation = 90
-)
-
-addStyle(crxls,
-         sheet = 1,
-         headerStyle,
-         rows = 1,
-         cols = 10:15,
-         gridExpand = TRUE
-)
-
-headerStyle2 <- createStyle(
-  fontSize = 10,
-  fontColour = "black",
-  textDecoration = "bold",
-  halign = "center",
-  valign = "center",
-  fgFill = "white",
-  border = "TopBottom",
-  borderColour = "white",
-  wrapText = TRUE,
-  textRotation = 90
 )
 
 addStyle(crxls,
