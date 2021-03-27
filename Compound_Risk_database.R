@@ -9,9 +9,9 @@
 librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, readxl,
-  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, natrixStats,
+  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, matrixStats,
   ggalt, raster, sf, mapview, maptools, ggthemes,tidyverse,
-  sjmisc, matrixStats
+  sjmisc, matrixStats, googledrive
 )
 
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
@@ -380,7 +380,11 @@ lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm = T)
 proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
 # Artemis
-artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
+#artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
+# artemis <- read.csv("https://drive.google.com/file/d/1EmGwfnF2iS4-oHqn3HoXxuv12YGQyGDv/view?usp=sharing")
+drive_download("Restricted_Data/artemis.csv", path = "tmp-artemis.csv")
+artemis <- read.csv("tmp-artemis.csv")
+unlink("tmp-artemis.csv")
 
 upperrisk <- 0.2
 lowerrisk <- 0
@@ -695,7 +699,7 @@ igc <- igc %>%
   
 #------------------------------COVID Economic Stimulus Index-------------------------
 # Load file
-url <- "http://web.boun.edu.tr/elgin/CESI_14.xlsx" # Note: may need to check for more recent versions
+url <- "http://web.boun.edu.tr/elgin/CESI_15.xlsx" # Note: may need to check for more recent versions
 destfile <- "Indicator_dataset/cesiraw.xlsx"
 curl::curl_download(url, destfile)
 cesi <- read_excel(destfile)
@@ -1058,7 +1062,11 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------Poverty projections----------------------------------------------------
-mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+# mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+
+drive_download("Restricted_Data/global.dta", path = "tmp-global.dta")
+mpo <- read_dta("tmp-global.dta")
+unlink("tmp-global.dta")
 
 mpo_data <- mpo %>%
   rename(Country = Code) %>%
@@ -1099,8 +1107,13 @@ household_risk <- macrosheet %>%
   rename(S_Household.risks = M_Household.risks)
 
 #----------------------------WB PHONE SURVEYS-----------------------------------------------------
-phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Feb.xlsx", 
+# phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Feb.xlsx", 
+#                          sheet = "3. Indicator Availability")
+
+drive_download("Restricted_Data/Phone_surveys_Feb.xlsx", path = "tmp-Phone_surveys_Feb.xlsx")
+phone_data <- read_excel("tmp-Phone_surveys_Feb.xlsx", 
                          sheet = "3. Indicator Availability")
+unlink("tmp-Phone_surveys_Feb.xlsx")
 
 phone_compile <- phone_data %>%
   filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
@@ -1439,7 +1452,7 @@ informnathaz <- inform_2021 %>%
 informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
 
 #----------------------UKMO La Nina--------------------------------------------------------
-La_nina_data <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
+La_nina_data <- read.csv("Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
 La_nina_data <- as_tibble(La_nina_data)
 
 la_nina <- La_nina_data %>%
