@@ -1,101 +1,101 @@
 "","Countryname","Country","Fr_FCS_Normalised","Fr_REIGN_Normalised","Fr_Displaced_UNHCR_Normalised","Fr_BRD_Normalised","Fr_Overall_Conflict_Risk_Score"
 "1","Libya","LBY",10,0,6.42277319030563,NA,6.42277319030563
-"2","Sudan","SDN",10,0,0,0,0
+"2","Sudan","SDN",10,0,0,10,10
 "3","Afghanistan","AFG",10,0,10,0,10
-"4","Mozambique","MOZ",10,0,10,8.34360185463768,10
-"5","Niger","NER",10,10,10,NA,10
-"6","Algeria","DZA",0,0,0,0,0
+"4","Mozambique","MOZ",10,0,10,5.7915019799471,10
+"5","Niger","NER",10,0,10,NA,10
+"6","Algeria","DZA",0,0,0,10,10
 "7","Ethiopia","ETH",0,0,7.50490206032001,10,10
 "8","Iraq","IRQ",10,10,0,0,10
-"9","South Sudan","SSD",10,10,0,NA,10
-"10","Central African Republic","CAF",10,NA,8.4765583773798,3.72045285835814,8.4765583773798
-"11","Chad","TCD",10,10,10,5.90661292911604,10
-"12","Croatia","HRV",0,0,0,NA,0
-"13","Lebanon","LBN",10,0,0,5.22551026695021,5.22551026695021
+"9","South Sudan","SSD",10,10,0,0,10
+"10","Central African Republic","CAF",10,NA,8.4765583773798,8.19609430197659,8.4765583773798
+"11","Chad","TCD",10,10,10,NA,10
+"12","Croatia","HRV",0,0,0,0,0
+"13","Lebanon","LBN",10,0,0,7.49619656447177,7.49619656447177
 "14","Maldives","MDV",0,0,0,NA,0
-"15","Mauritania","MRT",0,0,0,NA,0
+"15","Mauritania","MRT",0,0,0,0,0
 "16","Ukraine","UKR",0,0,0,0,0
-"17","Zimbabwe","ZWE",10,0,10,NA,10
-"18","Belarus","BLR",0,0,0,5,5
+"17","Zimbabwe","ZWE",10,0,10,0,10
+"18","Belarus","BLR",0,0,0,0,0
 "19","Brazil","BRA",0,0,0,0,0
 "20","Cabo Verde","CPV",0,0,0,NA,0
-"21","Haiti","HTI",10,0,0,2.85832606790095,2.85832606790095
+"21","Haiti","HTI",10,0,0,1.45699906353043,1.45699906353043
 "22","Honduras","HND",0,0,10,0,10
-"23","Peru","PER",0,0,0,5.18089192154186,5.18089192154186
+"23","Peru","PER",0,0,0,6.06142402075999,6.06142402075999
 "24","Serbia","SRB",0,0,0,NA,0
 "25","Somalia","SOM",10,10,10,0,10
 "26","Yemen","YEM",10,0,10,0,10
 "27","Armenia","ARM",0,0,0,NA,0
 "28","Cameroon","CMR",10,0,10,0,10
-"29","Colombia","COL",0,0,9.25617165531393,0.698970329030583,9.25617165531393
-"30","Congo DR","COD",10,0,10,1.77419788439455,10
+"29","Colombia","COL",0,0,9.25617165531393,1.17393487550861,9.25617165531393
+"30","Congo DR","COD",10,0,10,3.86544095860408,10
 "31","Grenada","GRD",0,0,0,NA,0
 "32","Guinea","GIN",0,0,0,NA,0
-"33","Iran","IRN",0,0,0,1.45422691536203,1.45422691536203
-"34","Kenya","KEN",0,0,0,0,0
-"35","Malawi","MWI",0,0,0,NA,0
-"36","Mali","MLI",10,0,10,0,10
+"33","Iran","IRN",0,0,0,0,0
+"34","Kenya","KEN",0,0,0,NA,0
+"35","Malawi","MWI",0,0,0,7.26645425456989,7.26645425456989
+"36","Mali","MLI",10,0,10,0.494073966265086,10
 "37","Montenegro","MNE",0,0,0,NA,0
-"38","Nigeria","NGA",10,0,6.09947170799869,1.37905107878111,6.09947170799869
+"38","Nigeria","NGA",10,0,6.09947170799869,3.38248045985113,6.09947170799869
 "39","Papua New Guinea","PNG",10,0,0,NA,0
 "40","Romania","ROU",0,0,0,NA,0
-"41","South Africa","ZAF",0,0,0,NA,0
+"41","South Africa","ZAF",0,0,0,3.22692349715408,3.22692349715408
 "42","Tajikistan","TJK",0,0,0,NA,0
 "43","Zambia","ZMB",0,0,0,NA,0
 "44","Albania","ALB",0,0,0,NA,0
 "45","Antigua and Barbuda","ATG",0,0,0,NA,0
 "46","Argentina","ARG",0,0,0,0,0
 "47","Barbados","BRB",0,0,0,NA,0
-"48","Bolivia","BOL",0,0,0,NA,0
-"49","Burkina Faso","BFA",10,10,10,2.65548902599997,10
+"48","Bolivia","BOL",0,0,0,0,0
+"49","Burkina Faso","BFA",10,10,10,3.27570741458683,10
 "50","Dominica","DMA",0,0,0,NA,0
-"51","Egypt","EGY",0,0,0,0,0
+"51","Egypt","EGY",0,0,0,NA,0
 "52","El Salvador","SLV",0,0,9.12862417558222,0,9.12862417558222
 "53","Eritrea","ERI",10,0,0,NA,0
-"54","Georgia","GEO",0,0,10,NA,10
+"54","Georgia","GEO",0,0,10,0,10
 "55","Guatemala","GTM",0,0,0,NA,0
 "56","Lesotho","LSO",0,0,0,NA,0
 "57","Mauritius","MUS",0,0,0,NA,0
-"58","Myanmar","MMR",10,10,0,0,10
+"58","Myanmar","MMR",10,0,0,0,0
 "59","Pakistan","PAK",0,0,0,0,0
 "60","Seychelles","SYC",0,0,0,NA,0
 "61","Spain","ESP",0,0,0,0,0
-"62","Suriname","SUR",0,0,0,NA,0
+"62","Suriname","SUR",0,0,0,0,0
 "63","Syria","SYR",10,10,0,0,10
 "64","Timor-Leste","TLS",10,0,0,NA,0
 "65","Trinidad and Tobago","TTO",0,0,0,0,0
 "66","Tunisia","TUN",0,0,0,0,0
-"67","Uganda","UGA",0,0,0,10,10
+"67","Uganda","UGA",0,0,0,5.48444016266402,5.48444016266402
 "68","Venezuela","VEN",10,0,0,0,0
-"69","Angola","AGO",0,0,0,NA,0
-"70","Bahamas","BHS",0,0,0,NA,0
-"71","Belize","BLZ",0,0,0,0,0
-"72","Bosnia and Herzegovina","BIH",0,0,1.69529125743,0,1.69529125743
+"69","Angola","AGO",0,0,0,6.47823581050296,6.47823581050296
+"70","Bahamas","BHS",0,0,0,0,0
+"71","Belize","BLZ",0,0,0,NA,0
+"72","Bosnia and Herzegovina","BIH",0,0,1.69529125743,NA,1.69529125743
 "73","Botswana","BWA",0,0,0,NA,0
 "74","Brunei Darussalam","BRN",0,0,NA,NA,0
-"75","Bulgaria","BGR",0,0,0,NA,0
-"76","Cyprus","CYP",0,0,NA,NA,0
-"77","Djibouti","DJI",0,0,0,0,0
-"78","Ecuador","ECU",0,0,0,NA,0
+"75","Bulgaria","BGR",0,0,0,0,0
+"76","Cyprus","CYP",0,0,NA,0,0
+"77","Djibouti","DJI",0,0,0,NA,0
+"78","Ecuador","ECU",0,0,0,10,10
 "79","Equatorial Guinea","GNQ",0,0,0,NA,0
 "80","Fiji","FJI",0,0,0,NA,0
-"81","Greece","GRC",0,0,0,NA,0
-"82","Guyana","GUY",0,0,0,NA,0
-"83","Hungary","HUN",0,0,0,NA,0
+"81","Greece","GRC",0,0,0,0,0
+"82","Guyana","GUY",0,0,0,0,0
+"83","Hungary","HUN",0,0,0,0,0
 "84","Kazakhstan","KAZ",0,0,0,0,0
 "85","Malaysia","MYS",0,0,0,NA,0
-"86","Nicaragua","NIC",0,0,0,0,0
+"86","Nicaragua","NIC",0,0,0,NA,0
 "87","Oman","OMN",0,0,0,NA,0
 "88","Palau","PLW",0,0,NA,NA,0
-"89","Poland","POL",0,0,0,NA,0
+"89","Poland","POL",0,0,0,0,0
 "90","Saint Lucia","LCA",0,0,0,NA,0
 "91","Solomon Islands","SLB",10,0,0,NA,0
 "92","United Arab Emirates","ARE",0,0,0,NA,0
-"93","Azerbaijan","AZE",0,0,10,10,10
+"93","Azerbaijan","AZE",0,0,10,5.97804707889054,10
 "94","Bahrain","BHR",0,0,0,0,0
 "95","Bangladesh","BGD",0,0,0,0,0
 "96","Bhutan","BTN",0,0,0,NA,0
-"97","Burundi","BDI",10,0,0,0,0
+"97","Burundi","BDI",10,0,0,NA,0
 "98","Cambodia","KHM",0,0,0,NA,0
 "99","China","CHN",0,0,0,0,0
 "100","Comoros","COM",10,0,0,NA,0
@@ -105,43 +105,43 @@
 "104","Gambia","GMB",10,10,0,NA,10
 "105","Germany","DEU",0,0,0,0,0
 "106","Kiribati","KIR",10,0,NA,NA,0
-"107","Korea DPR","PRK",0,0,0,NA,0
+"107","Korea DPR","PRK",0,0,0,10,10
 "108","Kuwait","KWT",0,0,0,NA,0
 "109","Luxembourg","LUX",0,0,NA,NA,0
 "110","Madagascar","MDG",0,0,0,NA,0
 "111","Malta","MLT",0,0,0,NA,0
 "112","Mexico","MEX",0,0,0,0,0
 "113","Micronesia","FSM",10,NA,NA,NA,NA
-"114","Moldova Republic of","MDA",0,0,0,NA,0
+"114","Moldova Republic of","MDA",0,0,0,0,0
 "115","Mongolia","MNG",0,0,0,NA,0
-"116","Morocco","MAR",0,0,0,NA,0
+"116","Morocco","MAR",0,0,0,5,5
 "117","Nauru","NRU",0,0,NA,NA,0
-"118","Panama","PAN",0,0,0,NA,0
-"119","Rwanda","RWA",0,0,0,NA,0
+"118","Panama","PAN",0,0,0,5,5
+"119","Rwanda","RWA",0,0,0,0,0
 "120","Samoa","WSM",0,0,NA,NA,0
 "121","Sao Tome and Principe","STP",0,0,0,NA,0
 "122","Saudi Arabia","SAU",0,0,0,NA,0
 "123","Senegal","SEN",0,0,0,NA,0
 "124","Sierra Leone","SLE",0,0,0,NA,0
 "125","Tanzania","TZA",0,0,0,NA,0
-"126","Togo","TGO",0,0,0,NA,0
+"126","Togo","TGO",0,0,0,0,0
 "127","Turkey","TUR",0,0,0,0,0
 "128","Turkmenistan","TKM",0,0,0,NA,0
 "129","Tuvalu","TUV",10,0,NA,NA,0
-"130","Uzbekistan","UZB",0,0,0,NA,0
+"130","Uzbekistan","UZB",0,0,0,0,0
 "131","Vanuatu","VUT",0,0,NA,NA,0
 "132","Australia","AUS",0,0,0,NA,0
-"133","Austria","AUT",0,0,0,5,5
+"133","Austria","AUT",0,0,0,0,0
 "134","Belgium","BEL",0,0,0,NA,0
-"135","Chile","CHL",0,0,0,NA,0
+"135","Chile","CHL",0,0,0,0,0
 "136","Cuba","CUB",0,0,0,NA,0
-"137","Czech Republic","CZE",0,0,0,NA,0
-"138","Dominican Republic","DOM",0,0,0,NA,0
-"139","Estonia","EST",0,0,0,0,0
+"137","Czech Republic","CZE",0,0,0,0,0
+"138","Dominican Republic","DOM",0,0,0,0,0
+"139","Estonia","EST",0,0,0,NA,0
 "140","Iceland","ISL",0,0,0,NA,0
 "141","India","IND",0,0,0,0,0
-"142","Ireland","IRL",0,0,NA,0,0
-"143","Israel","ISR",0,0,0,NA,0
+"142","Ireland","IRL",0,0,NA,NA,0
+"143","Israel","ISR",0,0,0,0,0
 "144","Italy","ITA",0,0,0,0,0
 "145","Japan","JPN",0,0,0,0,0
 "146","Jordan","JOR",0,0,0,NA,0
@@ -158,34 +158,34 @@
 "157","Saint Vincent and the Grenadines","VCT",0,0,0,NA,0
 "158","Singapore","SGP",0,0,0,NA,0
 "159","Slovenia","SVN",0,0,0,0,0
-"160","Sweden","SWE",0,0,0,0,0
+"160","Sweden","SWE",0,0,0,NA,0
 "161","Switzerland","CHE",0,0,0,NA,0
 "162","Thailand","THA",0,0,0,0,0
 "163","Tonga","TON",0,0,0,NA,0
-"164","United States of America","USA",0,0,0,0,0
+"164","United States of America","USA",0,0,0,0.825015630101349,0.825015630101349
 "165","Uruguay","URY",0,0,0,NA,0
-"166","Benin","BEN",0,0,0,NA,0
+"166","Benin","BEN",0,0,0,5.34514741753014,5.34514741753014
 "167","Canada","CAN",0,0,0,NA,0
 "168","Costa Rica","CRI",0,0,0,NA,0
-"169","Côte d'Ivoire","CIV",0,0,0,10,10
+"169","Côte d'Ivoire","CIV",0,0,0,5.62148318798417,5.62148318798417
 "170","Denmark","DNK",0,0,0,NA,0
 "171","Eswatini","SWZ",0,0,0,NA,0
-"172","Finland","FIN",0,0,NA,5,5
-"173","Ghana","GHA",0,0,0,NA,0
-"174","Guinea-Bissau","GNB",10,0,0,NA,0
-"175","Indonesia","IDN",0,0,0,NA,0
+"172","Finland","FIN",0,0,NA,NA,0
+"173","Ghana","GHA",0,0,0,0,0
+"174","Guinea-Bissau","GNB",10,0,0,5,5
+"175","Indonesia","IDN",0,0,0,4.1482658430484,4.1482658430484
 "176","Jamaica","JAM",0,0,0,NA,0
 "177","Korea Republic of","KOR",0,0,0,0,0
-"178","Kyrgyzstan","KGZ",0,0,0,NA,0
-"179","Lao PDR","LAO",10,10,0,NA,10
+"178","Kyrgyzstan","KGZ",0,0,0,0,0
+"179","Lao PDR","LAO",10,0,0,NA,0
 "180","Liechtenstein","LIE",0,0,NA,NA,0
 "181","Marshall Islands","MHL",10,0,0,NA,0
 "182","Namibia","NAM",0,0,0,NA,0
 "183","Nepal","NPL",0,0,0,0,0
-"184","Norway","NOR",0,0,0,NA,0
-"185","Paraguay","PRY",0,0,0,NA,0
-"186","Russian Federation","RUS",0,0,0,0,0
-"187","Slovakia","SVK",0,0,0,NA,0
-"188","Sri Lanka","LKA",0,0,0,7.28257214686234,7.28257214686234
-"189","United Kingdom","GBR",0,NA,0,NA,0
+"184","Norway","NOR",0,0,0,0,0
+"185","Paraguay","PRY",0,0,0,0,0
+"186","Russian Federation","RUS",0,0,0,NA,0
+"187","Slovakia","SVK",0,0,0,0,0
+"188","Sri Lanka","LKA",0,0,0,0,0
+"189","United Kingdom","GBR",0,NA,0,0,0
 "190","Viet Nam","VNM",0,0,0,NA,0

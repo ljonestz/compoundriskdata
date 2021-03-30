@@ -13,7 +13,7 @@ librarian::shelf(
   ggalt, raster, sf, mapview, maptools, ggthemes, tidyverse,
   sjmisc, matrixStats, googledrive, rgdal
 )
-
+{
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 # Function to normalise with upper and lower bounds (when low score = high vulnerability)
 normfuncneg <- function(df, upperrisk, lowerrisk, col1) {
@@ -462,7 +462,7 @@ wmo_don <- countrylist %>%
   dplyr::select(-Countryname)
 
 #---------------------------------—Health ACAPS---------------------------------
-acaps_health <- acapssheet[,c("Countryname", "Country", "H_health_acaps")]
+acaps_health <- acapssheet[,c("Country", "H_health_acaps")]
 
 #----------------------------------—Create combined Health Sheet-------------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -477,7 +477,7 @@ health <- left_join(countrylist, HIS, by = "Country") %>%
   # left_join(., cov_forcast_alt, by = "Country") %>% # not current
   left_join(., inform_covid_warning, by = "Country", "Countryname") %>%
   left_join(., wmo_don, by = "Country") %>%
-  left_join(., acaps_health, by = "Country", "Countryname") %>%
+  left_join(., acaps_health, by = "Country") %>%
   arrange(Country)
 
 write.csv(health, "Risk_sheets/healthsheet.csv")
@@ -540,7 +540,7 @@ fewsg <- fewswb %>%
   mutate(countrypop = sum(pop)) %>%
   ungroup()
 
-#Caluclate proportion and number of people in IPC class 
+#Calculate proportion and number of people in IPC class 
 fewspop <- fewsg %>%
   group_by(country, year_month) %>%
   mutate(
@@ -1009,7 +1009,7 @@ write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 #       TRUE ~ NA_real_
 #     ))) %>%
 #   mutate(macrofin_risk = dplyr::select(., Spillover.risks.from.the.external.environment.outside.the.region:Household.risks) %>% rowSums(na.rm=T)) %>%
-#   rename_with(   
+#   rename_with(
 #     .fn = ~ paste0("M_", .),
 #     .cols = colnames(.)[!colnames(.) %in% c("Country.Name","ISO3")]
 #   ) %>%
@@ -1190,12 +1190,23 @@ socio_forward <- inform_covid_warning %>%
       TRUE ~ NA_real_
     ))
 
-#--------------------------—Poverty projections----------------------------------------------------
+#--------------------------—MPO: Poverty projections----------------------------------------------------
 # mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
 
 drive_download("Restricted_Data/global.dta", path = "tmp-global.dta")
 mpo <- read_dta("tmp-global.dta")
 unlink("tmp-global.dta")
+
+# Add population
+pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
+
+pop$charcode <- suppressWarnings(countrycode(pop$charcode,
+                                             origin = "iso2c",
+                                             destination = "iso3c"
+                                             )
+                                 )
+
+colnames(pop) <- c("Country", "Population")
 
 mpo_data <- mpo %>%
   rename(Country = Code) %>%
@@ -1225,16 +1236,38 @@ mpo_data <- mpo_data %>%
       , na.rm = T)
   )
 
-# #-----------------------------—(HOUSEHOLD HEATMAP FROM MACROFIN)-------------------------------------
-# household_risk <- macrosheet %>%
-#   dplyr::select(Country, M_Household.risks) %>%
-#   mutate(M_Household.risks = case_when(
-#     M_Household.risks == 0.5 ~ 7,
-#     M_Household.risks == 1 ~ 10,
-#     TRUE ~ M_Household.risks
-#   )) %>%
-#   rename(S_Household.risks = M_Household.risks)
+#-----------------------------—HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
+# If Macro Fin Review is re-included above, we can reuse that. For clarity, moving data read here because it's not being used by macrosheet
+data <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/macrofin.csv")
 
+macrofin <- data %>%
+  mutate_at(
+    vars(Monetary.and.financial.conditions, contains("risk")),
+    funs(case_when(
+      . == "Low" ~ 0,
+      . == "Medium" ~ 0.5,
+      . == "High" ~ 1,
+      TRUE ~ NA_real_
+    ))) %>%
+  mutate(macrofin_risk = dplyr::select(., Spillover.risks.from.the.external.environment.outside.the.region:Household.risks) %>% rowSums(na.rm=T)) %>%
+  rename_with(
+    .fn = ~ paste0("M_", .),
+    .cols = colnames(.)[!colnames(.) %in% c("Country.Name","ISO3")]
+  ) %>%
+  rename(Country = ISO3) %>%
+  dplyr::select(-Country.Name)
+
+macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
+
+household_risk <- macrofin %>%
+  dplyr::select(Country, M_Household.risks) %>%
+  mutate(M_Household.risks = case_when(
+    M_Household.risks == 0.5 ~ 7,
+    M_Household.risks == 1 ~ 10,
+    TRUE ~ M_Household.risks
+  )) %>%
+  rename(S_Household.risks = M_Household.risks)
+{
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
 # phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Feb.xlsx", 
 #                          sheet = "3. Indicator Availability")
@@ -1298,50 +1331,50 @@ phone_index_data <- phone_index %>%
 
 phone_index_data <- normfuncpos(phone_index_data, 7, 0, "S_phone_average_index")
 
-# #------------------------------—(IMF FORECASTED UNEMPLOYMENT)-----------------------------------------
-# imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")
-# 
-# imf_un <- imf_un %>%
-#   mutate_at(
-#     vars(contains("X2")),
-#     ~ as.numeric(as.character(.))
-#   ) %>%
-#   mutate(change_unemp_21 = X2021 - X2020,
-#          change_unemp_20 = X2020 - X2019) %>%
-#   rename(
-#     Countryname = Country,
-#     Country = ISO3
-#   ) %>%
-#   rename_with(
-#     .fn = ~ paste0("S_", .), 
-#     .cols = -contains("Country")
-#   ) %>%
-#   dplyr::select(-Countryname) %>%
-#   filter(S_Subject.Descriptor == "Unemployment rate")
-# 
-# # Normalise values
-# imf_un <- normfuncpos(imf_un, 1, 0, "S_change_unemp_21")
-# imf_un <- normfuncpos(imf_un, 3, 0, "S_change_unemp_20")
-# 
-# # Max values for index
-# imf_un <- imf_un %>%
-#   mutate(
-#     S_change_unemp_norm = rowMaxs(as.matrix(dplyr::select(., 
-#                                     S_change_unemp_21_norm,
-#                                     S_change_unemp_20_norm)), 
-#             na.rm = T),
-#     S_change_unemp_norm = case_when(is.infinite(S_change_unemp_norm) ~ NA_real_,
-#                                TRUE ~ S_change_unemp_norm)
-#   )
+#------------------------------—IMF FORECASTED UNEMPLOYMENT-----------------------------------------
+imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")
 
-#--------------------------—Create Socio-economic sheet -------------------------------------------
+imf_un <- imf_un %>%
+  mutate_at(
+    vars(contains("X2")),
+    ~ as.numeric(as.character(.))
+  ) %>%
+  mutate(change_unemp_21 = X2021 - X2020,
+         change_unemp_20 = X2020 - X2019) %>%
+  rename(
+    Countryname = Country,
+    Country = ISO3
+  ) %>%
+  rename_with(
+    .fn = ~ paste0("S_", .),
+    .cols = -contains("Country")
+  ) %>%
+  dplyr::select(-Countryname) %>%
+  filter(S_Subject.Descriptor == "Unemployment rate")
+
+# Normalise values
+imf_un <- normfuncpos(imf_un, 1, 0, "S_change_unemp_21")
+imf_un <- normfuncpos(imf_un, 3, 0, "S_change_unemp_20")
+
+# Max values for index
+imf_un <- imf_un %>%
+  mutate(
+    S_change_unemp_norm = rowMaxs(as.matrix(dplyr::select(.,
+                                    S_change_unemp_21_norm,
+                                    S_change_unemp_20_norm)),
+            na.rm = T),
+    S_change_unemp_norm = case_when(is.infinite(S_change_unemp_norm) ~ NA_real_,
+                               TRUE ~ S_change_unemp_norm)
+  )
+
+#--------------------------—Create Socioeconomic sheet -------------------------------------------
 socioeconomic_sheet <- #left_join(countrylist, ocha, by = "Country") %>% # not current
   #dplyr::select(-Countryname) %>%
   left_join(countrylist, inform_data, by = "Country") %>%
   left_join(., socio_forward, by = "Country") %>%
   left_join(., mpo_data, by = "Country") %>%
-  # left_join(., imf_un, by = "Country") %>% # not current
-  # left_join(., household_risk, by = "Country") %>% # not current
+  left_join(., imf_un, by = "Country") %>%
+  left_join(., household_risk, by = "Country") %>%
   left_join(., phone_index_data, by = "Country") %>%
   arrange(Country)
 
@@ -1508,65 +1541,65 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
-#----------------------------—ThinkHazard!------------------------------------------------------
-# Find countries in the ThinkHazard database
-country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
-country <- as.data.frame(country)
-country <- suppressWarnings(country[!is.na(as.numeric(gsub("[^0-9-]","", country[[1]]))),])
-country <- as.data.frame(country)
-
-# Assign country to list
-country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
-country$countrycode <- suppressWarnings(countrycode(
-  country$country,
-  origin = "country.name",
-  destination = "iso3c",
-  nomatch = NA
-))
-
-#Remove non-countries
-country <- country %>%
-  filter(!is.na(countrycode))
-
-#Remove New Zealand duplicate
-country <- country %>% filter(countrycode != "179;New Zealand;;")
-
-# Extract API data on ThinkHazard! (can be slow)
-think_data <- lapply(country$list[1:236], function(tt) {
-  dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
-})
-
-# Compile by country
-think_join <- lapply(1:length(think_data), function(yy){
-  frame <- as.data.frame(think_data[yy])
-  frame$Country <- country$countrycode[yy]
-  do.call(data.frame, frame)
-})
-
-# Join list to a single dataframe
-think_hazard <- do.call("rbind", think_join)
-
-# Assign numberic values and calculate geometric mean
-think_hazard <- think_hazard %>%
-  mutate(hazard_num = case_when(hazardlevel.title == "High" ~ 4,
-                                hazardlevel.title == "Medium" ~ 3,
-                                hazardlevel.title == "Low" ~ 2,
-                                hazardlevel.title == "Very low" ~ 1,
-                                TRUE ~ NA_real_
-  )) %>%
-  group_by(Country) %>%
-  mutate(multihazard_risk = geoMean(hazard_num, na.rm = T)) %>%
-  ungroup %>%
-  rename_with(.fn = ~ paste0("NH_", .), 
-              .cols = -contains("Country")
-              ) %>%
-  distinct(Country, NH_multihazard_risk)
-
-# Normalise values
-think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
-
-# Save file
-write.csv(think_hazard, "Indicator_dataset/think_hazard.csv")
+# #----------------------------—(ThinkHazard!)------------------------------------------------------
+# # Find countries in the ThinkHazard database
+# country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
+# country <- as.data.frame(country)
+# country <- suppressWarnings(country[!is.na(as.numeric(gsub("[^0-9-]","", country[[1]]))),])
+# country <- as.data.frame(country)
+# 
+# # Assign country to list
+# country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
+# country$countrycode <- suppressWarnings(countrycode(
+#   country$country,
+#   origin = "country.name",
+#   destination = "iso3c",
+#   nomatch = NA
+# ))
+# 
+# #Remove non-countries
+# country <- country %>%
+#   filter(!is.na(countrycode))
+# 
+# #Remove New Zealand duplicate
+# country <- country %>% filter(countrycode != "179;New Zealand;;")
+# 
+# # Extract API data on ThinkHazard! (can be slow)
+# think_data <- lapply(country$list[1:236], function(tt) {
+#   dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
+# })
+# 
+# # Compile by country
+# think_join <- lapply(1:length(think_data), function(yy){
+#   frame <- as.data.frame(think_data[yy])
+#   frame$Country <- country$countrycode[yy]
+#   do.call(data.frame, frame)
+# })
+# 
+# # Join list to a single dataframe
+# think_hazard <- do.call("rbind", think_join)
+# 
+# # Assign numberic values and calculate geometric mean
+# think_hazard <- think_hazard %>%
+#   mutate(hazard_num = case_when(hazardlevel.title == "High" ~ 4,
+#                                 hazardlevel.title == "Medium" ~ 3,
+#                                 hazardlevel.title == "Low" ~ 2,
+#                                 hazardlevel.title == "Very low" ~ 1,
+#                                 TRUE ~ NA_real_
+#   )) %>%
+#   group_by(Country) %>%
+#   mutate(multihazard_risk = geoMean(hazard_num, na.rm = T)) %>%
+#   ungroup %>%
+#   rename_with(.fn = ~ paste0("NH_", .), 
+#               .cols = -contains("Country")
+#               ) %>%
+#   distinct(Country, NH_multihazard_risk)
+# 
+# # Normalise values
+# think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
+# 
+# # Save file
+# write.csv(think_hazard, "Indicator_dataset/think_hazard.csv")
 
 #----------------------—INFORM Natural Hazard and Exposure rating--------------------------
 inform_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_2021.csv")
@@ -1684,17 +1717,21 @@ locust_risk <- countrylist %>%
     Country %in% med ~ 7,
     TRUE ~ 0
   ))
-  
-#-------------------------------------------—CREATE NATURAL HAZARD SHEET------------------------------
+
+#---------------------------------—Natural Hazard ACAPS---------------------------------
+acaps_nh <- acapssheet[,c("Country", "NH_natural_acaps")]
+
+#-------------------------------------------—Create combined Natural Hazard sheet------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
 nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
-  left_join(., think_hazard, by = "Country") %>%
+  # left_join(., think_hazard, by = "Country") %>%
   left_join(., seasonl_risk, by = "Country") %>%
   left_join(., locust_risk, by = "Country") %>%
+  left_join(., acaps_nh, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
   drop_na(Country) %>%
   arrange(Country)
@@ -1954,16 +1991,4 @@ fragilitysheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %
   )
 
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
-
-
-
-
-
-
-
-
-
-
-
-
-  
+  }
