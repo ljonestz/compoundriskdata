@@ -418,7 +418,7 @@ inform_covid_warning <-  inform_covid_warning_raw %>%
   dplyr::select(-Countryname) %>%
   rename_with(
     .fn = ~ paste0("H_", .), 
-    .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
+    .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname")]
   )
 
 inform_covid_warning <- normfuncpos(inform_covid_warning, 6, 2, "H_INFORM_rating.Value")

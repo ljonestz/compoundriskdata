@@ -35,12 +35,10 @@ librarian::shelf(
 # Load risk sheets
 healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
 foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
-# debtsheet <- read.csv("Risk_sheets/debtsheet.csv")
 fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
 macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
 Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
 Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
-# acapssheet <- read.csv("Risk_sheets/acapssheet.csv")
 countrylist <- read.csv("Indicator_dataset/countrylist.csv")[,-1]
 
 # Join datasets

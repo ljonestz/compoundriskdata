@@ -1,7 +1,4 @@
-# 0. SET VARIABLES
-# Search for VARIABLE and move them here
-
-# 1. LOAD EVERYTHING IN ----
+# 1. Load everything in ----
 
 # Load full countries list (alternative is to use countries in globalrisk)
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Indicator_dataset/countrylist.csv")
@@ -10,37 +7,38 @@ countrylist <- countrylist %>%
   arrange(Country)
 
 # Load dimension data from github
-healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/healthsheet.csv")
-foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/foodsecuritysheet.csv")
-debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/debtsheet.csv")
-fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/fragilitysheet.csv")
-macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/macrosheet.csv")
-Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/Naturalhazards.csv")
-Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/Socioeconomic_sheet.csv")
-acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/acapssheet.csv")
+# healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/healthsheet.csv")
+# foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/foodsecuritysheet.csv")
+# debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/debtsheet.csv")
+# fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/fragilitysheet.csv")
+# macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/macrosheet.csv")
+# Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/Naturalhazards.csv")
+# Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/Socioeconomic_sheet.csv")
+# acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/acapssheet.csv")
 
-# Socioecomic sheet is missing country name, add in (prob move to script that writes sheet initially)
-# Socioeconomic_sheet <-  left_join(countrylist, Socioeconomic_sheet, by = "Country") %>%
-# add_column(Rank = seq(), .before = "Countryname")
+healthsheet <- read.csv("Risk_sheets/healthsheet.csv")
+foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")
+debtsheet <- read.csv("Risk_sheets/debtsheet.csv")
+fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")
+macrosheet <- read.csv("Risk_sheets/macrosheet.csv")
+Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")
+Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")
 
 # Load dimension / data dictionary
 indicators <- as.data.frame(read_csv("indicators.csv"))
 
 # Compile list of all dimension data for Map function
-# List names should match dimension names in `indicator` dataframe
-# unique(indicators$dimension)
+# List names should match dimension names in `indicator` data frame
+unique(indicators$Dimension)
 sheetList <- list("Health" = healthsheet,
                   "Food Security" = foodsecurity,
-                  # "Debt" = debtsheet,
                   "Conflict and Fragility" = fragilitysheet, # Technical note uses various names; what do we want to use? Fragility and Conflict, Conflict and Fragility, Conflict Fragility and Institutional Risk
                   "Macro Fiscal" = macrosheet,
                   "Natural Hazard" = Naturalhazardsheet,
                   "Socioeconomic Vulnerability" = Socioeconomic_sheet
 )
 
-
-
-
+# 2. Write function to apply to each sheet ----
 writeSourceCSV <- function(i) {
   # headerOffset <- 2 # current output has two header rows # VARIABLE
   
