@@ -508,8 +508,8 @@ riskflags <- left_join(riskflags %>%
                            contains(c("_AV", "_SQ", "_ALT", "EXISTING_", "EMERGING_", "coefvar"))
                          ),
                        reliable, 
-                       by = c("Countryname", "Country")
-)
+                       by = c("Countryname", "Country")) %>% 
+  select(-contains("S_phone"))
 
 # Write csv file of all risk flags (+reliability scores)
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
