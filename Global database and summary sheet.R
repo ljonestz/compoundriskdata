@@ -375,7 +375,6 @@ sqnam <- c(
 )
 
 # Emerging risk score as all high risk scores
-# BN: Should this be row_count instead?
 riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >= 7, na.rm = T) 
 
 # Emerging risk score as high + med
