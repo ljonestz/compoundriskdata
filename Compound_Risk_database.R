@@ -10,7 +10,7 @@ librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, readxl,
   gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, natrixStats,
-  ggalt, raster, sf, mapview, maptools, ggthemes,tidyverse,
+  ggalt, raster, sf, mapview, maptools, ggthemes, tidyverse,
   sjmisc, matrixStats
 )
 
@@ -379,26 +379,9 @@ upperrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.90), na.rm = T)
 lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm = T)
 proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
-# Artemis
-artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
-
-upperrisk <- 0.2
-lowerrisk <- 0
-artemis <- normfuncpos(artemis, upperrisk, lowerrisk, "F_Artemis_Score")
-
-artemis <- artemis %>%
-  mutate(
-    Country = countrycode(Country,
-                          origin = "country.name",
-                          destination = "iso3c",
-                          nomatch = NULL
-      )
-    ) %>%
-  dplyr::select(-X)
-
 #------------------FEWSNET (with CRW threshold)-------------------------------
 #Load database
-fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20October%202020%20Update_01-11-21.csv")
+fewswb <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20February%202021%20Update_04-05-21.csv"))
 
 #Calculate country totals
 fewsg <- fewswb %>%
@@ -436,7 +419,7 @@ pctperc <- function(x) x - lag(x) / lag(x)
 
 #Summarise country totals per in last round of FEWS
 fewssum <- fewspop %>%
-  filter(year_month == "2020_10" | year_month == "2020_06") %>%
+  filter(year_month == "2021_02" | year_month == "2020_10") %>%
   group_by(country, year_month) %>%
   mutate(totalipc3plusabsfor = sum(ipc3plusabsfor, na.rm=T),
          totalipc3pluspercfor = sum(ipc3pluspercfor, na.rm=T),
@@ -463,13 +446,18 @@ fewssum <- fewspop %>%
                                 TRUE ~ "Not high risk")) %>%
   dplyr::select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
          -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
-  filter(year_month == "2020_10")
+  filter(year_month == "2021_02")
 
 # Find max ipc for any region in the country
 fews_summary <- fewsg %>%
-  group_by(country) %>%
-  filter(year == 2020 & max(month, na.rm = T)) %>%
-  summarise(max_ipc = max(fews_proj_med_adjusted, na.rm = T))
+  group_by(country, year_month) %>%
+  summarise(max_ipc = max(fews_proj_med_adjusted, na.rm = T)) %>%
+  mutate(
+    year_month = str_replace(year_month, "_", "-"),
+    year_month = as.Date(as.yearmon(year_month)),
+    year_month = as.Date(year_month)) %>%
+  filter(!is.infinite(max_ipc)) %>%
+  filter(year_month == max(year_month, na.rm = T))
 
 # Join the two datasets
 fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
@@ -586,7 +574,6 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews_dataset, by = "Country") %>%
   #left_join(., fpv, by = "Country") %>%  # Reintroduce if FAO price site comes back online
   left_join(., fpv_alt, by = "Country") %>%
-  left_join(., artemis, by = "Country") %>%
   left_join(., ag_ob, by = "Country") %>%
   left_join(., fao_wfp, by = "Country") %>%
   arrange(Country)
@@ -1068,6 +1055,7 @@ mpo_data <- mpo %>%
     ~ as.numeric(as.character(.))
   ) %>%
   mutate(
+    pov_prop_22_21 = y2022 - y2021,
     pov_prop_21_20 = y2021 - y2020,
     pov_prop_20_19 = y2020 - y2019,
     ) %>%
@@ -1077,15 +1065,18 @@ mpo_data <- mpo %>%
     .cols = colnames(.)[!colnames(.) %in% c("Country")]
   ) 
 
-mpo_data <- normfuncpos(mpo_data, 1, 0, "S_pov_prop_21_20")
+# Normalise based on percentiles
+mpo_data <- normfuncpos(mpo_data, 0.5, -1.5, "S_pov_prop_22_21")
+mpo_data <- normfuncpos(mpo_data, 1, -1, "S_pov_prop_21_20")
 mpo_data <- normfuncpos(mpo_data, 3, 0, "S_pov_prop_20_19")
 
 mpo_data <- mpo_data %>%
   mutate(
     S_pov_comb_norm = rowMaxs(as.matrix(dplyr::select(.,
-      S_pov_prop_21_20_norm, 
-      S_pov_prop_20_19_norm))
-      , na.rm = T)
+                                                      S_pov_prop_21_20_norm,
+                                                      S_pov_prop_21_20_norm, 
+                                                      S_pov_prop_20_19_norm))
+                              , na.rm = T)
   )
 
 #-----------------------------HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
@@ -1212,19 +1203,6 @@ write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 ### ********************************************************************************************
 ##
 #
-
-#-------------------------------NATURAL HAZARDS SHEET------------------------------------------------
-# Load UKMO dataset
-nathaz <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/naturalhazards.csv"))
-nathaz <- nathaz %>%
-  dplyr::select(-X1) %>%
-  rename(Country = NH_UKMO_Country)
-upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS, probs = c(0.05), na.rm = T)
-nathaz <- normfuncpos(nathaz, upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.6.MONTHS")
-upperrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.95), na.rm = T)
-lowerrisk <- quantile(nathaz$NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS, probs = c(0.05), na.rm = T)
-nathaz <- normfuncpos(nathaz, upperrisk, lowerrisk, "NH_UKMO_TOTAL.RISK.NEXT.12.MONTHS")
 
 #------------------------------Load GDACS database--------------------------------------------------
 gdacweb <- "https://www.gdacs.org/"
@@ -1366,66 +1344,6 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
-#----------------------------ThinkHazard!------------------------------------------------------
-# Find countries in the ThinkHazard database
-country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
-country <- as.data.frame(country)
-country <- suppressWarnings(country[!is.na(as.numeric(gsub("[^0-9-]","", country[[1]]))),])
-country <- as.data.frame(country)
-
-# Assign country to list
-country$list <- as.numeric(gsub("[^0-9-]","", country[[1]]))
-country$countrycode <- suppressWarnings(countrycode(
-  country$country,
-  origin = "country.name",
-  destination = "iso3c",
-  nomatch = NA
-))
-
-#Remove non-countries
-country <- country %>%
-  filter(!is.na(countrycode))
-
-#Remove New Zealand duplicate
-country <- country %>% filter(countrycode != "179;New Zealand;;")
-
-# Extract API data on ThinkHazard! (can be slow)
-think_data <- lapply(country$list[1:236], function(tt) {
-  dat <- fromJSON(paste0("http://thinkhazard.org/en/report/", tt, ".json"))
-})
-
-# Compile by country
-think_join <- lapply(1:length(think_data), function(yy){
-  frame <- as.data.frame(think_data[yy])
-  frame$Country <- country$countrycode[yy]
-  do.call(data.frame, frame)
-})
-
-# Join list to a single dataframe
-think_hazard <- do.call("rbind", think_join)
-
-# Assign numberic values and calculate geometric mean
-think_hazard <- think_hazard %>%
-  mutate(hazard_num = case_when(hazardlevel.title == "High" ~ 4,
-                                hazardlevel.title == "Medium" ~ 3,
-                                hazardlevel.title == "Low" ~ 2,
-                                hazardlevel.title == "Very low" ~ 1,
-                                TRUE ~ NA_real_
-  )) %>%
-  group_by(Country) %>%
-  mutate(multihazard_risk = geoMean(hazard_num, na.rm = T)) %>%
-  ungroup %>%
-  rename_with(.fn = ~ paste0("NH_", .), 
-              .cols = -contains("Country")
-              ) %>%
-  distinct(Country, NH_multihazard_risk)
-
-# Normalise values
-think_hazard <- normfuncpos(think_hazard, 4, 0, "NH_multihazard_risk")
-
-# Save file
-write.csv(think_hazard, "Indicator_dataset/think_hazard.csv")
-
 #----------------------INFORM Natural Hazard and Exposure rating--------------------------
 inform_2021 <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/INFORM_2021.csv")
 
@@ -1437,26 +1355,6 @@ informnathaz <- inform_2021 %>%
 
 # Normalise scores
 informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
-
-#----------------------UKMO La Nina--------------------------------------------------------
-La_nina_data <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Compound Risk/covid/compoundriskdata/Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
-La_nina_data <- as_tibble(La_nina_data)
-
-la_nina <- La_nina_data %>%
-  mutate(
-    risk = case_when(
-      risk == 3 ~ 10,
-      risk == 2 ~ 9, 
-      risk == 1 ~ 7,
-      TRUE ~ NA_real_
-    ),
-    Country = countrycode(
-      Country,
-      origin = "country.name",
-      destination = "iso3c",
-      nomatch = NULL
-    )) %>%
-  rename(NH_la_nina_risk = risk)
 
 #---------------------------------- IRI Seasonal Forecast ------------------------------------------
 # Load image
@@ -1550,7 +1448,6 @@ countrylist <- countrylist %>%
 
 nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
-  left_join(., think_hazard, by = "Country") %>%
   left_join(., seasonl_risk, by = "Country") %>%
   left_join(., locust_risk, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
@@ -1566,19 +1463,6 @@ write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
 ### ********************************************************************************************
 ##
 #
-
-#-----------------------FSI score---------------------------------
-fsi <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/fsi_2020.csv")
-
-fsi <- fsi %>%
-  dplyr::select(-X) %>%
-  drop_na(Country) %>%
-  mutate(
-    Country = suppressWarnings(countrycode(Country,
-                          origin = "country.name",
-                          destination = "iso3c",
-                          nomatch = NULL)
-  ))
 
 #-------------------------FCS---------------------------------------------
 fcv <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/Country_classification.csv") %>%
@@ -1689,8 +1573,8 @@ acled <- acled_data$data %>%
     sd = sd(fatal_3_month_log, na.rm = T),
     mean = mean(fatal_3_month_log, na.rm = T)
   ) %>%
-  #Calculate month year based on present month (minus 31 days)
-  filter(month_yr == paste(month.abb[month(format(Sys.Date() - 31))], year(format(Sys.Date() - 31)))) 
+  #Calculate month year based on present month (minus 6 weeks)
+  filter(month_yr == paste(month.abb[month(format(Sys.Date() - 45))], year(format(Sys.Date() - 45)))) 
 
 # To calculate daily lagged sums
 #acled <- acled_data$data %>%
@@ -1703,6 +1587,39 @@ acled <- acled_data$data %>%
 #  summarise(fatal_day = sum(fatalities, na.rm = T)) %>% 
 #  group_by(iso3) %>%
 #  mutate(previous_comments=lag(cumsum(fatal_day),k=90, default=0))
+
+#
+
+# Progress conflict data
+# acled <- acled_data$data %>%
+#  mutate(
+#    fatalities = as.numeric(as.character(fatalities)),
+#    date = as.Date(event_date),
+#    month_yr = as.yearmon(date)
+#  ) %>%
+#  filter(date <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
+#  group_by(iso3, month_yr) %>%
+#  # Remove dates for the latest month (or month that falls under the prior 6 weeks)
+#  summarise(fatal_month = sum(fatalities, na.rm = T),
+#            fatal_month_log = log(fatal_month + 1)) %>%
+#  mutate(fatal_3_month = (fatal_month + lag(fatal_month, na.rm= T) + lag(fatal_month, 2, na.rm= T))/3,
+#         fatal_3_month_log = log(fatal_3_month + 1)) %>%
+#  group_by(iso3) %>%
+#  mutate(
+#    fatal_z = (fatal_3_month_log - mean(fatal_3_month_log, na.rm = T)) / sd(fatal_3_month_log, na.rm = T),
+#    sd = sd(fatal_3_month_log, na.rm = T),
+#    mean = mean(fatal_3_month_log, na.rm = T)
+#  ) 
+#tt <- acled %>%
+#  group_by(iso3) %>%
+#  mutate(av_month = (fatal_month + lag(fatal_month, na.rm= T) + lead(fatal_month))/3,
+#         av_month = log(av_month + 1),
+#         mean_av = mean(av_month, na.rm = T),
+#         sc_av = sd(av_month, na.rm = T)
+#  ) %>%
+#  group_by(iso3) %>%
+#  mutate( 
+#    z_av = (fatal_3_month_log - mean_av) / sc_av)
 
 # Normalise scores
 acled <- normfuncpos(acled, 1, -1, "fatal_z")
@@ -1730,7 +1647,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_2.csv"))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_3.csv"))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%

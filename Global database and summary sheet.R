@@ -227,7 +227,7 @@ names <- c(
   "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm",
   "M_EIU_12m_change_norm", "M_EIU_Score_12m_norm",
    "NH_GDAC_Hazard_Score_Norm",  "H_GovernmentResponseIndexForDisplay_norm",  "H_GovernmentResponseIndexForDisplay_norm", 
-  "S_Household.risks", "S_phone_average_index_norm",  "NH_seasonal_risk_norm","NH_seasonal_risk_norm", "NH_natural_acaps","Fr_FCS_Normalised", 
+  "S_Household.risks", "S_phone_average_index_norm",  "NH_seasonal_risk_norm","NH_locust_norm", "NH_natural_acaps","Fr_FCS_Normalised", 
   "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
 )
 
@@ -299,7 +299,6 @@ altflag <- altflag %>%
     NH_coefvar = cv(c(
       NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps,
-      NH_seasonal_risk_norm,
       NH_seasonal_risk_norm),
       na.rm = T
     ),
