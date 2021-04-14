@@ -10,7 +10,7 @@ librarian::shelf(
   cowplot, lubridate, rvest, viridis, countrycode,
   clipr, awalker89 / openxlsx, dplyr, readxl,
   gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, natrixStats,
-  ggalt, raster, sf, mapview, maptools, ggthemes,tidyverse,
+  ggalt, raster, sf, mapview, maptools, ggthemes, tidyverse,
   sjmisc, matrixStats
 )
 
@@ -381,7 +381,7 @@ proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
 #------------------FEWSNET (with CRW threshold)-------------------------------
 #Load database
-fewswb <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20October%202020%20Update_01-11-21.csv")
+fewswb <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/FEWS%20February%202021%20Update_04-05-21.csv"))
 
 #Calculate country totals
 fewsg <- fewswb %>%
@@ -419,7 +419,7 @@ pctperc <- function(x) x - lag(x) / lag(x)
 
 #Summarise country totals per in last round of FEWS
 fewssum <- fewspop %>%
-  filter(year_month == "2020_10" | year_month == "2020_06") %>%
+  filter(year_month == "2021_02" | year_month == "2020_10") %>%
   group_by(country, year_month) %>%
   mutate(totalipc3plusabsfor = sum(ipc3plusabsfor, na.rm=T),
          totalipc3pluspercfor = sum(ipc3pluspercfor, na.rm=T),
@@ -446,13 +446,18 @@ fewssum <- fewspop %>%
                                 TRUE ~ "Not high risk")) %>%
   dplyr::select(-fews_ipc, -fews_ha, -fews_proj_near, -fews_proj_near_ha, -fews_proj_med, 
          -fews_proj_med_ha, -fews_ipc_adjusted, -fews_proj_med_adjusted, -countryproportion) %>%
-  filter(year_month == "2020_10")
+  filter(year_month == "2021_02")
 
 # Find max ipc for any region in the country
 fews_summary <- fewsg %>%
-  group_by(country) %>%
-  filter(year == 2020 & max(month, na.rm = T)) %>%
-  summarise(max_ipc = max(fews_proj_med_adjusted, na.rm = T))
+  group_by(country, year_month) %>%
+  summarise(max_ipc = max(fews_proj_med_adjusted, na.rm = T)) %>%
+  mutate(
+    year_month = str_replace(year_month, "_", "-"),
+    year_month = as.Date(as.yearmon(year_month)),
+    year_month = as.Date(year_month)) %>%
+  filter(!is.infinite(max_ipc)) %>%
+  filter(year_month == max(year_month, na.rm = T))
 
 # Join the two datasets
 fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
@@ -1050,6 +1055,7 @@ mpo_data <- mpo %>%
     ~ as.numeric(as.character(.))
   ) %>%
   mutate(
+    pov_prop_22_21 = y2022 - y2021,
     pov_prop_21_20 = y2021 - y2020,
     pov_prop_20_19 = y2020 - y2019,
     ) %>%
@@ -1059,15 +1065,18 @@ mpo_data <- mpo %>%
     .cols = colnames(.)[!colnames(.) %in% c("Country")]
   ) 
 
-mpo_data <- normfuncpos(mpo_data, 1, 0, "S_pov_prop_21_20")
+# Normalise based on percentiles
+mpo_data <- normfuncpos(mpo_data, 0.5, -1.5, "S_pov_prop_22_21")
+mpo_data <- normfuncpos(mpo_data, 1, -1, "S_pov_prop_21_20")
 mpo_data <- normfuncpos(mpo_data, 3, 0, "S_pov_prop_20_19")
 
 mpo_data <- mpo_data %>%
   mutate(
     S_pov_comb_norm = rowMaxs(as.matrix(dplyr::select(.,
-      S_pov_prop_21_20_norm, 
-      S_pov_prop_20_19_norm))
-      , na.rm = T)
+                                                      S_pov_prop_21_20_norm,
+                                                      S_pov_prop_21_20_norm, 
+                                                      S_pov_prop_20_19_norm))
+                              , na.rm = T)
   )
 
 #-----------------------------HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
@@ -1439,7 +1448,6 @@ countrylist <- countrylist %>%
 
 nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
-  left_join(., think_hazard, by = "Country") %>%
   left_join(., seasonl_risk, by = "Country") %>%
   left_join(., locust_risk, by = "Country") %>%
   distinct(Country, .keep_all = TRUE) %>%
@@ -1565,8 +1573,8 @@ acled <- acled_data$data %>%
     sd = sd(fatal_3_month_log, na.rm = T),
     mean = mean(fatal_3_month_log, na.rm = T)
   ) %>%
-  #Calculate month year based on present month (minus 31 days)
-  filter(month_yr == paste(month.abb[month(format(Sys.Date() - 31))], year(format(Sys.Date() - 31)))) 
+  #Calculate month year based on present month (minus 6 weeks)
+  filter(month_yr == paste(month.abb[month(format(Sys.Date() - 45))], year(format(Sys.Date() - 45)))) 
 
 # To calculate daily lagged sums
 #acled <- acled_data$data %>%
@@ -1579,6 +1587,39 @@ acled <- acled_data$data %>%
 #  summarise(fatal_day = sum(fatalities, na.rm = T)) %>% 
 #  group_by(iso3) %>%
 #  mutate(previous_comments=lag(cumsum(fatal_day),k=90, default=0))
+
+#
+
+# Progress conflict data
+# acled <- acled_data$data %>%
+#  mutate(
+#    fatalities = as.numeric(as.character(fatalities)),
+#    date = as.Date(event_date),
+#    month_yr = as.yearmon(date)
+#  ) %>%
+#  filter(date <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
+#  group_by(iso3, month_yr) %>%
+#  # Remove dates for the latest month (or month that falls under the prior 6 weeks)
+#  summarise(fatal_month = sum(fatalities, na.rm = T),
+#            fatal_month_log = log(fatal_month + 1)) %>%
+#  mutate(fatal_3_month = (fatal_month + lag(fatal_month, na.rm= T) + lag(fatal_month, 2, na.rm= T))/3,
+#         fatal_3_month_log = log(fatal_3_month + 1)) %>%
+#  group_by(iso3) %>%
+#  mutate(
+#    fatal_z = (fatal_3_month_log - mean(fatal_3_month_log, na.rm = T)) / sd(fatal_3_month_log, na.rm = T),
+#    sd = sd(fatal_3_month_log, na.rm = T),
+#    mean = mean(fatal_3_month_log, na.rm = T)
+#  ) 
+#tt <- acled %>%
+#  group_by(iso3) %>%
+#  mutate(av_month = (fatal_month + lag(fatal_month, na.rm= T) + lead(fatal_month))/3,
+#         av_month = log(av_month + 1),
+#         mean_av = mean(av_month, na.rm = T),
+#         sc_av = sd(av_month, na.rm = T)
+#  ) %>%
+#  group_by(iso3) %>%
+#  mutate( 
+#    z_av = (fatal_3_month_log - mean_av) / sc_av)
 
 # Normalise scores
 acled <- normfuncpos(acled, 1, -1, "fatal_z")
@@ -1606,7 +1647,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_2.csv"))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_3.csv"))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
