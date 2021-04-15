@@ -21,25 +21,25 @@ librarian::shelf(
 ##
 #
 # 
-# # Load risk sheets
-# healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv")
-# foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv")
-# debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv")
-# fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv")
-# macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
-# Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
-# Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
-# acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv")
-# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+# Load risk sheets
+healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv")
+foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv")
+debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv")
+fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv")
+macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
+Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
+Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
+acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
 # Load risk sheets
-healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
-foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
-fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
-macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
-Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
-Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
-countrylist <- read.csv("Indicator_dataset/countrylist.csv")[,-1]
+# healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
+# foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
+# fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
+# macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
+# Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
+# Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
+# countrylist <- read.csv("Indicator_dataset/countrylist.csv")[,-1]
 
 # Join datasets
 # — `globalrisk` ----
@@ -507,10 +507,12 @@ riskflags <- left_join(riskflags %>%
                          ),
                        reliable, 
                        by = c("Countryname", "Country")) %>% 
-  select(-contains("S_phone"))
+  dplyr::select(-contains("S_phone"))
 
 # Write csv file of all risk flags (+reliability scores)
+
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
+
 # 
 # #
 # ##

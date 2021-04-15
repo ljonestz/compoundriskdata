@@ -675,7 +675,7 @@ colnames(fews_dataset[-1]) <- paste0("F_", colnames(fews_dataset[-1]))
 # write.csv(fpv_alt, "Indicator_Dataset/FPV_alternative.csv")
 
 #------------------------—WBG FOOD PRICE MONITOR------------------------------------
-ag_ob_data <- read.csv("Indicator_dataset/food-inflation.csv")
+ag_ob_data <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/food-inflation.csv")
 
 ag_ob_data <- ag_ob_data %>%
   mutate_at(
@@ -685,7 +685,7 @@ ag_ob_data <- ag_ob_data %>%
 
 ag_ob <- ag_ob_data %>%
   filter(X == "Inflation") %>%
-  dplyr::select(-`Income Level`, -`Color Bin`, -X) %>%
+  dplyr::select(-Income.Level, -Color.Bin, -X) %>%
   group_by(Country) %>%
   summarise(
     Apr = Apr.20[which(!is.na(Apr.20))[1]],
@@ -721,7 +721,7 @@ ag_ob <- ag_ob_data %>%
   )
 
 #-------------------------—FAO/WFP HOTSPOTS----------------------------
-fao_wfp <- suppressWarnings(read_csv("Indicator_dataset/WFP:FAO_food.csv") %>%
+fao_wfp <- suppressWarnings(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/WFP:FAO_food.csv") %>%
   dplyr::select(-X2))
 
 fao_wfp <- fao_wfp %>%
@@ -1042,7 +1042,7 @@ print("Food sheet written")
 # macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
 
 #---------------------------—Economist Intelligence Unit---------------------------------
-eiu_data <- read_excel("Indicator_dataset/RBTracker.xls", 
+eiu_data <- read_excel("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/RBTracker.xls", 
                   sheet = "Data Values",
                   skip = 3)
 
@@ -1214,11 +1214,11 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------—MPO: Poverty projections----------------------------------------------------
-# mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
 
-drive_download("Restricted_Data/global.dta", path = "tmp-global.dta")
-mpo <- read_dta("tmp-global.dta")
-unlink("tmp-global.dta")
+# drive_download("Restricted_Data/global.dta", path = "tmp-global.dta")
+# mpo <- read_dta("tmp-global.dta")
+# unlink("tmp-global.dta")
 
 # Add population
 pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
@@ -1257,7 +1257,7 @@ mpo_data <- normfuncpos(mpo_data, 3, 0, "S_pov_prop_20_19")
 mpo_data <- mpo_data %>%
   mutate(
     S_pov_comb_norm = rowMaxs(as.matrix(dplyr::select(.,
-                                                      S_pov_prop_21_20_norm,
+                                                      S_pov_prop_22_21_norm,
                                                       S_pov_prop_21_20_norm, 
                                                       S_pov_prop_20_19_norm))
                               , na.rm = T)
@@ -1296,16 +1296,13 @@ household_risk <- macrofin %>%
   rename(S_Household.risks = M_Household.risks)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
-# phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Feb.xlsx", 
-#                          sheet = "3. Indicator Availability")
-
-# drive_download("Restricted_Data/Phone_surveys_Feb.xlsx", path = "tmp-Phone_surveys_Feb.xlsx")
-# phone_data <- read_excel("tmp-Phone_surveys_Feb.xlsx", 
-#                          sheet = "3. Indicator Availability")
-# unlink("tmp-Phone_surveys_Feb.xlsx")
-
-phone_data <- read_excel("~/Documents/world-bank/compoundriskdata/gitless/formatted_data15-mar-2021_external.xlsx",
+phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
                          sheet = "2. Harmonized Indicators")
+
+# drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T)
+# phone_data <- read_excel("tmp-Phone_surveys.xlsx",
+#                          sheet = "2. Harmonized Indicators")
+# unlink("tmp-Phone_surveys.xlsx")
 
 phone_compile <- phone_data %>%
   filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
@@ -1947,7 +1944,7 @@ acled <- acled_data$data %>%
 acled <- normfuncpos(acled, 1, -1, "fatal_z")
 
 # Correct for countries with 0
-acled %>%
+acled <- acled %>%
   mutate(
     fatal_z_norm = case_when(
       is.nan(fatal_z) ~ 0,
@@ -1966,8 +1963,8 @@ acled %>%
       TRUE ~ fatal_z_norm
     )
   ) %>%
+  ungroup() %>%
   dplyr::select(-iso3)
-
 
 #--------------------------—REIGN--------------------------------------------
 reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_4.csv"))
@@ -2054,3 +2051,4 @@ fragilitysheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %
 write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
 print("Fragility sheet written")
 }
+
