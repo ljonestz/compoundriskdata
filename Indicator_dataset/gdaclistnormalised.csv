@@ -6,10 +6,10 @@
 "5","2021-04-10","past","green","earthquake","IDN",0
 "6","2021-04-08","past","green","earthquake","USA",0
 "7","2021-02-22","past","green","cyclone","GUM",0
-"8","2021-04-30","active","green","flood","HTI",0
-"9","2021-04-12","active","green","flood","PHL",0
-"10","2021-04-09","past","green","flood","PAK",0
-"11","2021-04-07","past","green","flood","IDN",0
+"8","2021-04-12","past","green","flood","PHL",0
+"9","2021-04-09","past","green","flood","PAK",0
+"10","2021-04-07","past","green","flood","IDN",0
+"11","2021-04-06","past","green","flood","HTI",0
 "12","2021-04-06","past","green","flood","COL",0
 "13","2021-03-31","past","green","flood","PER",0
 "14","2021-03-28","past","green","flood","USA",0
@@ -22,7 +22,7 @@
 "21","2021-03-11","past","green","volcano","IDN",0
 "22","2021-03-11","past","green","volcano","NIC",0
 "23","2021-02-19","past","green","volcano","PHL",0
-"24","2021-04-12","active","orange","volcano","VCT",10
+"24","2021-04-15","active","orange","volcano","VCT",10
 "25","2021","active","green","drought","DZA",0
 "26","2019","past","green","drought","BRA",0
 "27","2020","active","green","drought","MOZ",0
