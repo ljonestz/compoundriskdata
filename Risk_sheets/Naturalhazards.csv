@@ -45,7 +45,7 @@
 "44","Germany","DEU",NA,NA,NA,NA,NA,2.5,2.5,0,0,0
 "45","Djibouti","DJI",NA,NA,NA,NA,NA,5.4,7.33333333333333,0,3,0
 "46","Dominica","DMA",NA,NA,NA,NA,NA,4.9,6.5,0,0,0
-"47","Denmark","DNK",NA,NA,NA,NA,NA,1.4,0.666666666666668,0,0,0
+"47","Denmark","DNK",NA,NA,NA,NA,NA,1.3,0.5,0,0,0
 "48","Dominican Republic","DOM",NA,NA,NA,NA,NA,6.7,9.5,0,0,0
 "49","Algeria","DZA","2021","active","green","drought",0,4.7,6.16666666666667,0,0,0
 "50","Ecuador","ECU","2021-03-12","past","green","volcano",0,6.9,9.83333333333333,0,0,0
@@ -72,7 +72,7 @@
 "71","Guyana","GUY",NA,NA,NA,NA,NA,3.8,4.66666666666667,10,0,0
 "72","Honduras","HND",NA,NA,NA,NA,NA,6.5,9.16666666666667,0,0,0
 "73","Croatia","HRV",NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
-"74","Haiti","HTI","2021-04-30","active","green","flood",0,7,10,0,0,0
+"74","Haiti","HTI","2021-04-06","past","green","flood",0,7,10,0,0,0
 "75","Hungary","HUN",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
 "76","Indonesia","IDN","2021-04-14","active","green","earthquake",0,7.7,10,0,0,0
 "77","India","IND","2021-03-27","past","green","flood",0,7.8,10,0,0,0
@@ -83,7 +83,7 @@
 "82","Israel","ISR",NA,NA,NA,NA,NA,4.6,6,0,0,0
 "83","Italy","ITA","2021-04-01","past","green","volcano",0,5.1,6.83333333333333,0,0,0
 "84","Jamaica","JAM",NA,NA,NA,NA,NA,5.4,7.33333333333333,0,0,0
-"85","Jordan","JOR",NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
+"85","Jordan","JOR",NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
 "86","Japan","JPN","2021-03-12","past","green","volcano",0,8.1,10,7,0,0
 "87","Kazakhstan","KAZ",NA,NA,NA,NA,NA,4,5,0,0,0
 "88","Kenya","KEN",NA,NA,NA,NA,NA,5.1,6.83333333333333,0,10,0
@@ -134,7 +134,7 @@
 "133","Pakistan","PAK","2021-04-09","past","green","flood",0,7.4,10,0,0,0
 "134","Panama","PAN",NA,NA,NA,NA,NA,6.2,8.66666666666667,10,0,0
 "135","Peru","PER","2021-03-31","past","green","flood",0,7.1,10,0,0,0
-"136","Philippines","PHL","2021-04-12","active","green","flood",0,8.4,10,10,0,0
+"136","Philippines","PHL","2021-04-12","past","green","flood",0,8.4,10,10,0,0
 "137","Palau","PLW",NA,NA,NA,NA,NA,3.2,3.66666666666667,10,0,0
 "138","Papua New Guinea","PNG","2021-04-10","past","green","earthquake",0,6.7,9.5,0,0,0
 "139","Poland","POL",NA,NA,NA,NA,NA,2.3,2.16666666666667,0,0,0
@@ -180,7 +180,7 @@
 "179","Uruguay","URY",NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
 "180","United States of America","USA","2021-04-08","past","green","earthquake",0,6.6,9.33333333333333,7,0,0
 "181","Uzbekistan","UZB",NA,NA,NA,NA,NA,5.2,7,7,0,0
-"182","Saint Vincent and the Grenadines","VCT","2021-04-12","active","orange","volcano",10,2.6,2.66666666666667,10,0,0
+"182","Saint Vincent and the Grenadines","VCT","2021-04-15","active","orange","volcano",10,2.6,2.66666666666667,10,0,0
 "183","Venezuela","VEN",NA,NA,NA,NA,NA,6.1,8.5,7,0,0
 "184","Viet Nam","VNM",NA,NA,NA,NA,NA,7.4,10,7,0,0
 "185","Vanuatu","VUT",NA,NA,NA,NA,NA,5.6,7.66666666666667,10,0,0
