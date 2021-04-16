@@ -165,6 +165,7 @@ acapssheet <- countrylist %>%
 write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
 
 print("ACAPS sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -749,6 +750,7 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
 
 write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 print("Food sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1157,6 +1159,7 @@ macrosheet <- #left_join(countrylist, macro, by = "Country") %>% # not current
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 print("Macro sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1407,6 +1410,7 @@ socioeconomic_sheet <- #left_join(countrylist, ocha, by = "Country") %>% # not c
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 print("Socioeconomic sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1733,22 +1737,25 @@ seasonl_risk <- binding %>%
 
 #-------------------------------------—Locust outbreaks----------------------------------------------
 # List of countries and risk factors associated with locusts (FAO), see:http://www.fao.org/ag/locusts/en/info/info/index.html
-high <- c("ETH", "KEN", "SOM", "SAU")#SUD", "ERI", "YEM", "SAU")
-med <- c()#"TZA", "UGA", "SSD", "DJI")
-low <- c("ERI", "IRN", "SSD", "SDN", "TZA", "UGA", "YEM", "DJI")
+# high <- c("ETH", "KEN", "SOM", "SAU")#SUD", "ERI", "YEM", "SAU")
+# med <- c()#"TZA", "UGA", "SSD", "DJI")
+# low <- c("ERI", "IRN", "SSD", "SDN", "TZA", "UGA", "YEM", "DJI")
 
-#Merge with countrylist
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
-locust_risk <- countrylist %>%
-  dplyr::select(-X, -Countryname) %>%
-  mutate(
-    NH_locust_norm = case_when(
-    Country %in% high ~ 10,
-    Country %in% med ~ 7,
-    Country %in% low ~ 3,
-    TRUE ~ 0
-  ))
+# Merge with countrylist
+# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+# locust_risk <- countrylist %>%
+#   dplyr::select(-X, -Countryname) %>%
+#   mutate(
+#     NH_locust_norm = case_when(
+#     Country %in% high ~ 10,
+#     Country %in% med ~ 7,
+#     Country %in% low ~ 3,
+#    TRUE ~ 0
+#  ))
 
+locust_risk <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/locust_risk.csv"))
+locust_risk <- locust_risk %>%
+  dplyr::select(-X1)
 #---------------------------------—Natural Hazard ACAPS---------------------------------
 acaps_nh <- acapssheet[,c("Country", "NH_natural_acaps")]
 
