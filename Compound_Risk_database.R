@@ -165,6 +165,7 @@ acapssheet <- countrylist %>%
 write.csv(acapssheet, "Risk_sheets/acapssheet.csv")
 
 print("ACAPS sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -749,6 +750,7 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
 
 write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
 print("Food sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1042,9 +1044,10 @@ print("Food sheet written")
 # macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
 
 #---------------------------—Economist Intelligence Unit---------------------------------
-eiu_data <- read_excel("Indicator_dataset/RBTracker.xls", 
-                  sheet = "Data Values",
-                  skip = 3)
+url <- "https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/RBTracker.xls"
+destfile <- "RBTracker.xls"
+curl::curl_download(url, destfile)
+eiu_data <- read_excel(destfile, sheet = "Data Values", skip = 3)
 
 country_nam <- colnames(eiu_data) 
 country_nam <- country_nam[4:length(country_nam)]
@@ -1157,6 +1160,7 @@ macrosheet <- #left_join(countrylist, macro, by = "Country") %>% # not current
 
 write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
 print("Macro sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1407,6 +1411,7 @@ socioeconomic_sheet <- #left_join(countrylist, ocha, by = "Country") %>% # not c
 
 write.csv(socioeconomic_sheet, "Risk_sheets/Socioeconomic_sheet.csv")
 print("Socioeconomic sheet written")
+
 #
 ##
 ### ********************************************************************************************
@@ -1662,93 +1667,37 @@ informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
 #   rename(NH_la_nina_risk = risk)
 
 #---------------------------------- —IRI Seasonal Forecast ------------------------------------------
-
-# Load image
-t <- raster("https://github.com/ljonestz/compoundriskdata/blob/master/Indicator_dataset/palettecolor.tiff?raw=true")
-
-# Edit values by colour band (values can be accessed via attr(rrr[[1]], "colors"))
-values(t)[values(t== 0)] <- NA
-values(t)[values(t>=1 & t <=43)] <- -5
-values(t)[values(t>= 44 & t <=55)] <- -4
-values(t)[values(t>= 56 & t <=68)] <- -3
-values(t)[values(t>= 69 & t<=74)] <- -2
-values(t)[values(t>= 75 & t<=80)] <- -1
-values(t)[values(t>= 81 & t<=126)] <- 0
-values(t)[values(t>= 127 & t<=129)] <- 0
-values(t)[values(t>= 130 & t<=175)] <- 0
-values(t)[values(t>= 176 & t<=181)] <- 1
-values(t)[values(t>= 182 & t<=187)] <- 2
-values(t)[values(t>= 188 & t<=201)] <- 3
-values(t)[values(t>= 201 & t<=212)] <- 4
-values(t)[values(t>= 213 & t<=254)] <- 5
-values(t)[values(t>= 254)] <- NA
-
-librarian::shelf(ggalt, raster, sf, mapview, maptools)
-
-# Create dataframe
-tt <- as.data.frame(t, xy= T)
-
-# Load world map data
-data("wrld_simpl")
-wrld_simpl_sf <- sf::st_as_sf(wrld_simpl) 
-
-# Function to calculate cells above/below range (60 likelihood)
-ex <- raster::extract(t, wrld_simpl, 
-              fun=function(x,...)(sum(na.omit(x) >= 3) / length(x)), 
-              na.rm= TRUE, 
-              df= T,
-              weights = F) %>%
-  dplyr::select(-ID)
-
-xe <- raster::extract(t, wrld_simpl,
-              fun=function(x,...)(sum(na.omit(x) <= -3) / length(x)), 
-              na.rm= TRUE, 
-              df= T, 
-              weights = F) %>%
-  dplyr::select(-ID)
-
-# Create and join the coverage datasets
-fortyhigh <- cbind.data.frame(wrld_simpl_sf$ISO3, ex)
-fortylow <- cbind.data.frame(wrld_simpl_sf$ISO3, xe)
-join <- left_join(fortyhigh,
-                  fortylow, 
-                  by = "wrld_simpl_sf$ISO3" )
-
-# Calculate area coverage either wet or dry
-ex_cov <- join %>% 
-  mutate(Forecast = palettecolor.tiff.raw.true.x + palettecolor.tiff.raw.true.y) 
-
-# Bind max coverage to world sf
-binding <- cbind(wrld_simpl_sf, ex_cov$Forecast)  
-
-# Compile seasonal risk index
-seasonl_risk <- binding %>%
-  mutate(NH_seasonal_risk_norm = case_when(ex_cov.Forecast < 0.1 ~ 0,
-                                           ex_cov.Forecast >= 0.1 & ex_cov.Forecast < 0.5 ~ 7,
-                                           ex_cov.Forecast >= 0.5 ~ 10,
-                                           TRUE ~ NA_real_)) %>%
-  rename(Country = ISO3) %>%
-  as_tibble(.) %>%
-  dplyr::select(Country, NH_seasonal_risk_norm, -geometry) 
+# Load from Github
+seasonl_risk <- suppressWarnings(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/seasonal_risk_list"))
+seasonl_risk <- seasonl_risk %>%
+  dplyr::select(-X1) %>%
+  rename(
+    Country = "ISO3",
+    NH_seasonal_risk_norm = risklevel
+  )
 
 #-------------------------------------—Locust outbreaks----------------------------------------------
 # List of countries and risk factors associated with locusts (FAO), see:http://www.fao.org/ag/locusts/en/info/info/index.html
-high <- c("ETH", "KEN", "SOM", "SAU")#SUD", "ERI", "YEM", "SAU")
-med <- c()#"TZA", "UGA", "SSD", "DJI")
-low <- c("ERI", "IRN", "SSD", "SDN", "TZA", "UGA", "YEM", "DJI")
 
-#Merge with countrylist
-countrylist <- read.csv("Indicator_dataset/countrylist.csv")
-locust_risk <- countrylist %>%
-  dplyr::select(-X, -Countryname) %>%
-  mutate(
-    NH_locust_norm = case_when(
-    Country %in% high ~ 10,
-    Country %in% med ~ 7,
-    Country %in% low ~ 3,
-    TRUE ~ 0
-  ))
+# high <- c("ETH", "KEN", "SOM", "SAU")#SUD", "ERI", "YEM", "SAU")
+# med <- c()#"TZA", "UGA", "SSD", "DJI")
+# low <- c("ERI", "IRN", "SSD", "SDN", "TZA", "UGA", "YEM", "DJI")
 
+# Merge with countrylist
+# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+# locust_risk <- countrylist %>%
+#   dplyr::select(-X, -Countryname) %>%
+#   mutate(
+#     NH_locust_norm = case_when(
+#     Country %in% high ~ 10,
+#     Country %in% med ~ 7,
+#     Country %in% low ~ 3,
+#    TRUE ~ 0
+#  ))
+
+locust_risk <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/locust_risk.csv"))
+locust_risk <- locust_risk %>%
+  dplyr::select(-X1)
 #---------------------------------—Natural Hazard ACAPS---------------------------------
 acaps_nh <- acapssheet[,c("Country", "NH_natural_acaps")]
 
