@@ -234,7 +234,7 @@ covidgrowth <- covid %>%
   group_by(iso_code, previous2week) %>%
   summarise(
     meandeaths = mean(new_deaths_per_million, na.rm = T),
-    meancase = mean(new_cases_per_million, na.rm = T)
+    meancase = mean(new_cases_per_million, na.rm = T),
   )
 
 covidgrowth <- covidgrowth %>%
@@ -294,7 +294,7 @@ colnames(covidcurrent) <- c(
   "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm"
 )
 
-# #-------------------—(Alternative COVID deaths)---------------------------------
+# #—(Alternative COVID deaths)
 # # Load COVID data
 # cov <- read.csv("https://raw.githubusercontent.com/scc-usc/ReCOVER-COVID-19/master/results/forecasts/global_deaths_current_0.csv")
 # cov_current <- read.csv("https://raw.githubusercontent.com/scc-usc/ReCOVER-COVID-19/master/results/forecasts/global_deaths.csv")
@@ -482,7 +482,7 @@ countrylist <- read.csv("Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
-health <- left_join(countrylist, HIS, by = "Country") %>%
+health_sheet <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., OXrollback, by = "Country") %>%
   left_join(., covidgrowth, by = "Country") %>%
   left_join(., covidcurrent, by = "Country") %>%
@@ -493,7 +493,7 @@ health <- left_join(countrylist, HIS, by = "Country") %>%
   left_join(., acaps_health, by = "Country") %>%
   arrange(Country)
 
-write.csv(health, "Risk_sheets/healthsheet.csv")
+write.csv(health_sheet, "Risk_sheets/healthsheet.csv")
 print("Health sheet written")
 #
 ##
@@ -521,7 +521,7 @@ upperrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.90), na.rm = T)
 lowerrisk <- quantile(proteus$F_Proteus_Score, probs = c(0.10), na.rm = T)
 proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 
-# # ----------------------------—(Artemis)----------------------------------------
+# # —(Artemis)
 # #artemis <- read.csv("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/artemis.csv")
 # # artemis <- read.csv("https://drive.google.com/file/d/1EmGwfnF2iS4-oHqn3HoXxuv12YGQyGDv/view?usp=sharing")
 # drive_download("Restricted_Data/artemis.csv", path = "tmp-artemis.csv")
@@ -542,10 +542,10 @@ proteus <- normfuncpos(proteus, upperrisk, lowerrisk, "F_Proteus_Score")
 #     ) %>%
 #   dplyr::select(-X)
 
-#------------------—FEWSNET (with CRW threshold)-------------------------------
+#------------------—FEWSNET (with CRW threshold)---
 
 #Load database
-fewswb <- suppressMessages(read_csv("Indicator_dataset/FEWS February 2021 Update_04-05-21.csv"))
+fewswb <- suppressMessages(read_csv("Indicator_dataset/FEWS February 2021 Update_04-05-21.csv", col_types = cols()))
 
 #Calculate country totals
 fewsg <- fewswb %>%
@@ -649,7 +649,7 @@ fews_dataset <- left_join(fewssum, fews_summary, by = "country") %>%
 
 colnames(fews_dataset[-1]) <- paste0("F_", colnames(fews_dataset[-1])) 
 
-# #--------------—(Alternative Food price volatility scopes) -----------------------
+# #—(Alternative Food price volatility scopes) -----------------------
 # fao_fpma <- read_html("http://www.fao.org/giews/food-prices/home/en/")
 # 
 # #Highlight countries that are undergoing high FPV  
@@ -722,7 +722,7 @@ ag_ob <- ag_ob_data %>%
   )
 
 #-------------------------—FAO/WFP HOTSPOTS----------------------------
-fao_wfp <- suppressWarnings(read_csv("Indicator_dataset/WFP:FAO_food.csv") %>%
+fao_wfp <- suppressWarnings(read_csv("Indicator_dataset/WFP:FAO_food.csv", col_types = cols()) %>%
   dplyr::select(-X2))
 
 fao_wfp <- fao_wfp %>%
@@ -739,7 +739,7 @@ countrylist <- read.csv("Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
-foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
+food_sheet <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fews_dataset, by = "Country") %>%
   # left_join(., fpv, by = "Country") %>%  # Reintroduce if FAO price site comes back online
   # left_join(., fpv_alt, by = "Country") %>% # not current
@@ -748,7 +748,7 @@ foodsecurity <- left_join(countrylist, proteus, by = "Country") %>%
   left_join(., fao_wfp, by = "Country") %>%
   arrange(Country)
 
-write.csv(foodsecurity, "Risk_sheets/foodsecuritysheet.csv")
+write.csv(food_sheet, "Risk_sheets/foodsecuritysheet.csv")
 print("Food sheet written")
 
 #
@@ -930,7 +930,7 @@ print("Food sheet written")
 ##
 #
 # 
-# #--------------------------—(MACRO DATA)---------------------------------------
+# #—(MACRO DATA)---
 # macro <- read.csv("Indicator_dataset/macro.csv")
 # macro <- macro %>%
 #   mutate(
@@ -942,7 +942,7 @@ print("Food sheet written")
 # lowerrisk <- quantile(macro$M_Economic_and_Financial_score, probs = c(0.1), na.rm = T)
 # macro <- normfuncpos(macro, upperrisk, lowerrisk, "M_Economic_and_Financial_score")
 
-# #---------------------------—(GDP forecast 2020)-------------------------------
+# #-—(GDP forecast 2020)---
 # gdp <- suppressMessages(read_csv("Indicator_dataset/gdp.csv"))
 # gdp <- gdp %>%
 #   dplyr::select(-X1)
@@ -1021,7 +1021,7 @@ print("Food sheet written")
 #                  imf_gdp_2021 %>% dplyr::select(Country, M_imf_gdp_diff_norm),
 #                  by = "Country")
 
-# #-------------------------—(MACRO FIN REVIEW)--------------------------------------------
+# #---—(MACRO FIN REVIEW)
 # data <- read.csv("Indicator_dataset/macrofin.csv")
 # 
 # macrofin <- data %>%
@@ -1134,7 +1134,7 @@ eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score")
 eiu_joint <- normfuncpos(eiu_joint, 2, -2, "M_EIU_12m_change")
 eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score_12m")
 
-# #-----------------------------—(Corporate Vulnerability Index)-----------------------------
+# #---—(Corporate Vulnerability Index)-
 # cvi <- read.csv("Indicator_dataset/cvi.csv")
 # 
 # # Arrange dataset
@@ -1151,14 +1151,14 @@ countrylist <- read.csv("Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
-macrosheet <- #left_join(countrylist, macro, by = "Country") %>% # not current
+macro_sheet <- #left_join(countrylist, macro, by = "Country") %>% # not current
   # left_join(., gdp, by = "Country") %>% # not current
   # left_join(., macrofin, by = "Country") %>% # not current
   left_join(countrylist, eiu_joint, by = "Country") %>%
   # left_join(., cvi, by = "Country") %>% # not current
   arrange(Country) 
 
-write.csv(macrosheet, "Risk_sheets/macrosheet.csv")
+write.csv(macro_sheet, "Risk_sheets/macrosheet.csv")
 print("Macro sheet written")
 
 #
@@ -1169,7 +1169,7 @@ print("Macro sheet written")
 ##
 #
 
-# #--------------------------------—(OCHA)------------------------------------------
+# #--—(OCHA)--
 # # Load OCHA database
 # ocha <- suppressMessages(read_csv("Indicator_dataset/OCHA_socioeconomic.csv"))
 # ocha <- ocha %>%
@@ -1180,8 +1180,8 @@ print("Macro sheet written")
 # lowerrisk <- quantile(ocha$S_OCHA_Covid.vulnerability.index, probs = c(0.05), na.rm = T)
 # ocha <- normfuncpos(ocha, upperrisk, lowerrisk, "S_OCHA_Covid.vulnerability.index")
 
-#---------------------------—Alternative socio-economic data (based on INFORM)----------------------------
-inform_2021 <- suppressMessages(read_csv("Indicator_dataset/INFORM_2021.csv"))
+#---------------------------—Alternative socio-economic data (based on INFORM)
+inform_2021 <- suppressMessages(read_csv("Indicator_dataset/INFORM_2021.csv", col_types = cols()))
 
 inform_data <- inform_2021 %>%
   dplyr::select(Country, "Socio-Economic Vulnerability") %>%
@@ -1220,7 +1220,7 @@ socio_forward <- inform_covid_warning %>%
 #--------------------------—MPO: Poverty projections----------------------------------------------------
 # mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
 
-drive_download("Restricted_Data/global.dta", path = "tmp-global.dta")
+drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
 mpo <- read_dta("tmp-global.dta")
 unlink("tmp-global.dta")
 
@@ -1303,7 +1303,7 @@ household_risk <- macrofin %>%
 # phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
 #                          sheet = "2. Harmonized Indicators")
 
-drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T)
+drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
 phone_data <- read_excel("tmp-Phone_surveys.xlsx",
                          sheet = "2. Harmonized Indicators")
 unlink("tmp-Phone_surveys.xlsx")
@@ -1573,7 +1573,7 @@ gdac <- gdac %>%
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
 
-# #----------------------------—(ThinkHazard!)------------------------------------------------------
+# #--—(ThinkHazard!)--
 # # Find countries in the ThinkHazard database
 # country <- read.csv("https://raw.githubusercontent.com/GFDRR/thinkhazardmethods/master/source/download/ADM0_TH.csv")
 # country <- as.data.frame(country)
@@ -1646,7 +1646,7 @@ informnathaz <- inform_2021 %>%
 # Normalise scores
 informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
 
-#----------------------—(UKMO La Nina)--------------------------------------------------------
+#—(UKMO La Nina)
 # La_nina_data <- read.csv("Indicator_dataset/La_nina.csv", stringsAsFactors=FALSE)
 # La_nina_data <- as_tibble(La_nina_data)
 # 
@@ -1668,7 +1668,7 @@ informnathaz <- normfuncpos(informnathaz, 7, 1, "NH_Hazard_Score")
 
 #---------------------------------- —IRI Seasonal Forecast ------------------------------------------
 # Load from Github
-seasonl_risk <- suppressWarnings(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/seasonal_risk_list"))
+seasonl_risk <- suppressWarnings(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/seasonal_risk_list", col_types = cols()))
 seasonl_risk <- seasonl_risk %>%
   dplyr::select(-X1) %>%
   rename(
@@ -1695,7 +1695,7 @@ seasonl_risk <- seasonl_risk %>%
 #    TRUE ~ 0
 #  ))
 
-locust_risk <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/locust_risk.csv"))
+locust_risk <- suppressMessages(read_csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/locust_risk.csv", col_types = cols()))
 locust_risk <- locust_risk %>%
   dplyr::select(-X1)
 #---------------------------------—Natural Hazard ACAPS---------------------------------
@@ -1706,7 +1706,7 @@ countrylist <- read.csv("Indicator_dataset/countrylist.csv")
 countrylist <- countrylist %>%
   dplyr::select(-X)
 
-nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
+nathazard_sheet <- left_join(countrylist, gdac, by = "Country") %>%
   left_join(., informnathaz, by = "Country") %>%
   left_join(., seasonl_risk, by = "Country") %>%
   left_join(., locust_risk, by = "Country") %>%
@@ -1715,7 +1715,7 @@ nathazardfull <- left_join(countrylist, gdac, by = "Country") %>%
   drop_na(Country) %>%
   arrange(Country)
 
-write.csv(nathazardfull, "Risk_sheets/Naturalhazards.csv")
+write.csv(nathazard_sheet, "Risk_sheets/Naturalhazards.csv")
 print("Natural hazard sheet written")
 #
 ##
@@ -1916,7 +1916,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------—REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_4.csv"))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_4.csv", col_types = cols()))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
@@ -1990,16 +1990,15 @@ conflict_dataset <- conflict_dataset_raw %>%
 # Compile joint database
 countrylist <- read.csv("Indicator_dataset/countrylist.csv")
 
-fragilitysheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %>%
+fragility_sheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %>%
   dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
   rename_with(
     .fn = ~ paste0("Fr_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
   )
 
-write.csv(fragilitysheet, "Risk_sheets/fragilitysheet.csv")
+write.csv(fragility_sheet, "Risk_sheets/fragilitysheet.csv")
 print("Fragility sheet written")
-}
 
 #
 ##
@@ -2026,13 +2025,13 @@ countrylist <- countrylist %>%
 # Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/Socioeconomic_sheet.csv")
 # acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/update_socio_eco/Risk_sheets/acapssheet.csv")
 
-healthsheet <- read.csv("Risk_sheets/healthsheet.csv")
-foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")
-# debtsheet <- read.csv("Risk_sheets/debtsheet.csv")
-fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")
-macrosheet <- read.csv("Risk_sheets/macrosheet.csv")
-Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")
-Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")
+# healthsheet <- read.csv("Risk_sheets/healthsheet.csv")
+# foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")
+# # debtsheet <- read.csv("Risk_sheets/debtsheet.csv")
+# fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")
+# macrosheet <- read.csv("Risk_sheets/macrosheet.csv")
+# Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")
+# Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")
 
 # Load dimension / data dictionary
 indicators <- as.data.frame(read.csv("indicators.csv"))
@@ -2040,12 +2039,12 @@ indicators <- as.data.frame(read.csv("indicators.csv"))
 # Compile list of all dimension data for Map function
 # List names should match dimension names in `indicator` data frame
 unique(indicators$Dimension)
-sheetList <- list("Health" = healthsheet,
-                  "Food Security" = foodsecurity,
-                  "Conflict and Fragility" = fragilitysheet, # Technical note uses various names; what do we want to use? Fragility and Conflict, Conflict and Fragility, Conflict Fragility and Institutional Risk
-                  "Macro Fiscal" = macrosheet,
-                  "Natural Hazard" = Naturalhazardsheet,
-                  "Socioeconomic Vulnerability" = Socioeconomic_sheet
+sheetList <- list("Health" = health_sheet,
+                  "Food Security" = food_sheet,
+                  "Conflict and Fragility" = fragility_sheet, # Technical note uses various names; what do we want to use? Fragility and Conflict, Conflict and Fragility, Conflict Fragility and Institutional Risk
+                  "Macro Fiscal" = macro_sheet,
+                  "Natural Hazard" = nathazard_sheet,
+                  "Socioeconomic Vulnerability" = socioeconomic_sheet
 )
 
 # —Write function to apply to each sheet ----
@@ -2081,3 +2080,4 @@ writeSourceCSV <- function(i) {
 
 # —Run -----
 Map(writeSourceCSV, 1:length(sheetList))
+}

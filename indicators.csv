@@ -25,7 +25,7 @@ Emerging,Natural Hazard,GDACS Live Hazard Tracker,,Global Disaster Alert and Coo
 Emerging,Natural Hazard,Locust Threat Level,,FAO,Weekly,,1,NH_locust_norm,locust_risk
 Emerging,Natural Hazard,INFORM Severity,,INFORM,Daily,,1,NH_natural_acaps,acapssheet
 Emerging,Natural Hazard,Seasonal Forecast Index,,"WB, Columbia University","Monthly, on 15th",,1,NH_seasonal_risk_norm,seasonl_risk
-Emerging,Socioeconomic Vulnerability,"Unemployment Rate, % Change",,IMF,Quarterly,,1,S_change_unemp_20_norm,imf_un
+Emerging,Socioeconomic Vulnerability,"Unemployment Rate, % Change",,IMF,Quarterly,,1,S_change_unemp_norm,imf_un
 Emerging,Socioeconomic Vulnerability,MFRI Household Level Risk,,WB,Quarterly,,1,S_Household.risks,household_risk
 Emerging,Socioeconomic Vulnerability,Income Support,,INFORM,Annual,,1,S_income_support.Rating_crm_norm,socio_forward
 Emerging,Socioeconomic Vulnerability,COVID Phone Survey Index,,WB,Monthly,,1,S_phone_average_index_norm,phone_index_data

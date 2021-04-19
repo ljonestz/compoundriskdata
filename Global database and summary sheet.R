@@ -12,7 +12,7 @@ librarian::shelf(
    countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
   gsheet, tidyverse
 )
-
+{
 #
 ##
 ### ********************************************************************************************
@@ -24,12 +24,12 @@ librarian::shelf(
 # Load risk sheets
 healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv") %>% dplyr::select(-X)
 foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv") %>% dplyr::select(-X)
-debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
+#debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
 fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv") %>% dplyr::select(-X)
 macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv") %>% dplyr::select(-X)
 Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv") %>% dplyr::select(-X)
 Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv") %>% dplyr::select(-X)
-acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
+#acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
 
 # Load risk sheets
@@ -105,19 +105,19 @@ riskflags <- globalrisk %>%
     EMERGING_RISK_MACRO_FISCAL = M_EIU_12m_change_norm,
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
       S_pov_comb_norm,
-      S_change_unemp_20_norm,
+      S_change_unemp_norm,
       S_income_support.Rating_crm_norm,
       S_Household.risks,
       S_phone_average_index_norm,
       na.rm = T
     ),
-    EMERGING_RISK_NATURAL_HAZARDS = pmax(
+    EMERGING_RISK_NATURAL_HAZARDS = as.numeric(pmax(
       NH_GDAC_Hazard_Score_Norm,
       NH_natural_acaps,
       NH_seasonal_risk_norm,
       NH_locust_norm,
       na.rm = T
-    ),
+    )),
     EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
       Fr_REIGN_Normalised,
       Fr_Displaced_UNHCR_Normalised,
@@ -180,8 +180,8 @@ riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
                                                               append = F
 )))
 
-riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing / 2)))
-riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging / 2)))
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing / 2)))
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging / 2)))
 
 # Drop ternary rates (may want to reinstate in the future)
 riskflags <- riskflags %>%
@@ -333,51 +333,241 @@ riskflags <- inner_join(riskflags,
                         keep = F
 )
 
-#-----------------------------—Calculate emerging risk score using existing risk ----------------------------------------------
+#-----------------------------—Calculate Overall Alert w/ Geometric Mean ----------------------------------------------
 # Geometric mean of existing and emerging (and emerging when existing is NA)
 # This is how we are now calculating overall alert, though here it's called emerging risk sq
+
 riskflags <- riskflags %>%
   mutate(
-    EMERGING_RISK_HEALTH_SQ = case_when(
+    OVERALL_HEALTH_GEO = case_when(
       !is.na(EXISTING_RISK_HEALTH) ~ sqrt(EXISTING_RISK_HEALTH * EMERGING_RISK_HEALTH),
       TRUE ~ EMERGING_RISK_HEALTH
     ),
-    EMERGING_RISK_HEALTH_SQ_SQ = case_when(
-      !is.na(EXISTING_RISK_HEALTH) ~ sqrt(EXISTING_RISK_HEALTH * EMERGING_RISK_HEALTH_SQ_ALT),
-      TRUE ~ EMERGING_RISK_HEALTH
-    ),
-    EMERGING_RISK_FOOD_SECURITY_SQ = case_when(
+    # OVERALL_HEALTH_GEO_ALT = case_when(
+    #   !is.na(EXISTING_RISK_HEALTH) ~ sqrt(EXISTING_RISK_HEALTH * EMERGING_RISK_HEALTH_SQ_ALT),
+    #   TRUE ~ EMERGING_RISK_HEALTH
+    # ),
+    OVERALL_FOOD_SECURITY_GEO = case_when(
       !is.na(EXISTING_RISK_FOOD_SECURITY) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
       TRUE ~ EMERGING_RISK_FOOD_SECURITY
     ),
-    EMERGING_RISK_MACRO_FISCAL_SQ = case_when(
+    OVERALL_MACRO_FISCAL_GEO = case_when(
       !is.na(EXISTING_RISK_MACRO_FISCAL) ~ sqrt(EXISTING_RISK_MACRO_FISCAL * EMERGING_RISK_MACRO_FISCAL),
       TRUE ~ EMERGING_RISK_MACRO_FISCAL
     ),
-    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ = case_when(
+    OVERALL_SOCIOECONOMIC_VULNERABILITY_GEO = case_when(
       !is.na(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY) ~ sqrt(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY * EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY),
       TRUE ~ as.numeric(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)
     ),
-    EMERGING_RISK_NATURAL_HAZARDS_SQ = EMERGING_RISK_NATURAL_HAZARDS,
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ = case_when(
+    OVERALL_NATURAL_HAZARDS_GEO = case_when(
+      !is.na(EXISTING_RISK_NATURAL_HAZARDS) ~ sqrt(EXISTING_RISK_NATURAL_HAZARDS * EMERGING_RISK_NATURAL_HAZARDS),
+      TRUE ~ EMERGING_RISK_NATURAL_HAZARDS
+    ),
+    OVERALL_FRAGILITY_INSTITUTIONS_GEO = case_when(
       !is.na(EXISTING_RISK_FRAGILITY_INSTITUTIONS) ~ sqrt(EXISTING_RISK_FRAGILITY_INSTITUTIONS * EMERGING_RISK_FRAGILITY_INSTITUTIONS),
       TRUE ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS
     )
   )
 
 # Calculate total emerging risk scores for SQ
-sqnam <- c(
-  "EMERGING_RISK_HEALTH_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
-  "EMERGING_RISK_MACRO_FISCAL_SQ","EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ",
-  "EMERGING_RISK_NATURAL_HAZARDS_SQ",
-  "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ"
+geonam <- c(
+  "OVERALL_HEALTH_GEO", "OVERALL_FOOD_SECURITY_GEO",
+  "OVERALL_MACRO_FISCAL_GEO","OVERALL_SOCIOECONOMIC_VULNERABILITY_GEO",
+  "OVERALL_NATURAL_HAZARDS_GEO",
+  "OVERALL_FRAGILITY_INSTITUTIONS_GEO"
 )
 
 # Emerging risk score as all high risk scores
-riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >= 7, na.rm = T) 
+riskflags$OVERALL_FLAGS_GEO <- rowSums(riskflags[geonam] >= 7, na.rm = T) 
 
 # Emerging risk score as high + med
-riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ_MED <-  rowSums(riskflags[sqnam] >= 7, na.rm = T) + (rowSums(riskflags[sqnam] < 7 & riskflags[sqnam] >= 5, na.rm = T) / 2)
+riskflags$OVERALL_FLAGS_GEO_MED <-  rowSums(riskflags[geonam] >= 7, na.rm = T) + (rowSums(riskflags[geonam] < 7 & riskflags[geonam] >= 5, na.rm = T) / 2)
+
+
+#-----------------------------—Calculate Overall Alert w/ Arithmetic Mean ----------------------------------------------
+riskflags <- riskflags %>%
+  mutate(
+    OVERALL_HEALTH_AV = case_when(
+      !is.na(EXISTING_RISK_HEALTH) ~ (EXISTING_RISK_HEALTH + EMERGING_RISK_HEALTH)/2,
+      TRUE ~ EMERGING_RISK_HEALTH
+    ),
+    OVERALL_FOOD_SECURITY_AV = case_when(
+      !is.na(EXISTING_RISK_FOOD_SECURITY) ~ (EXISTING_RISK_FOOD_SECURITY + EMERGING_RISK_FOOD_SECURITY)/2,
+      TRUE ~ EMERGING_RISK_FOOD_SECURITY
+    ),
+    OVERALL_MACRO_FISCAL_AV = case_when(
+      !is.na(EXISTING_RISK_MACRO_FISCAL) ~ (EXISTING_RISK_MACRO_FISCAL + EMERGING_RISK_MACRO_FISCAL)/2,
+      TRUE ~ EMERGING_RISK_MACRO_FISCAL
+    ),
+    OVERALL_SOCIOECONOMIC_VULNERABILITY_AV = case_when(
+      !is.na(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY) ~ (EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY + EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)/2,
+      TRUE ~ as.numeric(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)
+    ),
+    OVERALL_NATURAL_HAZARDS_AV = case_when(
+      !is.na(EXISTING_RISK_NATURAL_HAZARDS) ~ (EXISTING_RISK_NATURAL_HAZARDS + EMERGING_RISK_NATURAL_HAZARDS)/2,
+      TRUE ~ EMERGING_RISK_NATURAL_HAZARDS
+    ),
+    OVERALL_FRAGILITY_INSTITUTIONS_AV = case_when(
+      !is.na(EXISTING_RISK_FRAGILITY_INSTITUTIONS) ~ (EXISTING_RISK_FRAGILITY_INSTITUTIONS + EMERGING_RISK_FRAGILITY_INSTITUTIONS)/2,
+      TRUE ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    )
+  )
+
+# Calculate total emerging risk scores for SQ
+arithnam <- c(
+  "OVERALL_HEALTH_AV", "OVERALL_FOOD_SECURITY_AV",
+  "OVERALL_MACRO_FISCAL_AV","OVERALL_SOCIOECONOMIC_VULNERABILITY_AV",
+  "OVERALL_NATURAL_HAZARDS_AV",
+  "OVERALL_FRAGILITY_INSTITUTIONS_AV"
+)
+
+# Emerging risk score as all high risk scores
+riskflags$OVERALL_SCORE_AV <- rowSums(riskflags[arithnam] >= 7, na.rm = T) 
+
+# Emerging risk score as high + med
+riskflags$OVERALL_SCORE_AV_MED <-  rowSums(riskflags[arithnam] >= 7, na.rm = T) + (rowSums(riskflags[arithnam] < 7 & riskflags[arithnam] >= 5, na.rm = T) / 2)
+
+
+#-----------------------------—Calculate Overall Alert w/ Filter: Emerging & Existing == 10 ----------------------------------------------
+riskflags <- riskflags %>%
+  mutate(
+    OVERALL_HEALTH_FILTER_10 = case_when(
+      EXISTING_RISK_HEALTH == 10 & EMERGING_RISK_HEALTH == 10 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_FOOD_SECURITY_FILTER_10 = case_when(
+      EXISTING_RISK_FOOD_SECURITY == 10 & EMERGING_RISK_FOOD_SECURITY == 10 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_MACRO_FISCAL_FILTER_10 = case_when(
+      EXISTING_RISK_MACRO_FISCAL == 10 & EMERGING_RISK_MACRO_FISCAL == 10 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_10 = case_when(
+      EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY == 10 & EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY == 10 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_NATURAL_HAZARDS_FILTER_10 = case_when(
+      EXISTING_RISK_NATURAL_HAZARDS == 10 & EMERGING_RISK_NATURAL_HAZARDS == 10 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_FRAGILITY_INSTITUTIONS_FILTER_10 = case_when(
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS == 10 & EMERGING_RISK_FRAGILITY_INSTITUTIONS == 10 ~ 10,
+      TRUE ~ 0
+    )
+  )
+
+# Calculate total emerging risk scores for SQ
+filter10nam <- c(
+  "OVERALL_HEALTH_FILTER_10", "OVERALL_FOOD_SECURITY_FILTER_10",
+  "OVERALL_MACRO_FISCAL_FILTER_10","OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_10",
+  "OVERALL_NATURAL_HAZARDS_FILTER_10",
+  "OVERALL_FRAGILITY_INSTITUTIONS_FILTER_10"
+)
+
+# Emerging risk score as all high risk scores
+riskflags$OVERALL_SCORE_FILTER_10 <- rowSums(riskflags[filter10nam] >= 7, na.rm = T) 
+
+# Emerging risk score as high + med
+riskflags$OVERALL_SCORE_FILTER_10_MED <-  rowSums(riskflags[filter10nam] >= 7, na.rm = T) + (rowSums(riskflags[filter10nam] < 7 & riskflags[filter10nam] >= 5, na.rm = T) / 2)
+
+#-----------------------------—Calculate Overall Alert w/ Filter: Emerging & Existing >= 7 ----------------------------------------------
+riskflags <- riskflags %>%
+  mutate(
+    OVERALL_HEALTH_FILTER_7 = case_when(
+      EXISTING_RISK_HEALTH >= 7 & EMERGING_RISK_HEALTH >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_FOOD_SECURITY_FILTER_7 = case_when(
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_MACRO_FISCAL_FILTER_7 = case_when(
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7 = case_when(
+      EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 & EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_NATURAL_HAZARDS_FILTER_7 = case_when(
+      EXISTING_RISK_NATURAL_HAZARDS >= 7 & EMERGING_RISK_NATURAL_HAZARDS >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7 = case_when(
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS >= 7 & EMERGING_RISK_FRAGILITY_INSTITUTIONS >= 7 ~ 10,
+      TRUE ~ 0
+    )
+  )
+
+# Calculate total emerging risk scores for SQ
+filter7nam <- c(
+  "OVERALL_HEALTH_FILTER_7", "OVERALL_FOOD_SECURITY_FILTER_7",
+  "OVERALL_MACRO_FISCAL_FILTER_7","OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7",
+  "OVERALL_NATURAL_HAZARDS_FILTER_7",
+  "OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7"
+)
+
+# Emerging risk score as all high risk scores
+riskflags$OVERALL_SCORE_FILTER_7 <- rowSums(riskflags[filter7nam] >= 7, na.rm = T) 
+
+# Emerging risk score as high + med
+riskflags$OVERALL_SCORE_FILTER_7_MED <-  rowSums(riskflags[filter7nam] >= 7, na.rm = T) + (rowSums(riskflags[filter7nam] < 7 & riskflags[filter7nam] >= 5, na.rm = T) / 2)
+
+#-----------------------------—Calculate Overall Alert w/ Filter: Emerging & Existing >= 7, Medium if one is below 7 but >= 5 ----------------------------------------------
+riskflags <- riskflags %>%
+  mutate(
+    OVERALL_HEALTH_FILTER_7_5 = case_when(
+      EXISTING_RISK_HEALTH >= 7 & EMERGING_RISK_HEALTH >= 7 ~ 10,
+      EXISTING_RISK_HEALTH >= 7 & EMERGING_RISK_HEALTH >= 5 ~ 5,
+      EXISTING_RISK_HEALTH >= 5 & EMERGING_RISK_HEALTH >= 7 ~ 5,
+      TRUE ~ 0
+    ),
+    OVERALL_FOOD_SECURITY_FILTER_7_5 = case_when(
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_MACRO_FISCAL_FILTER_7_5 = case_when(
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      TRUE ~ 0
+    ),
+    OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7_5 = case_when(
+      EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 & EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 ~ 10,
+      EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 & EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY >= 5 ~ 5,
+      EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY >= 5 & EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY >= 7 ~ 5,
+      TRUE ~ 0
+    ),
+    OVERALL_NATURAL_HAZARDS_FILTER_7_5 = case_when(
+      EXISTING_RISK_NATURAL_HAZARDS >= 7 & EMERGING_RISK_NATURAL_HAZARDS >= 7 ~ 10,
+      EXISTING_RISK_NATURAL_HAZARDS >= 7 & EMERGING_RISK_NATURAL_HAZARDS >= 5 ~ 5,
+      EXISTING_RISK_NATURAL_HAZARDS >= 5 & EMERGING_RISK_NATURAL_HAZARDS >= 7 ~ 5,
+      TRUE ~ 0
+    ),
+    OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7_5 = case_when(
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS >= 7 & EMERGING_RISK_FRAGILITY_INSTITUTIONS >= 7 ~ 10,
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS >= 7 & EMERGING_RISK_FRAGILITY_INSTITUTIONS >= 5 ~ 5,
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS >= 5 & EMERGING_RISK_FRAGILITY_INSTITUTIONS >= 7 ~ 5,
+      TRUE ~ 0
+    )
+  )
+
+# Calculate total emerging risk scores for SQ
+filter75nam <- c(
+  "OVERALL_HEALTH_FILTER_7_5", "OVERALL_FOOD_SECURITY_FILTER_7_5",
+  "OVERALL_MACRO_FISCAL_FILTER_7_5","OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7_5",
+  "OVERALL_NATURAL_HAZARDS_FILTER_7_5",
+  "OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7_5"
+)
+
+# Emerging risk score as all high risk scores
+riskflags$OVERALL_SCORE_FILTER_7_5 <- rowSums(riskflags[filter75nam] >= 7, na.rm = T) 
+
+# Emerging risk score as high + med
+riskflags$OVERALL_SCORE_FILTER_7_5_MED <-  rowSums(riskflags[filter75nam] >= 7, na.rm = T) + (rowSums(riskflags[filter75nam] < 7 & riskflags[filter75nam] >= 5, na.rm = T) / 2)
 
 #
 ##
@@ -438,7 +628,7 @@ reliabilitysheet <- globalrisk %>%
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
                                                                 dplyr::select(
                                                                   S_pov_comb_norm,
-                                                                  S_change_unemp_20_norm,
+                                                                  S_change_unemp_norm,
                                                                   S_income_support.Rating_crm_norm,
                                                                   S_Household.risks,
                                                                   S_phone_average_index_norm
@@ -512,7 +702,7 @@ riskflags <- left_join(riskflags %>%
 # Write csv file of all risk flags (+reliability scores)
 
 write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
-
+}
 # 
 # #
 # ##
