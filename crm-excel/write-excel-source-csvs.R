@@ -70,6 +70,8 @@ writeSourceCSV <- function(i) {
   sheet <- arrange(sheet, Country)
   
   write_csv(sheet, paste0("crm-excel/", dimension, ".csv"))
+  empties <- empty_cols(sheet) %>% names()
+  if(length(empties) > 0) {paste(dimension, " is empty on ", empties) } else {paste(dimension, " is complete") }
 }
 
 Map(writeSourceCSV, 1:length(sheetList))
