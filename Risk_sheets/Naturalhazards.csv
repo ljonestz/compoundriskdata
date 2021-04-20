@@ -1,6 +1,6 @@
 "","Countryname","Country","NH_GDAC_Date","NH_GDAC_Hazard_Status","NH_GDAC_Hazard_Severity","NH_GDAC_Hazard_Type","NH_GDAC_Hazard_Score_Norm","NH_Hazard_Score","NH_Hazard_Score_norm","NH_seasonal_risk_norm","NH_locust_norm","NH_natural_acaps"
 "1","Afghanistan","AFG",NA,NA,NA,NA,NA,6.7,9.5,7,0,0
-"2","Angola","AGO","2021-03-18","past","green","flood",0,3.1,3.5,0,0,0
+"2","Angola","AGO",NA,NA,NA,NA,NA,3.1,3.5,0,0,0
 "3","Albania","ALB",NA,NA,NA,NA,NA,6.4,9,0,0,0
 "4","United Arab Emirates","ARE",NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
 "5","Argentina","ARG",NA,NA,NA,NA,NA,4,5,0,0,0
@@ -20,7 +20,7 @@
 "19","Bosnia and Herzegovina","BIH",NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
 "20","Belarus","BLR",NA,NA,NA,NA,NA,2.2,2,0,0,0
 "21","Belize","BLZ",NA,NA,NA,NA,NA,5.5,7.5,0,0,0
-"22","Bolivia","BOL","2021-03-15","past","green","flood",0,4.7,6.16666666666667,0,0,0
+"22","Bolivia","BOL",NA,NA,NA,NA,NA,4.7,6.16666666666667,0,0,0
 "23","Brazil","BRA","2021-03-25","past","green","flood",0,4,5,0,0,0
 "24","Barbados","BRB",NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
 "25","Brunei Darussalam","BRN",NA,NA,NA,NA,NA,2.8,3,0,0,0
@@ -33,7 +33,7 @@
 "32","China","CHN",NA,NA,NA,NA,NA,7.5,10,0,0,0
 "33","Côte d'Ivoire","CIV",NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
 "34","Cameroon","CMR",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
-"35","Congo DR","COD","2021-03-17","past","green","flood",0,4.5,5.83333333333333,0,0,0
+"35","Congo DR","COD",NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
 "36","Congo","COG",NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
 "37","Colombia","COL","2021-04-14","past","green","flood",0,6.7,9.5,0,0,0
 "38","Comoros","COM",NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
@@ -129,10 +129,10 @@
 "128","Norway","NOR",NA,NA,NA,NA,NA,0.7,0,0,0,0
 "129","Nepal","NPL",NA,NA,NA,NA,NA,5.8,8,7,0,0
 "130","Nauru","NRU",NA,NA,NA,NA,NA,2.8,3,10,0,0
-"131","New Zealand","NZL","2021-04-05","past","green","earthquake",0,4.5,5.83333333333333,0,0,0
+"131","New Zealand","NZL",NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
 "132","Oman","OMN",NA,NA,NA,NA,NA,5,6.66666666666667,7,0,0
 "133","Pakistan","PAK","2021-04-09","past","green","flood",0,7.4,10,7,0,0
-"134","Panama","PAN",NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
+"134","Panama","PAN","2021-04-16","past","green","flood",0,6.2,8.66666666666667,0,0,0
 "135","Peru","PER","2021-03-31","past","green","flood",0,7.1,10,0,0,0
 "136","Philippines","PHL","2021-04-12","past","green","flood",0,8.4,10,0,0,0
 "137","Palau","PLW",NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
@@ -164,7 +164,7 @@
 "163","Seychelles","SYC",NA,NA,NA,NA,NA,2.8,3,0,0,0
 "164","Syria","SYR",NA,NA,NA,NA,NA,5.7,7.83333333333333,7,0,0
 "165","Chad","TCD",NA,NA,NA,NA,NA,4.2,5.33333333333333,7,0,0
-"166","Togo","TGO",NA,NA,NA,NA,NA,3,3.33333333333333,7,0,0
+"166","Togo","TGO","2021-04-13","past","green","flood",0,3,3.33333333333333,7,0,0
 "167","Thailand","THA",NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
 "168","Tajikistan","TJK",NA,NA,NA,NA,NA,5.8,8,7,0,0
 "169","Turkmenistan","TKM",NA,NA,NA,NA,NA,3.7,4.5,7,0,0
@@ -174,7 +174,7 @@
 "173","Tunisia","TUN",NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
 "174","Turkey","TUR",NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
 "175","Tuvalu","TUV",NA,NA,NA,NA,NA,3,3.33333333333333,10,0,0
-"176","Tanzania","TZA",NA,NA,NA,NA,NA,5.1,6.83333333333333,0,5,0
+"176","Tanzania","TZA","2021-04-14","past","green","flood",0,5.1,6.83333333333333,0,5,0
 "177","Uganda","UGA","2021-03-22","past","green","flood",0,4.4,5.66666666666667,0,5,0
 "178","Ukraine","UKR",NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
 "179","Uruguay","URY",NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
@@ -183,7 +183,7 @@
 "182","Saint Vincent and the Grenadines","VCT","2021-04-19","active","orange","volcano",10,2.6,2.66666666666667,0,0,0
 "183","Venezuela","VEN",NA,NA,NA,NA,NA,6.1,8.5,0,0,0
 "184","Viet Nam","VNM",NA,NA,NA,NA,NA,7.4,10,0,0,0
-"185","Vanuatu","VUT","2020-11-27","past","green","volcano",0,5.6,7.66666666666667,10,0,0
+"185","Vanuatu","VUT",NA,NA,NA,NA,NA,5.6,7.66666666666667,10,0,0
 "186","Samoa","WSM",NA,NA,NA,NA,NA,3.5,4.16666666666667,0,0,0
 "187","Yemen","YEM",NA,NA,NA,NA,NA,4.3,5.5,0,5,0
 "188","South Africa","ZAF",NA,NA,NA,NA,NA,4.9,6.5,0,0,0
