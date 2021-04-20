@@ -35,7 +35,7 @@
 "34","Cameroon","CMR",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
 "35","Congo DR","COD","2021-03-17","past","green","flood",0,4.5,5.83333333333333,0,0,0
 "36","Congo","COG",NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
-"37","Colombia","COL","2021-04-06","past","green","flood",0,6.7,9.5,0,0,0
+"37","Colombia","COL","2021-04-14","past","green","flood",0,6.7,9.5,0,0,0
 "38","Comoros","COM",NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
 "39","Cabo Verde","CPV",NA,NA,NA,NA,NA,1.5,0.833333333333334,0,0,0
 "40","Costa Rica","CRI",NA,NA,NA,NA,NA,6,8.33333333333333,0,0,0
@@ -74,7 +74,7 @@
 "73","Croatia","HRV",NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
 "74","Haiti","HTI","2021-04-06","past","green","flood",0,7,10,0,0,0
 "75","Hungary","HUN",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
-"76","Indonesia","IDN","2021-04-14","past","green","earthquake",0,7.7,10,7,0,0
+"76","Indonesia","IDN","2021-04-19","active","green","earthquake",0,7.7,10,7,0,0
 "77","India","IND","2021-03-27","past","green","flood",0,7.8,10,7,0,0
 "78","Ireland","IRL",NA,NA,NA,NA,NA,2.2,2,0,0,0
 "79","Iran","IRN","2021-04-18","active","orange","earthquake",10,6.8,9.66666666666667,7,5,0
@@ -180,7 +180,7 @@
 "179","Uruguay","URY",NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
 "180","United States of America","USA","2021-04-08","past","green","earthquake",0,6.6,9.33333333333333,7,0,0
 "181","Uzbekistan","UZB",NA,NA,NA,NA,NA,5.2,7,7,0,0
-"182","Saint Vincent and the Grenadines","VCT","2021-04-15","past","orange","volcano",0,2.6,2.66666666666667,0,0,0
+"182","Saint Vincent and the Grenadines","VCT","2021-04-19","active","orange","volcano",10,2.6,2.66666666666667,0,0,0
 "183","Venezuela","VEN",NA,NA,NA,NA,NA,6.1,8.5,0,0,0
 "184","Viet Nam","VNM",NA,NA,NA,NA,NA,7.4,10,0,0,0
 "185","Vanuatu","VUT","2020-11-27","past","green","volcano",0,5.6,7.66666666666667,10,0,0

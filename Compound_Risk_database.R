@@ -685,7 +685,7 @@ ag_ob_data <- ag_ob_data %>%
   )
 
 ag_ob <- ag_ob_data %>%
-  filter(X == "Inflation") %>%
+  filter(X == "Food Change Yoy") %>%
   dplyr::select(-Income.Level, -Color.Bin, -X) %>%
   group_by(Country) %>%
   summarise(
