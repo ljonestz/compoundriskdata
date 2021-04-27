@@ -439,31 +439,33 @@ inform_covid_warning <- normfuncpos(inform_covid_warning, 6, 2, "H_INFORM_rating
 write.csv(inform_covid_warning, "Indicator_dataset/inform_covid_warning.csv")
 
 #----------------------------------—WMO DONS--------------------------------------------------------------
-wmo_raw <- read_html("https://www.who.int/csr/don/archive/year/2021/en/")
+dons_raw <- read_html("https://www.who.int/emergencies/disease-outbreak-news")
 
-wmo_text <- wmo_raw %>%
-  html_nodes(".col_2-1_1") %>%
-  html_nodes(".link_info") %>%
+dons_select <- dons_raw %>%
+  html_nodes(".sf-list-vertical") %>%
+  html_nodes("h4") #%>%
+#html_text()
+
+dons_date <- dons_select %>%
+  html_nodes("span:nth-child(2)") %>%
   html_text()
 
-wmo_date <- wmo_raw %>%
-  html_nodes(".col_2-1_1") %>%
-  html_nodes("a") %>%
-  html_text() %>%
-  tail(-2)
+dons_text <- dons_select %>%
+  html_nodes(".trimmed") %>%
+  html_text()
 
-wmo_don_full <- bind_cols(wmo_text, wmo_date) %>%
+wmo_don_full <- bind_cols(dons_text, dons_date) %>%
   rename(text = "...1" ,
          date = "...2") %>%
-  mutate(disease = trimws(sub("\\–.*", "", text)),
+  mutate(disease = trimws(sub("\\s[-——].*", "", text)),
          country = trimws(sub(".*–", "", text)),
          country = trimws(sub(".*-", "", country)),
          date = dmy(date)) %>%
   separate_rows(country, sep = ",") %>%
   mutate(wmo_country_alert = countrycode(country,
-                     origin = "country.name",
-                     destination = "iso3c",
-                     nomatch = NULL
+                                         origin = "country.name",
+                                         destination = "iso3c",
+                                         nomatch = NULL
   ))
 
 countrylist <- read.csv("Indicator_dataset/countrylist.csv")
@@ -2074,8 +2076,10 @@ writeSourceCSV <- function(i) {
   sheet <- arrange(sheet, Country)
   
   write_csv(sheet, paste0("crm-excel/", dimension, ".csv"))
+  
+  # Check if any sheets have empty columns
   empties <- empty_cols(sheet) %>% names()
-  if(length(empties) > 0) {paste(dimension, " is empty on ", empties) } else {paste(dimension, " is complete") }
+  if(length(empties) > 0) {paste(dimension, " is empty on ", empties) } else {paste(dimension, " is filled") }
 }
 
 # —Run -----
