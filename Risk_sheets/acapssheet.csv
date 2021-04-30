@@ -34,7 +34,7 @@
 "33","Iran","IRN",0,0,0,0
 "34","Kenya","KEN",0,0,0,0
 "35","Malawi","MWI",0,0,0,0
-"36","Mali","MLI",0,0,0,0
+"36","Mali","MLI",10,0,0,0
 "37","Montenegro","MNE",0,0,0,0
 "38","Nigeria","NGA",10,0,0,0
 "39","Papua New Guinea","PNG",0,0,0,0
@@ -75,7 +75,7 @@
 "74","Brunei Darussalam","BRN",0,0,0,0
 "75","Bulgaria","BGR",0,0,0,0
 "76","Cyprus","CYP",0,0,0,0
-"77","Djibouti","DJI",0,0,10,0
+"77","Djibouti","DJI",0,0,0,0
 "78","Ecuador","ECU",0,0,0,0
 "79","Equatorial Guinea","GNQ",0,0,0,0
 "80","Fiji","FJI",0,0,0,0
