@@ -32,7 +32,7 @@ Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/comp
 #acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
 
-# Load risk sheets
+# # Load risk sheets
 # healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
 # foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
 # fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
