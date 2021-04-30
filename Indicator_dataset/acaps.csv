@@ -81,7 +81,7 @@
 "80","Complex crisis","PAK",3.4
 "81","Kashmir conflict","PAK",3.4
 "82","Regional Kashmir conflict","PAK",3.4
-"83","Conflict ","PSE",4
+"83","Complex","PSE",4
 "84","Venezuelan refugees","TTO",1.8
 "85","Venezuela Regional Crisis","TTO",3.6
 "86","Syrian refugees","TUR",3.3
@@ -164,6 +164,10 @@
 "163","Nicaragua","IDN",2.1
 "164","Socioeconomic crisis","IDN",2.1
 "165","Hurricane Eta and Iota","IDN",2.2
-"166","Tunisia","IDN",2.2
-"167","Mixed Migration","IDN",2.2
-"168","Central Mediterranean Route","IDN",2.2
+"166","Saint Vincent and the Grenadines","IDN",2.2
+"167","La Soufriere Volcano Eruption","IDN",2.2
+"168","Timor-Leste","IDN",2.2
+"169","Tropical Cyclone Seroja","IDN",2.2
+"170","Tunisia","IDN",2.2
+"171","Mixed Migration","IDN",2.2
+"172","Central Mediterranean Route","IDN",2.2

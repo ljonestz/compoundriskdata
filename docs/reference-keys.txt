@@ -1,0 +1,17 @@
+introduction
+how-to-use
+methods
+selecting-indicators
+normalizing-indicators
+calculating-dimension-values
+underlying-vulnerability-emerging-threat
+overall-alert
+counting-alert-flags
+dimensions
+natural-hazards
+food-security
+conflict-and-fragility
+macro-fiscal-dynamics
+socio-economic-vulnerability
+health
+acknowledgments
