@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+gitless
+.DS_Store
+.vscode
