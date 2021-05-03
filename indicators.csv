@@ -1,0 +1,32 @@
+Timeframe,Dimension,Indicator,Description,Source,Updates,Underlying,Upcoming,indicator_slug,dataframe
+Underlying,Conflict and Fragility,FCS,,WB,Annual,1,,Fr_FCS_Normalised,fcv
+Underlying,Food Security,Proteus Composite Index,,World Food Programme,Ad hoc,1,,F_Proteus_Score_norm,proteus
+Underlying,Health,Global Health Security Index,,Johns Hopkins/Economist Intelligence Unit,Annual,1,,H_HIS_Score_norm,HIS
+Underlying,Health,INFORM Rating,,INFORM,Annual,1,,H_INFORM_rating.Value_norm,inform_covid_warning
+Underlying,Macro Fiscal,Operational Risk Score,,Economist Intelligence Unit,Monthly,1,,M_EIU_Score_12m_norm,eiu_joint
+Underlying,Natural Hazard,INFORM Natural Multi-hazard Rating,,INFORM,Annual,1,,NH_Hazard_Score_norm,informnathaz
+Underlying,Socioeconomic Vulnerability,INFORM Socio-economic Vulnerability Index,,INFORM,Annual,1,,S_INFORM_vul_norm,inform_data
+Emerging,Conflict and Fragility,Political Fatalities,,ACLED,Monthly,,1,Fr_BRD_Normalised,acled
+Emerging,Conflict and Fragility,Forcibly Displaced People,,UNHCR,Annual,,1,Fr_Displaced_UNHCR_Normalised,idps
+Emerging,Conflict and Fragility,Political Disturbance,,REIGN,Monthly,,1,Fr_REIGN_Normalised,reign
+Emerging,Food Security,FAO WFP Warning,,FAO,Ad hoc,,1,F_fao_wfp_warning,fao_wfp
+Emerging,Food Security,FEWS NET Score,,FEWS NET,Quarterly,,1,F_fews_crm_norm,fews_dataset
+Emerging,Food Security,Food Price Inflation (Secondary Indicator),,WB,Monthly,,2,F_fpv_rating,ag_ob
+Emerging,Health,"Covid Growth, Cases (biweekly)",,OWID,Daily,,1,H_Covidgrowth_casesnorm,covidgrowth
+Emerging,Health,"Covid Growth, Deaths (biweekly)",,OWID,Daily,,1,H_Covidgrowth_deathsnorm,covidgrowth
+Emerging,Health,Oxford Gov Response Index,,Oxford,Daily,,1,H_GovernmentResponseIndexForDisplay_norm,Ox_cov_resp
+Emerging,Health,ACAPS Health Crisis Tracker,,INFORM,Daily,,1,H_health_acaps,acapssheet
+Emerging,Health,New Covid Cases per 1M,,OWID,Daily,,1,H_new_cases_smoothed_per_million_norm,covidgrowth
+Emerging,Health,New Covid Deaths per 1M,,OWID,Daily,,1,H_new_deaths_smoothed_per_million_norm,covidgrowth
+Emerging,Health,Oxford Lockdown Rollback Index,,Oxford,Ad hoc,,1,H_Oxrollback_score_norm,Oxrollback
+Emerging,Health,WHO Disease Outbreak News,,WHO,Ad hoc,,1,H_wmo_don_alert,wmo_don
+Emerging,Macro Fiscal,Operational Risk Score,,Economist Intelligence Unit,Monthly,,1,M_EIU_12m_change_norm,eiu_joint
+Emerging,Natural Hazard,GDACS Live Hazard Tracker,,Global Disaster Alert and Coordination System,Daily,,1,NH_GDAC_Hazard_Score_Norm,gdac
+Emerging,Natural Hazard,Locust Threat Level,,FAO,Weekly,,1,NH_locust_norm,locust_risk
+Emerging,Natural Hazard,INFORM Severity,,INFORM,Daily,,1,NH_natural_acaps,acapssheet
+Emerging,Natural Hazard,Seasonal Forecast Index,,"WB, Columbia University","Monthly, on 15th",,1,NH_seasonal_risk_norm,seasonl_risk
+Emerging,Socioeconomic Vulnerability,"Unemployment Rate, % Change",,IMF,Quarterly,,1,S_change_unemp_norm,imf_un
+Emerging,Socioeconomic Vulnerability,MFRI Household Level Risk,,WB,Quarterly,,1,S_Household.risks,household_risk
+Emerging,Socioeconomic Vulnerability,Income Support,,INFORM,Annual,,1,S_income_support.Rating_crm_norm,socio_forward
+Emerging,Socioeconomic Vulnerability,COVID Phone Survey Index,,WB,Monthly,,1,S_phone_average_index_norm,phone_index_data
+Emerging,Socioeconomic Vulnerability,"People Below $1.90 Poverty Line, % Change",,WB,Quarterly,,1,S_pov_comb_norm,mpo_data
