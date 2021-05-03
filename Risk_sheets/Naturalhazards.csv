@@ -3,7 +3,7 @@
 "2","Angola","AGO",NA,NA,NA,NA,NA,3.1,3.5,0,0,0
 "3","Albania","ALB",NA,NA,NA,NA,NA,6.4,9,0,0,0
 "4","United Arab Emirates","ARE",NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
-"5","Argentina","ARG",NA,NA,NA,NA,NA,4,5,0,0,0
+"5","Argentina","ARG","2021-04-29","past","green","earthquake",0,4,5,0,0,0
 "6","Armenia","ARM",NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
 "7","Antigua and Barbuda","ATG",NA,NA,NA,NA,NA,3.7,4.5,0,0,0
 "8","Australia","AUS",NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
@@ -29,13 +29,13 @@
 "28","Central African Republic","CAF",NA,NA,NA,NA,NA,3.1,3.5,0,0,0
 "29","Canada","CAN",NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
 "30","Switzerland","CHE",NA,NA,NA,NA,NA,2.3,2.16666666666667,0,0,0
-"31","Chile","CHL",NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
+"31","Chile","CHL","2021-05-02","active","green","earthquake",0,6.2,8.66666666666667,7,0,0
 "32","China","CHN",NA,NA,NA,NA,NA,7.5,10,0,0,0
 "33","Côte d'Ivoire","CIV",NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
 "34","Cameroon","CMR",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
 "35","Congo DR","COD",NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
 "36","Congo","COG",NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
-"37","Colombia","COL","2021-04-06","past","green","flood",0,6.7,9.5,7,0,0
+"37","Colombia","COL",NA,NA,NA,NA,NA,6.7,9.5,0,0,0
 "38","Comoros","COM",NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
 "39","Cabo Verde","CPV",NA,NA,NA,NA,NA,1.5,0.833333333333334,0,0,0
 "40","Costa Rica","CRI",NA,NA,NA,NA,NA,6,8.33333333333333,0,0,0
@@ -74,8 +74,8 @@
 "73","Croatia","HRV",NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
 "74","Haiti","HTI","2021-04-06","past","green","flood",0,7,10,0,0,0
 "75","Hungary","HUN",NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
-"76","Indonesia","IDN","2021-04-14","active","green","earthquake",0,7.7,10,0,0,0
-"77","India","IND","2021-03-27","past","green","flood",0,7.8,10,0,0,0
+"76","Indonesia","IDN","2021-05-02","active","green","earthquake",0,7.7,10,7,0,0
+"77","India","IND","2021-04-28","past","orange","earthquake",0,7.8,10,7,0,0
 "78","Ireland","IRL",NA,NA,NA,NA,NA,2.2,2,0,0,0
 "79","Iran","IRN",NA,NA,NA,NA,NA,6.8,9.66666666666667,0,5,0
 "80","Iraq","IRQ",NA,NA,NA,NA,NA,5.6,7.66666666666667,0,0,0
@@ -84,9 +84,9 @@
 "83","Italy","ITA","2021-04-01","past","green","volcano",0,5.1,6.83333333333333,0,0,0
 "84","Jamaica","JAM",NA,NA,NA,NA,NA,5.4,7.33333333333333,0,0,0
 "85","Jordan","JOR",NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
-"86","Japan","JPN","2021-03-12","past","green","volcano",0,8.1,10,7,0,0
+"86","Japan","JPN","2021-05-03","active","green","earthquake",0,8.1,10,0,0,0
 "87","Kazakhstan","KAZ",NA,NA,NA,NA,NA,4,5,0,0,0
-"88","Kenya","KEN",NA,NA,NA,NA,NA,5.1,6.83333333333333,0,7,0
+"88","Kenya","KEN","2021-04-27","past","green","flood",0,5.1,6.83333333333333,7,7,0
 "89","Kyrgyzstan","KGZ",NA,NA,NA,NA,NA,5.1,6.83333333333333,7,0,0
 "90","Cambodia","KHM",NA,NA,NA,NA,NA,5.8,8,10,0,0
 "91","Kiribati","KIR",NA,NA,NA,NA,NA,3.8,4.66666666666667,10,0,0
@@ -115,7 +115,7 @@
 "114","Malta","MLT",NA,NA,NA,NA,NA,2.5,2.5,0,0,0
 "115","Myanmar","MMR",NA,NA,NA,NA,NA,7.8,10,7,0,0
 "116","Montenegro","MNE",NA,NA,NA,NA,NA,4.3,5.5,0,0,0
-"117","Mongolia","MNG",NA,NA,NA,NA,NA,2.9,3.16666666666667,0,0,0
+"117","Mongolia","MNG","2021-05-03","active","green","earthquake",0,2.9,3.16666666666667,0,0,0
 "118","Mozambique","MOZ","2020","active","green","drought",0,5.8,8,0,0,0
 "119","Mauritania","MRT",NA,NA,NA,NA,NA,5.6,7.66666666666667,0,0,0
 "120","Mauritius","MUS",NA,NA,NA,NA,NA,3.7,4.5,7,0,0
@@ -130,13 +130,13 @@
 "129","Nepal","NPL",NA,NA,NA,NA,NA,5.8,8,0,0,0
 "130","Nauru","NRU",NA,NA,NA,NA,NA,2.8,3,10,0,0
 "131","New Zealand","NZL",NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
-"132","Oman","OMN",NA,NA,NA,NA,NA,5,6.66666666666667,0,0,0
-"133","Pakistan","PAK","2021-04-09","past","green","flood",0,7.4,10,0,0,0
-"134","Panama","PAN",NA,NA,NA,NA,NA,6.2,8.66666666666667,10,0,0
-"135","Peru","PER","2021-03-31","past","green","flood",0,7.1,10,0,0,0
-"136","Philippines","PHL","2021-04-12","past","green","flood",0,8.4,10,10,0,0
-"137","Palau","PLW",NA,NA,NA,NA,NA,3.2,3.66666666666667,10,0,0
-"138","Papua New Guinea","PNG","2021-04-10","past","green","earthquake",0,6.7,9.5,0,0,0
+"132","Oman","OMN",NA,NA,NA,NA,NA,5,6.66666666666667,7,0,0
+"133","Pakistan","PAK",NA,NA,NA,NA,NA,7.4,10,7,0,0
+"134","Panama","PAN","2021-04-16","past","green","flood",0,6.2,8.66666666666667,0,0,0
+"135","Peru","PER",NA,NA,NA,NA,NA,7.1,10,0,0,0
+"136","Philippines","PHL","2021-04-28","past","green","flood",0,8.4,10,0,0,0
+"137","Palau","PLW",NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
+"138","Papua New Guinea","PNG",NA,NA,NA,NA,NA,6.7,9.5,7,0,0
 "139","Poland","POL",NA,NA,NA,NA,NA,2.3,2.16666666666667,0,0,0
 "140","Korea DPR","PRK",NA,NA,NA,NA,NA,5.2,7,0,0,0
 "141","Portugal","PRT",NA,NA,NA,NA,NA,3.4,4,0,0,0
@@ -168,9 +168,9 @@
 "167","Thailand","THA",NA,NA,NA,NA,NA,6.2,8.66666666666667,10,0,0
 "168","Tajikistan","TJK",NA,NA,NA,NA,NA,5.8,8,7,0,0
 "169","Turkmenistan","TKM",NA,NA,NA,NA,NA,3.7,4.5,7,0,0
-"170","Timor-Leste","TLS",NA,NA,NA,NA,NA,4.6,6,0,0,0
-"171","Tonga","TON",NA,NA,NA,NA,NA,5.2,7,10,0,0
-"172","Trinidad and Tobago","TTO",NA,NA,NA,NA,NA,3.2,3.66666666666667,10,0,0
+"170","Timor-Leste","TLS",NA,NA,NA,NA,NA,4.6,6,10,0,0
+"171","Tonga","TON",NA,NA,NA,NA,NA,5.2,7,0,0,0
+"172","Trinidad and Tobago","TTO",NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
 "173","Tunisia","TUN",NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
 "174","Turkey","TUR",NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
 "175","Tuvalu","TUV",NA,NA,NA,NA,NA,3,3.33333333333333,10,0,0
