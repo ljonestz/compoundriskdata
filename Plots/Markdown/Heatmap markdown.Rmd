@@ -1,0 +1,827 @@
+
+## Compound Risk Heatmaps
+
+```{r interactive plot, echo=FALSE, message=FALSE, warning=FALSE}
+
+######################################################################################################
+#
+#  CODE USED TO CREATE THE GLOBAL DATABASET ON COMPOUND DISASTER RISK
+#  (to be run after risk component sheets have been generated)
+#
+######################################################################################################
+
+# LOAD PACKAGES
+# install.packages("librarian")     #Run if librarian is not already installed
+librarian::shelf(
+  ggplot2, cowplot, lubridate, rvest, dplyr, compositions, viridis,
+   countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
+  gsheet, tidyverse, ggiraph
+)
+
+#
+##
+### ********************************************************************************************
+####    CREATE GLOBAL DATABASE WITH ALL RISK SHEETS
+### ********************************************************************************************
+##
+#
+
+# Load risk sheets
+healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv")
+foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv")
+debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv")
+fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv")
+macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv")
+Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv")
+Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv")
+acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv")
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
+
+# Join datasets
+globalrisk <- left_join(countrylist, healthsheet, by = c("Countryname", "Country")) %>%
+  left_join(., foodsecurity, by = c("Countryname", "Country")) %>%
+  left_join(., debtsheet, by = c("Countryname", "Country")) %>%
+  left_join(., fragilitysheet, by = c("Countryname", "Country")) %>%
+  left_join(., macrosheet, by = c("Countryname", "Country")) %>%
+  left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
+  left_join(., Socioeconomic_sheet, by = c("Country")) %>%
+  left_join(., acapssheet, by = c("Country", "Countryname")) %>%
+  dplyr::select(-X.x, -X.y, -X.x.x, -X.y.y, -X.x.x.x, -X.y.y.y, -X.x.x.x.x, -X.y.y.y.y, -X) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country)
+
+#
+##
+### ********************************************************************************************
+####    CREATE A FLAG SUMMARY SHEET
+### ********************************************************************************************
+##
+#
+
+# Add existing and emerging risk scores
+riskflags <- globalrisk %>%
+  mutate(
+    EXISTING_RISK_HEALTH = pmax(
+      H_HIS_Score_norm,
+      H_INFORM_rating.Value_norm
+    ),
+    EXISTING_RISK_FOOD_SECURITY = F_Proteus_Score_norm,
+    EXISTING_RISK_MACRO_FISCAL = M_EIU_Score_12m_norm,
+    EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY = S_INFORM_vul_norm,
+    EXISTING_RISK_NATURAL_HAZARDS = pmax(
+      NH_Hazard_Score_norm,
+      na.rm=T
+    ),
+    EXISTING_RISK_FRAGILITY_INSTITUTIONS = Fr_FCS_Normalised,
+    EMERGING_RISK_HEALTH = pmax(
+      H_Oxrollback_score_norm,
+      H_Covidgrowth_casesnorm,
+      H_Covidgrowth_deathsnorm,
+      H_new_cases_smoothed_per_million_norm,
+      H_new_deaths_smoothed_per_million_norm,
+      H_GovernmentResponseIndexForDisplay_norm,
+      H_health_acaps,
+      H_wmo_don_alert,
+      na.rm = T
+    ),
+    EMERGING_RISK_FOOD_SECURITY = case_when(
+      (!is.na(F_fews_crm_norm) | !is.na(F_fao_wfp_warning)) ~ as.numeric(pmax(
+        F_fews_crm_norm,
+        F_fao_wfp_warning,
+        na.rm = T
+      )),
+      ((is.na(F_fews_crm_norm) | is.na(F_fao_wfp_warning)) & !is.na(F_fpv_rating)) ~  as.numeric(F_fpv_rating),
+      TRUE ~ NA_real_
+    ),
+    EMERGING_RISK_MACRO_FISCAL = M_EIU_12m_change_norm,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = pmax(
+      S_pov_comb_norm,
+      S_change_unemp_20_norm,
+      S_income_support.Rating_crm_norm,
+      S_Household.risks,
+      S_phone_average_index_norm,
+      na.rm = T
+    ),
+    EMERGING_RISK_NATURAL_HAZARDS = pmax(
+      NH_GDAC_Hazard_Score_Norm,
+      NH_natural_acaps,
+      NH_seasonal_risk_norm,
+      NH_locust_norm,
+      na.rm = T
+    ),
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS =pmax(
+      Fr_REIGN_Normalised,
+      Fr_Displaced_UNHCR_Normalised,
+      Fr_BRD_Normalised,
+      na.rm = T
+    )
+  ) %>%
+  dplyr::select(
+    Countryname, Country, EXISTING_RISK_HEALTH, EXISTING_RISK_FOOD_SECURITY,
+    EXISTING_RISK_MACRO_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
+    EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+    EMERGING_RISK_HEALTH, EMERGING_RISK_FOOD_SECURITY, EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, EMERGING_RISK_MACRO_FISCAL,
+    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS, F_fews_crm_norm
+  )
+
+# Create tertiary risk flags
+vars <- c(
+  "EXISTING_RISK_HEALTH", "EXISTING_RISK_FOOD_SECURITY",
+  "EXISTING_RISK_MACRO_FISCAL", "EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY",
+  "EXISTING_RISK_NATURAL_HAZARDS", "EXISTING_RISK_FRAGILITY_INSTITUTIONS",
+  "EMERGING_RISK_HEALTH", "EMERGING_RISK_FOOD_SECURITY",
+  "EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY",
+  "EMERGING_RISK_MACRO_FISCAL",
+  "EMERGING_RISK_NATURAL_HAZARDS", "EMERGING_RISK_FRAGILITY_INSTITUTIONS"
+)
+
+riskflags[paste0(vars, "_RISKLEVEL")] <- lapply(riskflags[vars], function(tt) {
+  ifelse(tt >= 0 & tt < 7, "Low risk",
+         ifelse(tt >= 7 & tt < 10, "Medium risk",
+                ifelse(tt == 10, "High risk", NA
+                )
+         )
+  )
+})
+
+# Calculate total compound risk scores
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(
+  riskflags,
+  EXISTING_RISK_HEALTH:EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+  count = 10,
+  append = F
+)))
+
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE <- as.numeric(unlist(row_count(
+  riskflags, 
+  EMERGING_RISK_HEALTH:EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+  count = 10,
+  append = F
+)))
+
+riskflags$medium_risk_existing <- as.numeric(unlist(row_count(riskflags,
+                                                              EXISTING_RISK_HEALTH_RISKLEVEL:EXISTING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
+                                                              count = "Medium risk",
+                                                              append = F
+)))
+
+riskflags$medium_risk_emerging <- as.numeric(unlist(row_count(riskflags,
+                                                              EMERGING_RISK_HEALTH_RISKLEVEL:EMERGING_RISK_FRAGILITY_INSTITUTIONS_RISKLEVEL,
+                                                              count = "Medium risk",
+                                                              append = F
+)))
+
+riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EXISTING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_existing / 2)))
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM <- as.numeric(unlist(riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE + (riskflags$medium_risk_emerging / 2)))
+
+# Drop teritiary rates (may want to reinstate in the future)
+riskflags <- riskflags %>%
+  dplyr::select(
+    -medium_risk_emerging, -medium_risk_existing, -all_of(paste0(vars, "_RISKLEVEL"))
+  ) %>%
+  distinct(Country, .keep_all = TRUE) %>%
+  drop_na(Country)
+
+#
+##
+### ********************************************************************************************
+####    CREATE DATABASE OF ALTERNATIVE RISK SCORES
+### ********************************************************************************************
+##
+#
+
+# Alternative combined risk scores
+names <- c(
+  "EMERGING_RISK_FRAGILITY_INSTITUTIONS", 
+  "EMERGING_RISK_MACRO_FISCAL", "EXISTING_RISK_FRAGILITY_INSTITUTIONS"
+)
+
+riskflags[paste0(names, "_plus1")] <- lapply(riskflags[names], function(xx) {
+  ifelse(xx == 0, xx + 1, xx)
+})
+
+# Geometric means
+riskflags <- riskflags %>%
+  rowwise() %>%
+  mutate(
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL = geometricmean(c(
+      EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1,
+      EMERGING_RISK_MACRO_FISCAL_plus1),
+      na.rm = T
+    ),
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ = geometricmean(c(
+      EXISTING_RISK_FRAGILITY_INSTITUTIONS_plus1,
+      EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL),
+      na.rm = T
+    )
+  )
+
+# remove unnecessary variables
+riskflags <- riskflags %>%
+  dplyr::select(-contains("_plus1"))
+
+# Alternativ combined total scores
+altflag <- globalrisk
+names <- c(
+  "S_INFORM_vul_norm", "H_Oxrollback_score_norm", "H_wmo_don_alert",
+  "H_Covidgrowth_casesnorm", "H_Covidgrowth_deathsnorm", "H_HIS_Score_norm", "H_INFORM_rating.Value_norm",
+  "H_new_cases_smoothed_per_million_norm", "H_new_deaths_smoothed_per_million_norm",
+  "F_Proteus_Score_norm", "F_fews_crm_norm", "F_fao_wfp_warning", "F_fpv_rating", "D_WB_external_debt_distress_norm",
+  "M_EIU_12m_change_norm", "M_EIU_Score_12m_norm",
+   "NH_GDAC_Hazard_Score_Norm",  "H_GovernmentResponseIndexForDisplay_norm",  "H_GovernmentResponseIndexForDisplay_norm", 
+  "S_Household.risks", "S_phone_average_index_norm",  "NH_seasonal_risk_norm","NH_seasonal_risk_norm", "NH_natural_acaps","Fr_FCS_Normalised", 
+  "Fr_REIGN_Normalised", "Fr_Displaced_UNHCR_Normalised", "Fr_BRD_Normalised"
+)
+
+altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
+  ifelse(xx == 0, xx + 1, xx)
+})
+
+# Calculate alternative variables
+altflag <- altflag %>%
+  rowwise() %>%
+  mutate(
+    EMERGING_RISK_HEALTH_AV = geometricmean(c(
+      H_Oxrollback_score_norm_plus1,
+      H_Covidgrowth_casesnorm_plus1,
+      H_Covidgrowth_deathsnorm_plus1,
+      H_new_cases_smoothed_per_million_norm_plus1,
+      H_new_deaths_smoothed_per_million_norm_plus1,
+      H_GovernmentResponseIndexForDisplay_norm_plus1,
+      H_wmo_don_alert_plus1,
+      na.rm = T
+      )),
+    EMERGING_RISK_MACRO_FISCAL_AV = M_EIU_12m_change_norm,
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
+      Fr_REIGN_Normalised,
+      Fr_Displaced_UNHCR_Normalised,
+      Fr_BRD_Normalised,
+      na.rm = T
+    ))
+    ,
+    EMERGING_RISK_HEALTH_SQ_ALT = geometricmean(c(
+      H_Oxrollback_score_norm_plus1,
+      max(altflag$H_Covidgrowth_casesnorm,
+          altflag$H_Covidgrowth_deathsnorm,
+          altflag$H_new_cases_smoothed_per_million_norm,
+          altflag$H_new_deaths_smoothed_per_million_norm,
+          altflag$H_add_death_prec_current,
+          altflag$H_health_acaps,
+          altflag$H_wmo_don_alert,
+          na.rm = T
+      )
+    ),
+    na.rm = T
+    )
+  )
+
+#--------------------------------Calculate Coefficient of Variation----------------------------------------------------------------
+altflag <- altflag %>%
+  rowwise() %>%
+  mutate(
+    H_coefvar = cv(c(
+      H_Oxrollback_score_norm,
+      H_Covidgrowth_casesnorm,
+      H_Covidgrowth_deathsnorm,
+      H_new_cases_smoothed_per_million_norm,
+      H_new_deaths_smoothed_per_million_norm,
+      H_add_death_prec_current,
+      H_wmo_don_alert),
+      na.rm = T
+      ),
+    M_coefvar = cv(c(M_EIU_12m_change_norm),
+      na.rm = T
+    ),
+    Fr_coefvar = cv(c(
+      Fr_REIGN_Normalised,
+      Fr_Displaced_UNHCR_Normalised,
+      Fr_BRD_Normalised),
+      na.rm = T
+    ),
+    NH_coefvar = cv(c(
+      NH_GDAC_Hazard_Score_Norm,
+      NH_natural_acaps,
+      NH_seasonal_risk_norm,
+      NH_seasonal_risk_norm),
+      na.rm = T
+    ),
+    F_coefvar = cv(c(
+      F_fpv_rating,
+      F_fpv_rating),
+      na.rm = T
+    ),
+    S_coefvar = cv(c(
+      S_pov_comb_norm,
+      S_change_unemp_20_norm,
+      S_income_support.Rating_crm_norm,
+      na.rm = T
+    ))
+  )
+
+# Merge datasets to include alt variables
+riskflags <- inner_join(riskflags,
+                        altflag,
+                        by = c("Country", "Countryname"),
+                        keep = F
+)
+
+#-----------------------------Calculate emerging risk score using existing risk ----------------------------------------------
+riskflags <- riskflags %>%
+  mutate(
+    EMERGING_RISK_HEALTH_SQ = case_when(
+      !is.na(EXISTING_RISK_HEALTH) ~ sqrt(EXISTING_RISK_HEALTH * EMERGING_RISK_HEALTH),
+      TRUE ~ EMERGING_RISK_HEALTH
+    ),
+    EMERGING_RISK_HEALTH_SQ_SQ = case_when(
+      !is.na(EXISTING_RISK_HEALTH) ~ sqrt(EXISTING_RISK_HEALTH * EMERGING_RISK_HEALTH_SQ_ALT),
+      TRUE ~ EMERGING_RISK_HEALTH
+    ),
+    EMERGING_RISK_FOOD_SECURITY_SQ = case_when(
+      !is.na(EXISTING_RISK_FOOD_SECURITY) ~ sqrt(EXISTING_RISK_FOOD_SECURITY * EMERGING_RISK_FOOD_SECURITY),
+      TRUE ~ EMERGING_RISK_FOOD_SECURITY
+    ),
+    EMERGING_RISK_MACRO_FISCAL_SQ = case_when(
+      !is.na(EXISTING_RISK_MACRO_FISCAL) ~ sqrt(EXISTING_RISK_MACRO_FISCAL * EMERGING_RISK_MACRO_FISCAL),
+      TRUE ~ EMERGING_RISK_MACRO_FISCAL
+    ),
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ = case_when(
+      !is.na(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY) ~ sqrt(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY * EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY),
+      TRUE ~ as.numeric(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY)
+    ),
+    EMERGING_RISK_NATURAL_HAZARDS_SQ = EMERGING_RISK_NATURAL_HAZARDS,
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ = case_when(
+      !is.na(EXISTING_RISK_FRAGILITY_INSTITUTIONS) ~ sqrt(EXISTING_RISK_FRAGILITY_INSTITUTIONS * EMERGING_RISK_FRAGILITY_INSTITUTIONS),
+      TRUE ~ EMERGING_RISK_FRAGILITY_INSTITUTIONS
+    )
+  )
+
+# Calculate total emerging risk scores for SQ
+sqnam <- c(
+  "EMERGING_RISK_HEALTH_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
+  "EMERGING_RISK_MACRO_FISCAL_SQ","EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ",
+  "EMERGING_RISK_NATURAL_HAZARDS_SQ",
+  "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ"
+)
+
+# Emerging risk score as all high risk scores
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ <- rowSums(riskflags[sqnam] >= 7, na.rm = T) 
+
+# Emerging risk score as high + med
+riskflags$TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ_MED <-  rowSums(riskflags[sqnam] >= 7, na.rm = T) + (rowSums(riskflags[sqnam] < 7 & riskflags[sqnam] >= 5, na.rm = T) / 2)
+
+#
+##
+### ********************************************************************************************
+####    CREATE DATABASE OF RELIABILITY SCORES
+### ********************************************************************************************
+##
+#
+
+# Calculate the number of missing values in each of the source indicators for the various risk components (as a proportion)
+reliabilitysheet <- globalrisk %>%
+  mutate(
+    RELIABILITY_EXISTING_HEALTH = rowSums(is.na(globalrisk %>%
+                                                                   dplyr::select(H_HIS_Score_norm, H_INFORM_rating.Value_norm)),
+                                                           na.rm = T
+    ) / 2,
+    RELIABILITY_EXISTING_FOOD_SECURITY = case_when(
+      is.na(F_Proteus_Score_norm) ~ 1,
+      TRUE ~ 0
+    ),
+    RELIABILITY_EXISTING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
+                                                        dplyr::select(
+                                                          M_EIU_Score_12m_norm 
+                                                        )),
+                                                na.rm = T
+    ) / 4,
+    RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY = case_when(
+      is.na(S_INFORM_vul_norm) ~ 1,
+      TRUE ~ 0
+    ),
+    RELIABILITY_EXISTING_NATURAL_HAZARDS = case_when(
+      is.na(NH_Hazard_Score_norm) ~ 1,
+      TRUE ~ 0
+    ),
+    RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS = case_when(
+      is.na(Fr_FCS_Normalised) ~ 1,
+      TRUE ~ 0
+    ),
+    RELIABILITY_EMERGING_HEALTH = rowSums(is.na(globalrisk %>% 
+                                                  dplyr::select(
+                                                    H_Oxrollback_score_norm,
+                                                    H_Covidgrowth_casesnorm,
+                                                    H_Covidgrowth_deathsnorm,
+                                                    H_new_cases_smoothed_per_million_norm,
+                                                    H_new_deaths_smoothed_per_million_norm,
+                                                    H_GovernmentResponseIndexForDisplay_norm
+                                                  )),
+    na.rm = T
+    ) / 6,
+    RELIABILITY_EMERGING_FOOD_SECURITY = rowSums(is.na(globalrisk %>%
+                                                         dplyr::select(
+                                                           F_fews_crm_norm,
+                                                           F_fao_wfp_warning,
+                                                           F_fpv_rating,
+                                                         )),
+                                                 na.rm = T
+    ) / 2,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY = rowSums(is.na(globalrisk %>%
+                                                                dplyr::select(
+                                                                  S_pov_comb_norm,
+                                                                  S_change_unemp_20_norm,
+                                                                  S_income_support.Rating_crm_norm,
+                                                                  S_Household.risks,
+                                                                  S_phone_average_index_norm
+                                                                )),
+                                                        na.rm = T
+    ) / 3,
+    RELIABILITY_EMERGING_MACRO_FISCAL = rowSums(is.na(globalrisk %>%
+                                                        dplyr::select(
+                                                          M_EIU_12m_change_norm
+                                                        )),
+                                                na.rm = T
+    ) / 4,
+    RELIABILITY_EMERGING_NATURAL_HAZARDS = rowSums(is.na(globalrisk %>%
+                                                           dplyr::select(
+                                                             NH_GDAC_Hazard_Score_Norm,
+                                                             NH_Hazard_Score_norm
+                                                           )),
+                                                   na.rm = T
+    ) / 3,
+    RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS = rowSums(is.na(globalrisk %>%
+                                                                  dplyr::select(
+                                                                    Fr_REIGN_Normalised,
+                                                                    Fr_Displaced_UNHCR_Normalised,
+                                                                    Fr_BRD_Normalised,
+                                                                  )),
+                                                          na.rm = T
+    ) / 3
+  )
+
+# Create total reliability variabiles
+reliabilitysheet <- reliabilitysheet %>%
+  mutate(
+    RELIABILITY_SCORE_EXISTING_RISK = round(rowMeans(dplyr::select(., starts_with("RELIABILITY_EXISTING"))), 1),
+    RELIABILITY_SCORE_EMERGING_RISK = round(rowMeans(dplyr::select(., starts_with("RELIABILITY_EMERGING"))), 1)
+  ) %>%
+  dplyr::select(
+    Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK, RELIABILITY_EXISTING_HEALTH, RELIABILITY_EXISTING_FOOD_SECURITY,
+    RELIABILITY_EXISTING_MACRO_FISCAL, RELIABILITY_EXISTING_SOCIOECONOMIC_VULNERABILITY,
+    RELIABILITY_EXISTING_NATURAL_HAZARDS, RELIABILITY_EXISTING_FRAGILITY_INSTITUTIONS,
+    RELIABILITY_EMERGING_HEALTH, RELIABILITY_EMERGING_FOOD_SECURITY,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, RELIABILITY_EMERGING_MACRO_FISCAL,
+    RELIABILITY_EMERGING_NATURAL_HAZARDS, RELIABILITY_EMERGING_FRAGILITY_INSTITUTIONS
+  ) %>%
+  arrange(Country)
+
+#------------------------------Combine the reliability sheet with the global database------------------------------------
+reliable <- reliabilitysheet %>%
+  dplyr::select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+
+globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
+
+#------------------------------Combine the reliability sheet with the summary risk flag sheet-----------------------------
+reliable <- reliabilitysheet %>%
+  dplyr::select(Countryname, Country, RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK)
+
+riskflags <- left_join(riskflags %>%
+                         dplyr::select(
+                           "Countryname", "Country",
+                           contains(c("_AV", "_SQ", "_ALT", "EXISTING_", "EMERGING_", "coefvar"))
+                         ),
+                       reliable, 
+                       by = c("Countryname", "Country")
+)
+
+# dplyr::select relevant variables
+riskset <- riskflags %>%
+  dplyr::select(
+    Countryname, Country, EXISTING_RISK_HEALTH,
+    EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_MACRO_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
+    EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+    EMERGING_RISK_HEALTH, EMERGING_RISK_FOOD_SECURITY,
+    EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,
+    EMERGING_RISK_MACRO_FISCAL,
+    EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,
+    TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE,
+    TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, 
+    TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ, TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ_MED,
+    RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK
+  )
+
+# install.packages("librarian")     #Run if librarian is not already installed
+librarian::shelf(
+  ggplot2, cowplot, lubridate, rvest, dplyr, viridis,
+  countrycode, corrplot, cttobin / ggthemr, ggalt, gridExtra, ggcorrplot,
+  ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer, alluvial, ggforce,
+  ggalluvial, ggparallel, styler, mapview, geojsonio, scales, tidyverse, ggpubr
+)
+
+# Load themes
+theme_set(theme_classic(base_size = 16))
+ggthemr("fresh")
+
+# Function to create geometric mean plots
+quadrant_plot_geo <- function(xname, yname, countryname) {
+  
+  # Names to label
+  one <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname > 7 & !!yname > 7) %>%
+    sample_n(1)
+  two <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname < 7 & !!yname > 7) %>%
+    sample_n(1)
+  three <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname > 7 & !!yname < 7) %>%
+    sample_n(1)
+  nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
+    full_join(., two) %>%
+    full_join(., three) %>%
+    dplyr::select(-X) 
+  
+  nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
+  nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
+  
+  # Graph
+  plot <- ggplot() +
+    theme_minimal() +
+    labs(x = expression('Vulnerability (high score = high vul)' %->% "") ,
+         y = expression("Emerging threats (high score = severe threat)" %->% "")) +
+    theme(panel.border = element_rect(colour = "white",
+                                      fill= NA, 
+                                      size= 0.5),
+          axis.ticks.x=element_blank(), 
+          axis.text.x=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.title = element_text(hjust = 0, 
+                                    vjust= 4, 
+                                    colour= "black",
+                                    size= 10,
+                                    face= "bold"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          legend.position = "none")  
+  
+  # To add Quadrant use this
+  # plot <- plot + annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  +  annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2) +
+  
+    # To use arithmetic/geometric mean use this
+    #Draw contour lines
+    cc <- emdbook::curve3d(
+      geometricmean(c(x,y)),  # To use of geometric mean process
+      #mean(c(x,y)),  # To change to a mean process
+      xlim=c(0,10), 
+      ylim=c(0,10), 
+      sys3d="none"
+    )
+  
+  dimnames(cc$z) <- list(cc$x,cc$y)
+  mm <- reshape2::melt(cc$z)
+  
+  #Draw contour lines on plot
+  plot <- plot + 
+    geom_contour_filled(
+      data=mm,
+      aes(x=Var1,y=Var2,z=value),
+      breaks = c(0,5,7,10),
+      colour="white",
+      alpha = 0.3,
+      show.legend = F
+    ) +
+    scale_fill_manual(
+      values = c("#9fcd99", 
+                 "#ffdd71",
+                 "#f26c64")
+    )
+  
+  # Add other country data to plot
+  plot <- plot +
+    geom_point_interactive(data = riskset, 
+               aes(x =  !!xname,
+                   y = !!yname,
+                   tooltip = !!countryname),
+               alpha = 0.2) +
+    ylim(0,10) +
+    xlim(0,10)
+  
+  # Add country labels
+  plot <- plot +
+    ggrepel::geom_text_repel(
+      data = as.data.frame(nams),
+      aes(x = unlist(nams[2]),
+          y = unlist(nams[3]),
+          label = unlist(nams[1])),
+      size = 4,
+      box.padding = 3,
+      fontface= "bold"
+    ) 
+  
+  plot
+  
+}
+
+# Create plot for arithmetic mean
+quadrant_plot_arithmetic <- function(xname, yname, countryname) {
+  
+  # Names to label
+  one <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname > 7 & !!yname > 7) %>%
+    sample_n(1)
+  two <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname < 7 & !!yname > 7) %>%
+    sample_n(1)
+  three <- as.data.frame(riskflags) %>%
+    dplyr::select(Countryname, !!xname, !!yname) %>%
+    filter( !!xname > 7 & !!yname < 7) %>%
+    sample_n(1)
+  nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
+    full_join(., two) %>%
+    full_join(., three) %>%
+    dplyr::select(-X) 
+  
+  nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
+  nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
+  
+  # Graph
+  plot <- ggplot() +
+    theme_minimal() +
+    labs(x = expression('Vulnerability (high score = high vul)' %->% "") ,
+         y = expression("Emerging threats (high score = severe threat)" %->% "")) +
+    theme(panel.border = element_rect(colour = "white",
+                                      fill= NA, 
+                                      size= 0.5),
+          axis.ticks.x=element_blank(), 
+          axis.text.x=element_blank(),
+          axis.ticks.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.title = element_text(hjust = 0, 
+                                    vjust= 4, 
+                                    colour= "black",
+                                    size= 10,
+                                    face= "bold"),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          legend.position = "none")  
+  
+  # To add Quadrant use this
+  # plot <- plot + annotate("rect", xmin = 7, xmax = 10, ymin = 7, ymax = 10, fill= "red", alpha = 0.2)  +  annotate("rect", xmin = 0, xmax = 7, ymin = 0, ymax = 7 , fill= "darkgreen", alpha = 0.2) + annotate("rect", xmin = 7, xmax = 10, ymin = 0, ymax = 7, fill= "orange", alpha = 0.2) + annotate("rect", xmin = 0, xmax = 7, ymin = 7, ymax = 10, fill= "orange", alpha = 0.2) +
+  
+    # To use arithmetic/geometric mean use this
+    #Draw contour lines
+    cc <- emdbook::curve3d(
+      #geometricmean(c(x,y)),  # To use of geometric mean process
+      mean(c(x,y)),  # To change to a mean process
+      xlim=c(0,10), 
+      ylim=c(0,10), 
+      sys3d="none"
+    )
+  
+  dimnames(cc$z) <- list(cc$x,cc$y)
+  mm <- reshape2::melt(cc$z)
+  
+  #Draw contour lines on plot
+  plot <- plot + 
+    geom_contour_filled(
+      data=mm,
+      aes(x=Var1,y=Var2,z=value),
+      breaks = c(0,5,7,10),
+      colour="white",
+      alpha = 0.3,
+      show.legend = F
+    ) +
+    scale_fill_manual(
+      values = c("#9fcd99", 
+                 "#ffdd71",
+                 "#f26c64")
+    )
+  
+  # Add other country data to plot
+  plot <- plot +
+    geom_point_interactive(data = riskset, 
+               aes(x =  !!xname,
+                   y = !!yname,
+                   tooltip = !!countryname),
+               alpha = 0.2) +
+    ylim(0,10) +
+    xlim(0,10)
+  
+  # Add country labels
+  plot <- plot +
+    ggrepel::geom_text_repel(
+      data = as.data.frame(nams),
+      aes(x = unlist(nams[2]),
+          y = unlist(nams[3]),
+          label = unlist(nams[1])),
+      size = 4,
+      box.padding = 3,
+      fontface= "bold"
+    ) 
+  
+  plot
+  
+}
+
+covid <- quadrant_plot_geo(
+  quo(EXISTING_RISK_HEALTH), 
+  quo(EMERGING_RISK_HEALTH),
+  quo(Countryname)
+) +
+  ggtitle("HEALTH") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = covid)
+
+```
+
+```{r interactive plot food, echo=FALSE, message=FALSE, warning=FALSE}
+
+food <- quadrant_plot_geo(
+  quo(EXISTING_RISK_FOOD_SECURITY), 
+  quo(EMERGING_RISK_FOOD_SECURITY),
+  quo(Countryname)
+) +
+  ggtitle("FOOD SECURITY") +
+  labs(x = "", y = "") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = food)
+
+```
+
+```{r interactive plot socio, echo=FALSE, message=FALSE, warning=FALSE}
+
+socio <- quadrant_plot_geo(
+  quo(EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY),
+  quo(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY),
+  quo(Countryname)
+) +
+  ggtitle("SOCIO_VUL") +
+  labs(x = "", y = "") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = socio)
+
+```
+
+```{r interactive plot macro, echo=FALSE, message=FALSE, warning=FALSE}
+
+macro <- quadrant_plot_geo(
+  quo(EXISTING_RISK_MACRO_FISCAL), 
+  quo(EMERGING_RISK_MACRO_FISCAL),
+  quo(Countryname)
+) +
+  ggtitle("MACRO") +
+  labs(x = "", y = "") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = macro)
+
+```
+
+```{r interactive plot conflict, echo=FALSE, message=FALSE, warning=FALSE}
+
+conflict <- quadrant_plot_arithmetic(
+  quo(EXISTING_RISK_FRAGILITY_INSTITUTIONS),
+  quo(EMERGING_RISK_FRAGILITY_INSTITUTIONS),
+  quo(Countryname)
+) +
+  ggtitle("CONFLICT") +
+  labs(x = "", y = "") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = conflict)
+
+```
+
+```{r interactive plot natural, echo=FALSE, message=FALSE, warning=FALSE}
+
+natural <- quadrant_plot_geo(
+ quo(EXISTING_RISK_NATURAL_HAZARDS), 
+  quo(EMERGING_RISK_NATURAL_HAZARDS),
+  quo(Countryname)
+) +
+  ggtitle("NATURAL HAZARDS") +
+  labs(x = "", y = "") +
+  theme(plot.title = element_text(colour= "black",
+                                  size= 16,
+                                  face= "bold"))
+
+girafe(ggobj = natural)
+
+```
