@@ -1,191 +1,191 @@
-"","Countryname","Country","Fr_FCS_Normalised","Fr_REIGN_Normalised","Fr_Displaced_UNHCR_Normalised","Fr_BRD_Normalised","Fr_Overall_Conflict_Risk_Score"
-"1","Libya","LBY",10,0,6.42277319030563,NA,6.42277319030563
-"2","Sudan","SDN",10,0,0,10,10
-"3","Afghanistan","AFG",10,0,10,0,10
-"4","Mozambique","MOZ",10,0,10,3.36154220974635,10
-"5","Niger","NER",10,0,10,6.67996094473851,10
-"6","Algeria","DZA",0,0,0,9.52760390400969,9.52760390400969
-"7","Ethiopia","ETH",0,0,7.50490206032001,NA,7.50490206032001
-"8","Iraq","IRQ",10,10,0,0,10
-"9","South Sudan","SSD",10,10,0,NA,10
-"10","Central African Republic","CAF",10,NA,8.4765583773798,NA,8.4765583773798
-"11","Chad","TCD",10,10,10,NA,10
-"12","Croatia","HRV",0,0,0,NA,0
-"13","Lebanon","LBN",10,0,0,5.72497259347191,5.72497259347191
-"14","Maldives","MDV",0,0,0,NA,0
-"15","Mauritania","MRT",0,0,0,0,0
-"16","Ukraine","UKR",0,0,0,0,0
-"17","Zimbabwe","ZWE",10,0,10,NA,10
-"18","Belarus","BLR",0,0,0,0,0
-"19","Brazil","BRA",0,0,0,0,0
-"20","Cabo Verde","CPV",0,0,0,NA,0
-"21","Haiti","HTI",10,10,0,NA,10
-"22","Honduras","HND",0,0,10,0,10
-"23","Peru","PER",0,0,0,0,0
-"24","Serbia","SRB",0,0,0,NA,0
-"25","Somalia","SOM",10,10,10,0,10
-"26","Yemen","YEM",10,0,10,0,10
-"27","Armenia","ARM",0,0,0,0,0
-"28","Cameroon","CMR",10,0,10,0,10
-"29","Colombia","COL",0,0,9.25617165531393,2.96793254440092,9.25617165531393
-"30","Congo DR","COD",10,0,10,3.86701969705671,10
-"31","Grenada","GRD",0,0,0,NA,0
-"32","Guinea","GIN",0,0,0,1.80821227121284,1.80821227121284
-"33","Iran","IRN",0,0,0,3.54304400280735,3.54304400280735
-"34","Kenya","KEN",0,0,0,NA,0
-"35","Malawi","MWI",0,0,0,8.10130134625273,8.10130134625273
-"36","Mali","MLI",10,0,10,0,10
-"37","Montenegro","MNE",0,0,0,NA,0
-"38","Nigeria","NGA",10,0,6.09947170799869,6.84450487713967,6.84450487713967
-"39","Papua New Guinea","PNG",10,0,0,NA,0
-"40","Romania","ROU",0,0,0,NA,0
-"41","South Africa","ZAF",0,0,0,7.10408934316147,7.10408934316147
-"42","Tajikistan","TJK",0,0,0,NA,0
-"43","Zambia","ZMB",0,0,0,0,0
-"44","Albania","ALB",0,0,0,NA,0
-"45","Antigua and Barbuda","ATG",0,0,0,NA,0
-"46","Argentina","ARG",0,0,0,0,0
-"47","Barbados","BRB",0,0,0,NA,0
-"48","Bolivia","BOL",0,0,0,0,0
-"49","Burkina Faso","BFA",10,10,10,4.21440248550574,10
-"50","Dominica","DMA",0,0,0,NA,0
-"51","Egypt","EGY",0,0,0,0,0
-"52","El Salvador","SLV",0,0,9.12862417558222,NA,9.12862417558222
-"53","Eritrea","ERI",10,0,0,NA,0
-"54","Georgia","GEO",0,0,10,0,10
-"55","Guatemala","GTM",0,0,0,0,0
-"56","Lesotho","LSO",0,0,0,NA,0
-"57","Mauritius","MUS",0,0,0,NA,0
-"58","Myanmar","MMR",10,0,0,2.83228825813256,2.83228825813256
-"59","Pakistan","PAK",0,0,0,0,0
-"60","Seychelles","SYC",0,0,0,NA,0
-"61","Spain","ESP",0,0,0,0,0
-"62","Suriname","SUR",0,0,0,NA,0
-"63","Syria","SYR",10,10,0,0,10
-"64","Timor-Leste","TLS",10,0,0,NA,0
-"65","Trinidad and Tobago","TTO",0,0,0,NA,0
-"66","Tunisia","TUN",0,0,0,0,0
-"67","Uganda","UGA",0,0,0,10,10
-"68","Venezuela","VEN",10,0,0,0,0
-"69","Angola","AGO",0,0,0,NA,0
-"70","Bahamas","BHS",0,0,0,NA,0
-"71","Belize","BLZ",0,0,0,NA,0
-"72","Bosnia and Herzegovina","BIH",0,0,1.69529125743,NA,1.69529125743
-"73","Botswana","BWA",0,0,0,NA,0
-"74","Brunei Darussalam","BRN",0,0,NA,NA,0
-"75","Bulgaria","BGR",0,0,0,0,0
-"76","Cyprus","CYP",0,0,NA,0,0
-"77","Djibouti","DJI",0,0,0,NA,0
-"78","Ecuador","ECU",0,0,0,0,0
-"79","Equatorial Guinea","GNQ",0,0,0,NA,0
-"80","Fiji","FJI",0,0,0,NA,0
-"81","Greece","GRC",0,0,0,0,0
-"82","Guyana","GUY",0,0,0,0,0
-"83","Hungary","HUN",0,0,0,NA,0
-"84","Kazakhstan","KAZ",0,0,0,0,0
-"85","Malaysia","MYS",0,0,0,NA,0
-"86","Nicaragua","NIC",0,0,0,NA,0
-"87","Oman","OMN",0,0,0,NA,0
-"88","Palau","PLW",0,0,NA,NA,0
-"89","Poland","POL",0,0,0,0,0
-"90","Saint Lucia","LCA",0,0,0,NA,0
-"91","Solomon Islands","SLB",10,0,0,NA,0
-"92","United Arab Emirates","ARE",0,0,0,NA,0
-"93","Azerbaijan","AZE",0,0,10,NA,10
-"94","Bahrain","BHR",0,0,0,0,0
-"95","Bangladesh","BGD",0,0,0,0.279173844978757,0.279173844978757
-"96","Bhutan","BTN",0,0,0,NA,0
-"97","Burundi","BDI",10,0,0,0,0
-"98","Cambodia","KHM",0,0,0,NA,0
-"99","China","CHN",0,0,0,0,0
-"100","Comoros","COM",10,0,0,NA,0
-"101","Congo","COG",10,0,10,NA,10
-"102","France","FRA",0,0,0,0,0
-"103","Gabon","GAB",0,0,0,NA,0
-"104","Gambia","GMB",10,10,0,NA,10
-"105","Germany","DEU",0,0,0,0,0
-"106","Kiribati","KIR",10,0,NA,NA,0
-"107","Korea DPR","PRK",0,0,0,NA,0
-"108","Kuwait","KWT",0,0,0,NA,0
-"109","Luxembourg","LUX",0,0,NA,NA,0
-"110","Madagascar","MDG",0,0,0,0,0
-"111","Malta","MLT",0,0,0,0,0
-"112","Mexico","MEX",0,0,0,0,0
-"113","Micronesia","FSM",10,NA,NA,NA,NA
-"114","Moldova Republic of","MDA",0,0,0,0,0
-"115","Mongolia","MNG",0,0,0,NA,0
-"116","Morocco","MAR",0,0,0,5,5
-"117","Nauru","NRU",0,0,NA,NA,0
-"118","Panama","PAN",0,0,0,5,5
-"119","Rwanda","RWA",0,0,0,NA,0
-"120","Samoa","WSM",0,0,NA,NA,0
-"121","Sao Tome and Principe","STP",0,0,0,NA,0
-"122","Saudi Arabia","SAU",0,0,0,0,0
-"123","Senegal","SEN",0,0,0,NA,0
-"124","Sierra Leone","SLE",0,0,0,NA,0
-"125","Tanzania","TZA",0,0,0,NA,0
-"126","Togo","TGO",0,0,0,NA,0
-"127","Turkey","TUR",0,0,0,0,0
-"128","Turkmenistan","TKM",0,0,0,NA,0
-"129","Tuvalu","TUV",10,0,NA,NA,0
-"130","Uzbekistan","UZB",0,0,0,0,0
-"131","Vanuatu","VUT",0,0,NA,NA,0
-"132","Australia","AUS",0,0,0,NA,0
-"133","Austria","AUT",0,0,0,0,0
-"134","Belgium","BEL",0,0,0,0,0
-"135","Chile","CHL",0,0,0,0,0
-"136","Cuba","CUB",0,0,0,0,0
-"137","Czech Republic","CZE",0,0,0,NA,0
-"138","Dominican Republic","DOM",0,0,0,NA,0
-"139","Estonia","EST",0,0,0,NA,0
-"140","Iceland","ISL",0,0,0,NA,0
-"141","India","IND",0,0,0,0,0
-"142","Ireland","IRL",0,0,NA,NA,0
-"143","Israel","ISR",0,0,0,NA,0
-"144","Italy","ITA",0,0,0,0,0
-"145","Japan","JPN",0,0,0,0,0
-"146","Jordan","JOR",0,0,0,0,0
-"147","Latvia","LVA",0,0,0,0,0
-"148","Liberia","LBR",10,0,0,NA,0
-"149","Lithuania","LTU",0,0,0,NA,0
-"150","Netherlands","NLD",0,0,0,0,0
-"151","New Zealand","NZL",0,0,0,NA,0
-"152","North Macedonia","MKD",0,0,0,0,0
-"153","Philippines","PHL",0,0,3.78315416348216,0,3.78315416348216
-"154","Portugal","PRT",0,0,0,0,0
-"155","Qatar","QAT",0,0,0,NA,0
-"156","Saint Kitts and Nevis","KNA",0,0,0,NA,0
-"157","Saint Vincent and the Grenadines","VCT",0,0,0,NA,0
-"158","Singapore","SGP",0,0,0,NA,0
-"159","Slovenia","SVN",0,0,0,NA,0
-"160","Sweden","SWE",0,0,0,0,0
-"161","Switzerland","CHE",0,0,0,NA,0
-"162","Thailand","THA",0,0,0,0,0
-"163","Tonga","TON",0,0,0,NA,0
-"164","United States of America","USA",0,0,0,0,0
-"165","Uruguay","URY",0,0,0,NA,0
-"166","Benin","BEN",0,0,0,8.77545934736305,8.77545934736305
-"167","Canada","CAN",0,0,0,NA,0
-"168","Costa Rica","CRI",0,0,0,0,0
-"169","Côte d'Ivoire","CIV",0,0,0,NA,0
-"170","Denmark","DNK",0,0,0,0,0
-"171","Eswatini","SWZ",0,0,0,NA,0
-"172","Finland","FIN",0,0,NA,0,0
-"173","Ghana","GHA",0,0,0,NA,0
-"174","Guinea-Bissau","GNB",10,0,0,NA,0
-"175","Indonesia","IDN",0,0,0,5.06822653462697,5.06822653462697
-"176","Jamaica","JAM",0,0,0,NA,0
-"177","Korea Republic of","KOR",0,0,0,0,0
-"178","Kyrgyzstan","KGZ",0,0,0,0,0
-"179","Lao PDR","LAO",10,0,0,NA,0
-"180","Liechtenstein","LIE",0,0,NA,NA,0
-"181","Marshall Islands","MHL",10,0,0,NA,0
-"182","Namibia","NAM",0,0,0,0,0
-"183","Nepal","NPL",0,0,0,0,0
-"184","Norway","NOR",0,0,0,0,0
-"185","Paraguay","PRY",0,0,0,10,10
-"186","Russian Federation","RUS",0,0,0,0,0
-"187","Slovakia","SVK",0,0,0,NA,0
-"188","Sri Lanka","LKA",0,0,0,0,0
-"189","United Kingdom","GBR",0,NA,0,NA,0
-"190","Viet Nam","VNM",0,0,0,NA,0
+"","Fr_Countryname.x","Country","Fr_Countryname.y","Fr_FCV_status","Fr_FCS_Normalised","Fr_month","Fr_pt_suc","Fr_pt_attempt","Fr_delayed","Fr_irreg_lead_ant","Fr_anticipation","Fr_delayed_adj","Fr_anticipation_adj","Fr_pol_trigger","Fr_REIGN_Normalised","Fr_Country of origin (ISO)","Fr_refugees","Fr_z_refugees","Fr_refugees_fragile","Fr_idps","Fr_z_idps","Fr_idps_fragile","Fr_z_refugees_norm","Fr_Displaced_UNHCR_Normalised","Fr_month_yr","Fr_fatal_month","Fr_fatal_month_log","Fr_fatal_3_month","Fr_fatal_3_month_log","Fr_fatal_z","Fr_sd","Fr_mean","Fr_BRD_Normalised"
+"1","Libya","LBY","Libya","High-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"LBY",16033,1.31959956785323,"Fragile",355672,0.642277319030563,"Not Fragile",10,6.42277319030563,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"2","Sudan","SDN","Sudan","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"SDN",734947,1.22151268068247,"Fragile",1885782,-0.680296017481764,"Not Fragile",10,0,Mar 2021,12,2.56494935746154,415,6.03068526026126,1.3080400468879,0.468401912692133,5.41799680042107,10
+"3","Afghanistan","AFG","Afghanistan","High-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"AFG",2728853,1.20954830419611,"Fragile",2553390,1.33037304570665,"Fragile",10,10,Mar 2021,82,4.4188406077966,4715,8.45871626165726,-1.40205206956998,0.38370981665363,8.9966974042108,0
+"4","Mozambique","MOZ","Mozambique","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"MOZ",77,1.90550580711589,"Fragile",180516,2.03028007670222,"Fragile",10,10,Mar 2021,2,1.09861228866811,96,4.57471097850338,-0.32769155805073,1.07131899010363,4.92577316753978,3.36154220974635
+"5","Niger","NER","Niger","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"NER",3063,1.42665034633896,"Fragile",191902,1.06337869433977,"Fragile",10,10,Mar 2021,4,1.6094379124341,193,5.26785815906333,0.335992188947702,0.899063262169087,4.96577992560468,6.67996094473851
+"6","Algeria","DZA","Algeria",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"DZA",4514,1.48781742199383,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,17,2.89037175789616,0.905520780801939,0.723208003462031,2.23549188191902,9.52760390400969
+"7","Ethiopia","ETH","Ethiopia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ETH",95685,1.59356748234468,"Fragile",1733628,0.750490206032001,"Not Fragile",10,7.50490206032001,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"8","Iraq","IRQ","Iraq","Medium-Intensity conflict",10,5,0,0,0,1,1,0,1,"Fragile",10,"IRQ",344460,0.1484014038314,"Not Fragile",1414632,-1.28554258120551,"Not Fragile",1.484014038314,0,Mar 2021,0,0,426,6.05678401322862,-2.07743748659849,0.370129149460726,6.82570418320115,0
+"9","South Sudan","SSD","South Sudan","Medium-Intensity conflict",10,5,0,0,0,0,1,0,1,"Fragile",10,"SSD",2234814,0.748819192515885,"Not Fragile",1665815,-1.11918733523625,"Not Fragile",7.48819192515885,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"10","Central African Republic","CAF","Central African Republic","Medium-Intensity conflict",10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"CAF",610203,1.18920703589202,"Fragile",669906,0.84765583773798,"Not Fragile",10,8.4765583773798,Mar 2021,0,0,178,5.18738580584075,0.262102449294752,0.703849951923146,5.0029050095057,6.31051224647376
+"11","Chad","TCD","Chad","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"TCD",11192,-0.564832926971926,"Not Fragile",170278,1.0277231751882,"Fragile",0,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"12","Croatia","HRV","Croatia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"HRV",23793,-0.750851519010677,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"13","Lebanon","LBN","Lebanon","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"LBN",5801,1.20394764243321,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,7,2.07944154167984,-0.0109946682567598,0.715922111524163,2.08731286779372,4.9450266587162
+"14","Maldives","MDV","Maldives",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MDV",75,1.00247831854675,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"15","Mauritania","MRT","Mauritania",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MRT",37423,1.06545668541687,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.944473035656768,0.497756374756963,0.470117474284216,0
+"16","Ukraine","UKR","Ukraine",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"UKR",59839,-1.21490314253036,"Not Fragile",734000,-1.3430592757425,"Not Fragile",0,0,Mar 2021,0,0,17,2.89037175789616,-1.39581589796396,0.999410108027746,4.28536427526717,0
+"17","Zimbabwe","ZWE","Zimbabwe","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"ZWE",10603,-1.64040353496233,"Not Fragile",270000,2.04124145231932,"Fragile",0,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"18","Belarus","BLR","Belarus",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BLR",3425,-1.11793418191719,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.408759376772979,0.46879340059921,0.191623698264219,0
+"19","Brazil","BRA","Brazil",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BRA",1399,1.8769145809943,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,8,2.19722457733622,937,6.84374994900622,-1.84732368591062,0.184327156858576,7.18426187182763,0
+"20","Cabo Verde","CPV","Cabo Verde",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CPV",10,-0.502365070228673,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"21","Haiti","HTI","Haiti","High-Institutional and Social Fragility",10,5,0,0,0,1,1,0,1,"Fragile",10,"HTI",26734,-0.936109436046491,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"22","Honduras","HND","Honduras",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"HND",26370,1.56738264377144,"Fragile",247090,1.0915648462873,"Fragile",10,10,Mar 2021,2,1.09861228866811,118,4.77912349311153,-1.29362770029511,0.31244816633564,5.18331509598973,0
+"23","Peru","PER","Peru",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"PER",2765,-0.426586156798441,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,3,1.38629436111989,-0.864619214464994,0.672135596017181,1.96743571216223,0
+"24","Serbia","SRB","Serbia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SRB",31251,-0.94833170844797,"Not Fragile",214696,-1.21332535272532,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"25","Somalia","SOM","Somalia","High-Intensity conflict",10,5,0,0,1,0,0,1,0,"Fragile",10,"SOM",905109,-1.26019120084474,"Not Fragile",2648000,1.10586606533145,"Fragile",0,10,Mar 2021,8,2.19722457733622,525,6.26530121273771,-2.55146141013881,0.242131833937627,6.8830912431957,0
+"26","Yemen","YEM","Yemen","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"YEM",36518,1.26321050998283,"Fragile",3625716,1.42379318160516,"Fragile",10,10,Mar 2021,88,4.48863636973214,2791,7.93451346388226,-2.25532685732587,0.358856312465606,8.74385174330687,0
+"27","Armenia","ARM","Armenia",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"ARM",10962,-0.315520370282834,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.988620155136746,0.849110061832737,0.839447321057252,0
+"28","Cameroon","CMR","Cameroon","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"CMR",66305,1.67813660179826,"Fragile",950263,1.60195564922123,"Fragile",10,10,Mar 2021,0,0,153,5.03695260241363,-2.17974264709166,0.355606953093143,5.81208424367308,0
+"29","Colombia","COL","Colombia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"COL",189448,-0.706126498792975,"Not Fragile",7976412,0.925617165531393,"Not Fragile",0,9.25617165531393,Mar 2021,1,0.693147180559945,186,5.23110861685459,-0.406779198415877,0.180571974465897,5.3045615398842,2.96610400792062
+"30","Congo DR","COD","Congo DR","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"COD",807374,1.56403886099755,"Fragile",5014253,1.14180648423752,"Fragile",10,10,Mar 2021,1,0.693147180559945,931,6.83733281468559,-0.235495176974146,0.377669977064153,6.92627227277214,3.82252411512927
+"31","Grenada","GRD","Grenada",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GRD",80,-0.774242454443631,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"32","Guinea","GIN","Guinea",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GIN",26857,1.53945835226344,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,7,2.07944154167984,-0.638357545757432,0.863114982006481,2.63041750329996,1.80821227121284
+"33","Iran","IRN","Iran",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"IRN",129676,1.04474648784747,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,31,3.46573590279973,-0.274624920544516,1.03288112191547,3.74939079883769,3.62687539727742
+"34","Kenya","KEN","Kenya",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KEN",8018,0.435541427883199,"Not Fragile",0,0,"Not Fragile",4.35541427883199,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"35","Malawi","MWI","Malawi",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MWI",606,1.82232714257596,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,2,1.09861228866811,11,2.484906649788,0.620260269250546,0.876137762477914,1.94147320533288,8.10130134625273
+"36","Mali","MLI","Mali","Medium-Intensity conflict",10,5,0,0,0,0,1,0,1,"Fragile",10,"MLI",164461,1.24660321795105,"Fragile",207751,1.74960087178116,"Fragile",10,10,Mar 2021,3,1.38629436111989,334,5.81413053182507,-1.1494443984257,0.350655664962263,6.21718972169218,0
+"37","Montenegro","MNE","Montenegro",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MNE",659,-0.30646975535114,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"38","Nigeria","NGA","Nigeria","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"NGA",295569,1.04268911025947,"Fragile",2195779,0.609947170799869,"Not Fragile",10,6.09947170799869,Mar 2021,50,3.93182563272433,1755,7.47079377419506,0.368900975427934,0.316644763072708,7.35398321223339,6.84450487713967
+"39","Papua New Guinea","PNG","Papua New Guinea","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"PNG",475,1.2939952073631,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"40","Romania","ROU","Romania",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ROU",1352,-0.233097320374134,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"41","South Africa","ZAF","South Africa",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ZAF",441,-0.489367958060598,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,40,3.71357206670431,0.409494976526877,0.397358291790948,3.55085584233461,7.04747488263438
+"42","Tajikistan","TJK","Tajikistan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TJK",1987,1.42161577602132,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"43","Zambia","ZMB","Zambia",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"ZMB",261,-0.615224459448262,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,3,1.38629436111989,-0.155374349985337,0.819010527559763,1.51354758947064,0
+"44","Albania","ALB","Albania",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ALB",15027,1.5541571734092,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"45","Antigua and Barbuda","ATG","Antigua and Barbuda",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ATG",117,1.17174560191597,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"46","Argentina","ARG","Argentina",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ARG",99,-0.732713904183309,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,2,1.09861228866811,-1.01710646497705,0.578830206539251,1.68734423386318,0
+"47","Barbados","BRB","Barbados",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BRB",243,1.34088870175738,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"48","Bolivia","BOL","Bolivia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BOL",514,-0.6732111256455,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,1,0.693147180559945,-0.418986886430955,0.94823753719385,1.09044627386575,0
+"49","Burkina Faso","BFA","Burkina Faso","Medium-Intensity conflict",10,5,0,0,1,0,0,1,0,"Fragile",10,"BFA",11733,1.31831772262101,"Fragile",560033,2.03427826532239,"Fragile",10,10,Mar 2021,3,1.38629436111989,197,5.28826703069454,-0.157119502898852,1.26509781082886,5.48703856985039,4.21440248550574
+"50","Dominica","DMA","Dominica",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"DMA",50,1.59956569126811,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"51","Egypt","EGY","Egypt",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"EGY",27506,1.41624140077697,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,79,4.38202663467388,-2.41496538068281,0.395981649959682,5.33830861071217,0
+"52","El Salvador","SLV","El Salvador",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SLV",41850,1.51927279010678,"Fragile",71500,0.912862417558222,"Not Fragile",10,9.12862417558222,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"53","Eritrea","ERI","Eritrea","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"ERI",505118,0.871716142264191,"Not Fragile",0,0,"Not Fragile",8.71716142264191,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"54","Georgia","GEO","Georgia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GEO",7519,1.78804356036889,"Fragile",286216,1.24713885560134,"Fragile",10,10,Mar 2021,0,0,0,0,-0.87687369604571,0.400683222448576,0.351348578211988,0
+"55","Guatemala","GTM","Guatemala",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GTM",22770,1.4029439640076,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,15,2.77258872223978,-4.1811610826996,0.564671171375614,5.1335698485179,0
+"56","Lesotho","LSO","Lesotho",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"LSO",6,-0.596670578370261,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"57","Mauritius","MUS","Mauritius",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MUS",178,1.48921772775335,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"58","Myanmar","MMR","Myanmar","Medium-Intensity conflict",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"MMR",1078268,0.774765179393668,"Not Fragile",312018,-1.34792677341101,"Not Fragile",7.74765179393668,0,Mar 2021,2,1.09861228866811,92,4.53259949315326,-0.433542348373487,0.870306491172892,4.90991421314104,2.83228825813256
+"59","Pakistan","PAK","Pakistan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PAK",137190,-0.52438828070465,"Not Fragile",100680,-0.80775647078577,"Not Fragile",0,0,Mar 2021,1,0.693147180559945,157,5.06259503302697,-1.52666752751954,0.302115288522891,5.52382463358206,0
+"60","Seychelles","SYC","Seychelles",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SYC",15,-0.0655403131366347,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"61","Spain","ESP","Spain",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ESP",51,0.248164935593026,"Not Fragile",0,0,"Not Fragile",2.48164935593026,0,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"62","Suriname","SUR","Suriname",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SUR",17,-0.456435464587638,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"63","Syria","SYR","Syria","High-Intensity conflict",10,5,0,0,0,0,1,0,1,"Fragile",10,"SYR",6616983,0.880037692542316,"Not Fragile",6146994,-0.612761714665747,"Not Fragile",8.80037692542316,0,Mar 2021,20,3.04452243772342,1328,7.19218205871325,-1.63315775781687,0.60531971038925,8.18076463969491,0
+"64","Timor-Leste","TLS","Timor-Leste","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"TLS",17,0.467382714637317,"Not Fragile",0,0,"Not Fragile",4.67382714637317,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"65","Trinidad and Tobago","TTO","Trinidad and Tobago",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TTO",307,-0.674458147041217,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"66","Tunisia","TUN","Tunisia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TUN",2068,1.2806501226167,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,5,1.79175946922805,-0.117184964031384,0.624797730728339,1.86497636883035,0
+"67","Uganda","UGA","Uganda",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"UGA",7479,1.34761456825745,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,83,4.43081679884331,1.23377371797584,0.475304058915066,3.84439914290666,10
+"68","Venezuela","VEN","Venezuela","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"VEN",93280,2.01712209896068,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,32,3.49650756146648,-2.24094568896408,0.696481855413724,5.05728557279757,0
+"69","Angola","AGO","Angola",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"AGO",8178,-0.617038747364037,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"70","Bahamas","BHS","Bahamas",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BHS",501,1.41129141023489,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"71","Belize","BLZ","Belize",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BLZ",73,1.18647523454624,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"72","Bosnia and Herzegovina","BIH","Bosnia and Herzegovina",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BIH",16556,-0.93335677026282,"Not Fragile",96421,0.169529125743,"Not Fragile",0,1.69529125743,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"73","Botswana","BWA","Botswana",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BWA",228,-1.25822114835879,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"74","Brunei Darussalam","BRN","Brunei Darussalam",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"75","Bulgaria","BGR","Bulgaria",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BGR",561,-0.871231881878731,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"76","Cyprus","CYP","Cyprus",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,Mar 2021,0,0,0,0,-0.433955469613729,0.259017925494195,0.112402245496207,0
+"77","Djibouti","DJI","Djibouti",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"DJI",2351,1.28112525334595,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"78","Ecuador","ECU","Ecuador",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ECU",1652,1.47770974926607,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,1,0.693147180559945,-0.905550381726838,0.801859767715707,1.4192715993063,0
+"79","Equatorial Guinea","GNQ","Equatorial Guinea",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GNQ",156,0.775242974459673,"Not Fragile",0,0,"Not Fragile",7.75242974459673,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"80","Fiji","FJI","Fiji",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"FJI",591,-1.3858298566824,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"81","Greece","GRC","Greece",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GRC",95,-1.68105349713061,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-1.24659655838329,0.614427009666412,0.765942595627888,0
+"82","Guyana","GUY","Guyana",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GUY",284,-0.552100403420243,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.730932450719173,0.499593205724454,0.365168886222823,0
+"83","Hungary","HUN","Hungary",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"HUN",4007,0.992320167941583,"Not Fragile",0,0,"Not Fragile",9.92320167941583,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"84","Kazakhstan","KAZ","Kazakhstan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KAZ",2757,1.71167967944843,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.75698234848948,0.88693256342592,0.671392294813947,0
+"85","Malaysia","MYS","Malaysia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MYS",1154,1.77301519619803,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"86","Nicaragua","NIC","Nicaragua",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"NIC",4376,2.03465121740807,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"87","Oman","OMN","Oman",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"OMN",42,0.866383487489542,"Not Fragile",0,0,"Not Fragile",8.66383487489542,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"88","Palau","PLW","Palau",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"89","Poland","POL","Poland",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"POL",961,-1.4747183103608,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"90","Saint Lucia","LCA","Saint Lucia",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"LCA",843,-1.74813722035203,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"91","Solomon Islands","SLB","Solomon Islands","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"SLB",27,-1.3886035456399,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"92","United Arab Emirates","ARE","United Arab Emirates",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ARE",155,0.898169874732925,"Not Fragile",0,0,"Not Fragile",8.98169874732925,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"93","Azerbaijan","AZE","Azerbaijan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"AZE",11626,1.31975423062987,"Fragile",652326,1.96547414660409,"Fragile",10,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"94","Bahrain","BHR","Bahrain",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BHR",557,1.09471273112377,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.288892102032128,0.189420705684762,0.0547221458336799,0
+"95","Bangladesh","BGD","Bangladesh",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BGD",22880,1.36000609956614,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,40,3.71357206670431,-0.944165231004249,0.520123688908781,4.20465476959365,0.279173844978757
+"96","Bhutan","BTN","Bhutan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BTN",6980,-0.813753156882143,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"97","Burundi","BDI","Burundi","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"BDI",381508,0.37781423106537,"Not Fragile",33256,-0.636472683801084,"Not Fragile",3.7781423106537,0,Mar 2021,1,0.693147180559945,45,3.8286413964891,-1.49649564623842,0.32656627466575,4.31734640473469,0
+"98","Cambodia","KHM","Cambodia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KHM",11986,-1.10204787482401,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"99","China","CHN","China",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CHN",212863,0.907825286433064,"Not Fragile",0,0,"Not Fragile",9.07825286433064,0,Mar 2021,0,0,1,0.693147180559945,-1.20817550424211,0.692968119721762,1.53037428802849,0
+"100","Comoros","COM","Comoros","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"COM",658,1.55798165441779,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"101","Congo","COG","Congo","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"COG",13481,-0.44897588781665,"Not Fragile",134430,1.0122623397775,"Fragile",0,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"102","France","FRA","France",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"FRA",50,-0.812736347605696,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.996333509911133,0.673487124237343,0.671017790371347,0
+"103","Gabon","GAB","Gabon",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GAB",440,1.66103162772271,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"104","Gambia","GMB","Gambia","High-Institutional and Social Fragility",10,5,0,0,0,0,1,0,1,"Fragile",10,"GMB",17813,1.06338662775506,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"105","Germany","DEU","Germany",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"DEU",69,-0.575563163604791,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.728816890000486,0.907227414695772,0.661202662901754,0
+"106","Kiribati","KIR","Kiribati","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"107","Korea DPR","PRK","Korea DPR",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PRK",758,-1.24899074549924,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"108","Kuwait","KWT","Kuwait",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KWT",1300,1.39386697607858,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"109","Luxembourg","LUX","Luxembourg",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"LUX",5,NA,NA,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"110","Madagascar","MDG","Madagascar",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MDG",298,0.981126590930235,"Not Fragile",0,0,"Not Fragile",9.81126590930235,0,Mar 2021,2,1.09861228866811,33,3.52636052461616,-1.07528527778902,0.540566233875876,4.10762343757275,0
+"111","Malta","MLT","Malta",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MLT",5,NA,NA,0,0,"Not Fragile",NA,0,Mar 2021,0,0,0,0,NA,0,0,0
+"112","Mexico","MEX","Mexico",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MEX",14621,1.70312630325898,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,15,2.77258872223978,1489,7.30653139893951,-3.31876415458188,0.124687709788094,7.72034050070114,0
+"113","Micronesia","FSM","Micronesia","High-Institutional and Social Fragility",10,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"114","Moldova Republic of","MDA","Moldova Republic of",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"MDA",2427,1.30853749149126,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,NA,0,0,0
+"115","Mongolia","MNG","Mongolia",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"MNG",2364,1.65648617260322,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"116","Morocco","MAR","Morocco",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MAR",4637,1.4447580601018,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,4,1.6094379124341,1.39775424002153,0.659636702219596,0.687427915032839,5
+"117","Nauru","NRU","Nauru",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"118","Panama","PAN","Panama",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PAN",45,-0.291704337531101,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,2,1.09861228866811,1.47622400479479,0.455438251878839,0.426283408542793,5
+"119","Rwanda","RWA","Rwanda",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"RWA",246698,0.160986519246742,"Not Fragile",0,0,"Not Fragile",1.60986519246742,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"120","Samoa","WSM","Samoa",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"121","Sao Tome and Principe","STP","Sao Tome and Principe",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"STP",28,-0.0485872170243174,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"122","Saudi Arabia","SAU","Saudi Arabia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SAU",1762,1.41318624673659,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-2.01689035697341,2.09082881148276,4.21697246796174,0
+"123","Senegal","SEN","Senegal",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SEN",17203,-1.25905014328262,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"124","Sierra Leone","SLE","Sierra Leone",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SLE",5268,1.53153181802356,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"125","Tanzania","TZA","Tanzania",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TZA",849,0.960022300727691,"Not Fragile",0,0,"Not Fragile",9.60022300727691,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"126","Togo","TGO","Togo",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TGO",8022,-0.785466331025076,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"127","Turkey","TUR","Turkey",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TUR",83271,1.86212507300506,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,15,2.77258872223978,-2.27694456445104,1.05665490251269,5.1785333590166,0
+"128","Turkmenistan","TKM","Turkmenistan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TKM",478,0.9334301635647,"Not Fragile",0,0,"Not Fragile",9.33430163564701,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"129","Tuvalu","TUV","Tuvalu","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"130","Uzbekistan","UZB","Uzbekistan",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"UZB",3217,-0.919359957850771,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-1.05749627563318,0.448050651454885,0.473811895208562,0
+"131","Vanuatu","VUT","Vanuatu",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"132","Australia","AUS","Australia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"AUS",20,0.420658080477572,"Not Fragile",0,0,"Not Fragile",4.20658080477572,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"133","Austria","AUT","Austria",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"AUT",18,0.445304527496819,"Not Fragile",0,0,"Not Fragile",4.4530452749682,0,Mar 2021,0,0,0,0,-0.761897649868847,0.752647020506803,0.573439996104923,0
+"134","Belgium","BEL","Belgium",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BEL",34,-1.2982877324458,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"135","Chile","CHL","Chile",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"CHL",486,-0.690088098351043,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,5,1.79175946922805,0.342662297080514,0.926125423189518,1.47441120433327,0
+"136","Cuba","CUB","Cuba",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CUB",6631,0.410021762404182,"Not Fragile",0,0,"Not Fragile",4.10021762404182,0,Mar 2021,0,0,0,0,-0.658094866784955,0.420345419909887,0.276627163119263,0
+"137","Czech Republic","CZE","Czech Republic",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"CZE",1166,-1.73827650332547,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"138","Dominican Republic","DOM","Dominican Republic",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"DOM",546,1.62535555331188,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"139","Estonia","EST","Estonia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"EST",269,-1.18120074792611,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"140","Iceland","ISL","Iceland",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"ISL",5,NA,NA,0,0,"Not Fragile",NA,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"141","India","IND","India",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"IND",11979,1.44499529659935,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,102,4.63472898822964,-3.43148437729066,0.376736349319136,5.92749388527577,0
+"142","Ireland","IRL","Ireland",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"143","Israel","ISR","Israel",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ISR",452,-0.727804036068861,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"144","Italy","ITA","Italy",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"ITA",76,1.23058397420197,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,NA,0,0,0
+"145","Japan","JPN","Japan",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"JPN",39,-0.647047407709208,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"146","Jordan","JOR","Jordan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"JOR",2384,1.07984489293958,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.821198156350346,0.757928010879686,0.622409085180682,0
+"147","Latvia","LVA","Latvia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"LVA",144,-1.0960069245997,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"148","Liberia","LBR","Liberia","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"LBR",5375,-0.750957565241001,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"149","Lithuania","LTU","Lithuania",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"LTU",61,-0.771900741138046,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"150","Netherlands","NLD","Netherlands",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"NLD",55,0.444749589996661,"Not Fragile",0,0,"Not Fragile",4.44749589996661,0,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"151","New Zealand","NZL","New Zealand",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"NZL",34,0.83805732128727,"Not Fragile",0,0,"Not Fragile",8.3805732128727,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"152","North Macedonia","MKD","North Macedonia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"MKD",1784,1.05834746854342,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.293002656026855,0.191810966870391,0.0562011227481037,0
+"153","Philippines","PHL","Philippines",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PHL",552,0.239865790037115,"Not Fragile",178897,0.378315416348216,"Not Fragile",2.39865790037115,3.78315416348216,Mar 2021,2,1.09861228866811,273,5.61312810638807,-2.18374440505963,0.169551710544611,5.98338570565816,0
+"154","Portugal","PRT","Portugal",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PRT",25,0.340637278162948,"Not Fragile",0,0,"Not Fragile",3.40637278162948,0,Mar 2021,0,0,0,0,-0.889499179993321,0.35965641175494,0.319914083335359,0
+"155","Qatar","QAT","Qatar",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"QAT",36,1.47621779149348,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"156","Saint Kitts and Nevis","KNA","Saint Kitts and Nevis",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KNA",57,0.824630936376858,"Not Fragile",0,0,"Not Fragile",8.24630936376858,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"157","Saint Vincent and the Grenadines","VCT","Saint Vincent and the Grenadines",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"VCT",979,-1.35199277292181,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"158","Singapore","SGP","Singapore",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SGP",39,-1.06998122090255,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"159","Slovenia","SVN","Slovenia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SVN",19,-0.429844406940441,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"160","Sweden","SWE","Sweden",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SWE",13,-0.997965409896352,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"161","Switzerland","CHE","Switzerland",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CHE",5,-0.645497224367903,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"162","Thailand","THA","Thailand",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"THA",482,1.98708598905359,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,2,1.09861228866811,11,2.484906649788,-2.08123750896616,0.531490046668216,3.59106367055607,0
+"163","Tonga","TON","Tonga",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"TON",32,0.754390940465824,"Not Fragile",0,0,"Not Fragile",7.54390940465824,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"164","United States of America","USA","United States of America",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"USA",298,-0.650725555296907,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,24,3.2188758248682,-1.46418413715233,0.239089933603917,3.56894751300386,0
+"165","Uruguay","URY","Uruguay",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"URY",15,-0.606907571243454,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"166","Benin","BEN","Benin",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"BEN",716,1.26719618370564,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,1,0.693147180559945,15,2.77258872223978,0.75509186947261,0.733909711842822,2.21841946590028,8.77545934736305
+"167","Canada","CAN","Canada",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CAN",71,-0.990090108158738,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"168","Costa Rica","CRI","Costa Rica",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CRI",206,-0.604632674266815,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,1,0.693147180559945,-0.0102730299223041,0.751073839135356,0.700862984583243,0
+"169","Côte d'Ivoire","CIV","Côte d'Ivoire",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"CIV",39364,-0.744209377444576,"Not Fragile",0,-0.445655830397439,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"170","Denmark","DNK","Denmark",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"DNK",5,-1.15470053837925,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"171","Eswatini","SWZ","Eswatini",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SWZ",217,0.154761450969904,"Not Fragile",0,0,"Not Fragile",1.54761450969904,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"172","Finland","FIN","Finland",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"173","Ghana","GHA","Ghana",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"GHA",18425,-0.199884968045506,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"174","Guinea-Bissau","GNB","Guinea-Bissau","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"GNB",2093,1.11766837773704,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"175","Indonesia","IDN","Indonesia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"IDN",12051,-0.989307783120718,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,3,1.38629436111989,36,3.61091791264422,0.016993863226839,0.632033412788099,3.60017722327251,5.0849693161342
+"176","Jamaica","JAM","Jamaica",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"JAM",2529,1.21150964005766,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"177","Korea Republic of","KOR","Korea Republic of",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KOR",180,-1.07494439096639,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,NA,0,0,0
+"178","Kyrgyzstan","KGZ","Kyrgyzstan",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"KGZ",2963,1.18808246292505,"Fragile",0,0,"Not Fragile",10,0,Mar 2021,0,0,0,0,-0.874639531141233,0.629582314235658,0.550657580137888,0
+"179","Lao PDR","LAO","Lao PDR","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"LAO",6757,-1.41245404590327,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"180","Liechtenstein","LIE","Liechtenstein",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"181","Marshall Islands","MHL","Marshall Islands","High-Institutional and Social Fragility",10,5,0,0,0,0,0,0,0,"Not Fragile",0,"MHL",7,0.912870929175277,"Not Fragile",0,0,"Not Fragile",9.12870929175277,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"182","Namibia","NAM","Namibia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"NAM",459,-2.02248375433021,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,1,0.693147180559945,0.897250189513041,0.437273782632733,0.300803196223641,0
+"183","Nepal","NPL","Nepal",NA,0,5,0,0,1,0,0,0,0,"Not Fragile",0,"NPL",8192,-1.13917210674748,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,1,0.693147180559945,-0.880002480447251,0.765768901799248,1.36702571359265,0
+"184","Norway","NOR","Norway",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"NOR",5,-1.11803398874989,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,0,0,-0.526234811584218,0.303965146635079,0.15995704166768,0
+"185","Paraguay","PRY","Paraguay",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"PRY",84,0.554331816945134,"Not Fragile",0,0,"Not Fragile",5.54331816945134,0,Mar 2021,0,0,8,2.19722457733622,1.23899727214497,0.900394430229902,1.08163833442684,10
+"186","Russian Federation","RUS","Russian Federation",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"RUS",62343,-0.525961301607439,"Not Fragile",0,0,"Not Fragile",0,0,Mar 2021,0,0,7,2.07944154167984,-1.07428273136123,0.624021673812206,2.74981724985142,0
+"187","Slovakia","SVK","Slovakia",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"SVK",1343,1.21096260556853,"Fragile",0,0,"Not Fragile",10,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"188","Sri Lanka","LKA","Sri Lanka",NA,0,5,0,0,0,0,0,0,0,"Not Fragile",0,"LKA",110348,-1.44441107576674,"Not Fragile",25110,-1.52591279751243,"Not Fragile",0,0,Mar 2021,0,0,1,0.693147180559945,-1.15265242135703,1.25600055095664,2.14087925684587,0
+"189","United Kingdom","GBR","United Kingdom",NA,0,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"GBR",69,-0.981748451759817,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"190","Viet Nam","VNM","Viet Nam",NA,0,5,0,0,0,0,1,0,0,"Not Fragile",0,"VNM",316441,-0.687365161232618,"Not Fragile",0,0,"Not Fragile",0,0,NA,NA,NA,NA,NA,NA,NA,NA,NA

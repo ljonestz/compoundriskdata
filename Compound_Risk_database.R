@@ -940,12 +940,14 @@ macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
 
 household_risk <- macrofin %>%
   dplyr::select(Country, M_Household.risks) %>%
-  mutate(M_Household.risks = case_when(
-    M_Household.risks == 0.5 ~ 7,
-    M_Household.risks == 1 ~ 10,
-    TRUE ~ M_Household.risks
+  mutate(M_Household.risks_raw = M_Household.risks,
+         M_Household.risks = case_when(
+           M_Household.risks == 0.5 ~ 7,
+           M_Household.risks == 1 ~ 10,
+           TRUE ~ M_Household.risks
   )) %>%
-  rename(S_Household.risks = M_Household.risks)
+  rename(S_Household.risks = M_Household.risks,
+         S_Household.risks_raw = M_Household.risks_raw)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
 phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
@@ -1205,7 +1207,9 @@ gdac <- gdac %>%
   mutate(NH_GDAC_Hazard_Score_Norm = case_when(
     NH_GDAC_Hazard_Status == "active" & NH_GDAC_Hazard_Severity == "orange" ~ 10,
     TRUE ~ 0
-  )) %>%
+  ),
+  NH_GDAC_Hazard_Score = paste(NH_GDAC_Hazard_Status, NH_GDAC_Hazard_Severity, sep = " - ")
+  ) %>%
   drop_na(Country)
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
@@ -1412,7 +1416,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------—REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_4.csv", col_types = cols()))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
@@ -1456,38 +1460,40 @@ reign <- left_join(reign_start, fcv %>% dplyr::select(Country, FCV_normalised), 
 #-----------------—Join all dataset-----------------------------------
 conflict_dataset_raw <- left_join(fcv, reign, by = "Country") %>%
   left_join(., idp, by = "Country") %>%
-  left_join(., acled, by = "Country") %>%
-  dplyr::select(Countryname, FCV_normalised, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
+  left_join(., acled, by = "Country") #%>%
+  #dplyr::select(Countryname, FCV_normalised, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
 
 conflict_dataset <- conflict_dataset_raw %>%
-  mutate(
-    flag_count = as.numeric(unlist(row_count(
-      .,
-      pol_trigger_norm:fatal_z_norm,
-      count = 10,
-      append = F
-    ))),
-    fragile_1_flag = case_when(
-      flag_count >= 1 ~ 10,
-      TRUE ~ suppressWarnings(apply(conflict_dataset_raw %>% dplyr::select(pol_trigger_norm:fatal_z_norm), 
-                   1,
-                   FUN = max,
-                   na.rm = T)
-    )),
-    fragile_1_flag = case_when(
-      fragile_1_flag == -Inf ~ NA_real_,
-      TRUE ~ fragile_1_flag
-    )) %>%
+  # mutate(
+  #   flag_count = as.numeric(unlist(row_count(
+  #     .,
+  #     pol_trigger_norm:fatal_z_norm,
+  #     count = 10,
+  #     append = F
+  #   ))),
+  #   fragile_1_flag = case_when(
+  #     flag_count >= 1 ~ 10,
+  #     TRUE ~ suppressWarnings(apply(conflict_dataset_raw %>% dplyr::select(pol_trigger_norm:fatal_z_norm), 
+  #                  1,
+  #                  FUN = max,
+  #                  na.rm = T)
+  #   )),
+  #   fragile_1_flag = case_when(
+  #     fragile_1_flag == -Inf ~ NA_real_,
+  #     TRUE ~ fragile_1_flag
+  #   )) %>%
   rename(FCS_Normalised = FCV_normalised, REIGN_Normalised = pol_trigger_norm,
-         Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm,
-         Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag) 
+         Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm#,
+         #Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag
+         ) 
 
 #-------------------------------------—Create Fragility sheet--------------------------------------
 # Compile joint database
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
-fragility_sheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %>%
-  dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
+fragility_sheet <- left_join(countrylist, conflict_dataset, by = "Country") %>%
+  dplyr::select(-X) %>%
+  # dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
   rename_with(
     .fn = ~ paste0("Fr_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
@@ -1531,11 +1537,15 @@ writeSourceCSV <- function(i) {
   
   # Define sheet and dimension name
   sheet <- sheetList[[i]]
-  dimension <- names(sheetList)[i]
-  
-  sheet <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% indicators$indicator_slug))]
   sheet <- sheet[!duplicated(sheet$Country),]
   sheet <- arrange(sheet, Country)
+  dimension <- names(sheetList)[i]
+  
+  sheet_norm <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% indicators$indicator_slug))]
+  sheet_raw <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% unlist(strsplit(indicators$indicator_raw_slug, ", "))))]
+  colnames(sheet_raw) <- paste0(colnames(sheet_raw), "_raw")
+
+  sheet <- left_join(sheet_norm, sheet_raw, by = c("Country" = "Country_raw"), suffix = c("", "_raw"))
   
   write_csv(sheet, paste0("crm-excel/", dimension, ".csv"))
   
