@@ -1418,6 +1418,14 @@ acled <- acled %>%
 #--------------------------—REIGN--------------------------------------------
 reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
 
+month <- as.numeric(format(Sys.Date(),"%m"))
+year <- as.numeric(format(Sys.Date(),"%Y"))
+        
+test <- tryCatch(
+  read_csv(paste0("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_", year, "_", month, ".csv"), col_types = cols())
+  )
+
+?tryCatch
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
   group_by(country) %>%
