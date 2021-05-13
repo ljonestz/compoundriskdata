@@ -715,8 +715,8 @@ print("Food sheet written")
 #
 
 #---------------------------—Economist Intelligence Unit---------------------------------
-url <- "https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/RBTracker.xls"
-destfile <- "RBTracker.xls"
+url <- "https://github.com/ljonestz/compoundriskdata/blob/master/Indicator_dataset/RBTracker%20(4).xls?raw=true"
+destfile <- "RBTracker(4).xls"
 curl::curl_download(url, destfile)
 eiu_data <- read_excel(destfile, sheet = "Data Values", skip = 3)
 
@@ -735,7 +735,9 @@ eiu_latest_month <- eiu_data %>%
   pivot_wider(
     names_from = `SERIES NAME`,
     values_from = Values
-  ) 
+  ) %>%
+  rename(Macroeconomic_risk = `Macroeconomic risk`) %>%
+  mutate(Macroeconomic_risk = (`Financial risk` + Macroeconomic_risk + `Foreign trade & payments risk`) / 2)
 
 eiu_one_year <- eiu_data %>%
   filter(MONTH %in% unique(eiu_data$MONTH)[-1]) %>%
@@ -756,7 +758,9 @@ eiu_one_year <- eiu_data %>%
   rename_with(
     .col = c(contains("risk"), contains("Overall")),
     .fn  = ~ paste0(., "_12")
-  ) 
+  ) %>%
+  rename(Macroeconomic_risk_12 = `Macroeconomic risk_12`) %>%
+  mutate(Macroeconomic_risk_12 = (`Financial risk_12` + Macroeconomic_risk_12 + `Foreign trade & payments risk_12`) / 2)
 
 eiu_three_month <- eiu_data %>%
   filter(MONTH %in% head(unique(MONTH)[-1], 3)) %>%
@@ -778,32 +782,35 @@ eiu_three_month <- eiu_data %>%
   rename_with(
     .col = c(contains("risk"), contains("Overall")),
     .fn  = ~ paste0(., "_3")
-  )
+  ) %>%
+  rename(Macroeconomic_risk_3 = `Macroeconomic risk_3`) %>%
+  mutate(Macroeconomic_risk_3 = (`Financial risk_3` + Macroeconomic_risk_3 + `Foreign trade & payments risk_3`) / 2)
 
 # Join datasets
 eiu_joint <- left_join(eiu_latest_month, eiu_three_month, by = "Country") %>%
   left_join(., eiu_one_year, by = "Country") %>%
   mutate(
-    EIU_3m_change = `Overall Evaluation` - `Overall Evaluation_3`,
-    EIU_12m_change = `Overall Evaluation` - `Overall Evaluation_12`) %>%
-  dplyr::select(contains("Country"), contains("Overall"), contains("EIU")) %>%
+    EIU_3m_change = Macroeconomic_risk - Macroeconomic_risk_3,
+    EIU_12m_change = Macroeconomic_risk - Macroeconomic_risk_12
+  ) %>%
+  dplyr::select(contains("Country"), contains("Macro"), contains("EIU")) %>%
   rename_with(
-    .col = c(contains("Overall"), contains("EIU")),
+    .col = c(contains("Macro"), contains("EIU")),
     .fn = ~ paste0("M_", .)
   ) %>%
-  rename(M_EIU_Score = `M_Overall Evaluation`,
-         M_EIU_Score_12m = `M_Overall Evaluation_12`) %>%
+  rename(M_EIU_Score = `M_Macroeconomic_risk`,
+         M_EIU_Score_12m = `M_Macroeconomic_risk_12`) %>%
   # Add Country name
   mutate(
     Country = suppressWarnings(countrycode(Country,
-                                      origin = "country.name",
-                                      destination = "iso3c",
-                                      nomatch = NULL))
-    )
-  
-eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score")
-eiu_joint <- normfuncpos(eiu_joint, 2, -2, "M_EIU_12m_change")
-eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score_12m")
+                                           origin = "country.name",
+                                           destination = "iso3c",
+                                           nomatch = NULL))
+  )
+
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_Score, 0.90), quantile(eiu_joint$M_EIU_Score, 0.10), "M_EIU_Score")
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_12m_change, 0.90), quantile(eiu_joint$M_EIU_12m_change, 0.10), "M_EIU_12m_change")
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_Score_12m, 0.90), quantile(eiu_joint$M_EIU_Score_12m, 0.10), "M_EIU_Score_12m")
 
 #-----------------------------—Create Combined Macro sheet-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -1412,7 +1419,7 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------—REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_4.csv", col_types = cols()))
+reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%

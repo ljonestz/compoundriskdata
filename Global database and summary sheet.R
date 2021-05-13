@@ -314,7 +314,8 @@ altflag <- altflag %>%
       na.rm = T
     ),
     F_coefvar = cv(c(
-      F_fpv_rating,
+      F_fews_crm_norm,
+      F_fao_wfp_warning,
       F_fpv_rating),
       na.rm = T
     ),
