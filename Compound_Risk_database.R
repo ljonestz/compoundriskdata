@@ -1377,7 +1377,7 @@ acled <- acled_data$data %>%
     month_yr = as.yearmon(date)
   ) %>%
   # Remove dates for the latest month (or month that falls under the prior 6 weeks)
-  filter(date <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
+  filter(as.Date(as.yearmon(date)) <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
   group_by(iso3, month_yr) %>%
   summarise(fatal_month = sum(fatalities, na.rm = T),
             fatal_month_log = log(fatal_month + 1)) %>%
