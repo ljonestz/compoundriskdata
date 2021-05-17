@@ -5,14 +5,17 @@
 ####
 
 #--------------------LOAD PACKAGES-----------------------------------------
-# install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(
-  cowplot, lubridate, rvest, viridis, countrycode,
-  clipr, awalker89, openxlsx, dplyr, readxl,
-  gsheet, zoo, wppExplorer, haven, EnvStats, jsonlite, matrixStats,
-  ggalt, raster, sf, mapview, maptools, ggthemes, tidyverse,
-  sjmisc, googledrive, rgdal
-)
+# packagesAll <- c("cowplot", "lubridate", "rvest", "viridis", "countrycode", 
+#                  "clipr", "awalker89", "openxlsx", "dplyr", "readxl", "gsheet",
+#                  "zoo", "wppExplorer", "haven", "EnvStats", "jsonlite", 
+#                  "matrixStats", "ggalt", "raster", "sf", "mapview", "maptools", 
+#                  "ggthemes", "tidyverse", "sjmsc", "googledrive", "rgdal")
+
+packages <- c("dplyr", "EnvStats", "stats", "countrycode", "ggplot2", "jsonlite",
+              "lubridate", "matrixStats", "readr", "readxl", "rvest", "stringr", 
+              "tidyr", "xml2", "zoo")
+lapply(packages, require, character.only = TRUE)
+
 {
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 # Function to normalise with upper and lower bounds (when low score = high vulnerability)
@@ -866,7 +869,7 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------—MPO: Poverty projections----------------------------------------------------
-mpo_data <- read.csv("https://raw.githubusercontent.com/bennotkin/compoundriskdata/no-gdrive-access/Indicator_dataset/mpo.csv")
+mpo_data <- read.csv("https://raw.githubusercontent.com/bennotkin/compoundriskdata/docker/Indicator_dataset/mpo.csv")
 
 #-----------------------------—HOUSEHOLD HEATMAP FROM MACROFIN-------------------------------------
 # If Macro Fin Review is re-included above, we can reuse that. For clarity, moving data read here because it's not being used by macrosheet
@@ -903,7 +906,7 @@ household_risk <- macrofin %>%
          S_Household.risks_raw = M_Household.risks_raw)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
-phone_index_data <- read.csv("https://raw.githubusercontent.com/bennotkin/compoundriskdata/no-gdrive-access/Indicator_dataset/phone.csv")
+phone_index_data <- read.csv("https://raw.githubusercontent.com/bennotkin/compoundriskdata/docker/Indicator_dataset/phone.csv")
 
 #------------------------------—IMF FORECASTED UNEMPLOYMENT-----------------------------------------
 imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")

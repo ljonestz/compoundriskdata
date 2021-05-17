@@ -7,11 +7,17 @@
 
 # LOAD PACKAGES ----
 # install.packages("librarian")     #Run if librarian is not already installed
-librarian::shelf(
-  ggplot2, cowplot, lubridate, rvest, dplyr, compositions, viridis,
-   countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
-  gsheet, tidyverse
-)
+# librarian::shelf(
+#   ggplot2, cowplot, lubridate, rvest, dplyr, compositions, viridis,
+#    countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
+#   gsheet, tidyverse
+# )
+
+packages <- c("dplyr", "EnvStats", "stats", "countrycode", "ggplot2", "jsonlite",
+              "lubridate", "matrixStats", "readr", "readxl", "rvest", "stringr", 
+              "tidyr", "xml2", "zoo")
+lapply(packages, require, character.only = TRUE)
+
 {
 #
 ##
