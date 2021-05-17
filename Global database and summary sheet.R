@@ -13,9 +13,9 @@
 #   gsheet, tidyverse
 # )
 
-packages <- c("dplyr", "EnvStats", "stats", "countrycode", "ggplot2", "jsonlite",
-              "lubridate", "matrixStats", "readr", "readxl", "rvest", "stringr", 
-              "tidyr", "xml2", "zoo")
+packages <- c("curl", "dplyr", "EnvStats", "stats", "countrycode", "ggplot2", 
+              "jsonlite","lubridate", "matrixStats", "readr", "readxl", "rvest",   
+              "sjmisc", "stringr", "tidyr", "xml2", "zoo")
 lapply(packages, require, character.only = TRUE)
 
 {
@@ -219,12 +219,12 @@ riskflags[paste0(names, "_plus1")] <- lapply(riskflags[names], function(xx) {
 riskflags <- riskflags %>%
   rowwise() %>%
   mutate(
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL = geometricmean(c(
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL = geoMean(c(
       EMERGING_RISK_FRAGILITY_INSTITUTIONS_plus1,
       EMERGING_RISK_MACRO_FISCAL_plus1),
       na.rm = T
     ),
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ = geometricmean(c(
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL_SQ = geoMean(c(
       EXISTING_RISK_FRAGILITY_INSTITUTIONS_plus1,
       EMERGING_RISK_FRAGILITY_INSTITUTIONS_MULTIDIMENSIONAL),
       na.rm = T
@@ -256,7 +256,7 @@ altflag[paste0(names, "_plus1")] <- lapply(altflag[names], function(xx) {
 altflag <- altflag %>%
   rowwise() %>%
   mutate(
-    EMERGING_RISK_HEALTH_AV = geometricmean(c(
+    EMERGING_RISK_HEALTH_AV = geoMean(c(
       H_Oxrollback_score_norm_plus1,
       H_Covidgrowth_casesnorm_plus1,
       H_Covidgrowth_deathsnorm_plus1,
@@ -267,14 +267,14 @@ altflag <- altflag %>%
       na.rm = T
       )),
     EMERGING_RISK_MACRO_FISCAL_AV = M_EIU_12m_change_norm,
-    EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geometricmean(c(
+    EMERGING_RISK_FRAGILITY_INSTITUTIONS_AV = geoMean(c(
       Fr_REIGN_Normalised,
       Fr_Displaced_UNHCR_Normalised,
       Fr_BRD_Normalised,
       na.rm = T
     ))
     ,
-    EMERGING_RISK_HEALTH_SQ_ALT = geometricmean(c(
+    EMERGING_RISK_HEALTH_SQ_ALT = geoMean(c(
       H_Oxrollback_score_norm_plus1,
       max(altflag$H_Covidgrowth_casesnorm,
           altflag$H_Covidgrowth_deathsnorm,

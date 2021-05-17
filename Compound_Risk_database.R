@@ -11,9 +11,9 @@
 #                  "matrixStats", "ggalt", "raster", "sf", "mapview", "maptools", 
 #                  "ggthemes", "tidyverse", "sjmsc", "googledrive", "rgdal")
 
-packages <- c("dplyr", "EnvStats", "stats", "countrycode", "ggplot2", "jsonlite",
-              "lubridate", "matrixStats", "readr", "readxl", "rvest", "stringr", 
-              "tidyr", "xml2", "zoo")
+packages <- c("curl", "dplyr", "EnvStats", "stats", "countrycode", "ggplot2", 
+              "jsonlite","lubridate", "matrixStats", "readr", "readxl", "rvest",   
+              "sjmisc", "stringr", "tidyr", "xml2", "zoo")
 lapply(packages, require, character.only = TRUE)
 
 {
