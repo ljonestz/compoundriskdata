@@ -866,11 +866,21 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------—MPO: Poverty projections----------------------------------------------------
-mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+# If file exists locally, read locally; otherwise, use drive_download
+mpo <- tryCatch(
+  {
+    read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+  }, error = function(e) {
+    drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
+    data <- read_dta("tmp-global.dta")
+    unlink("tmp-global.dta")
+    return(data)
+  }
+)
 
-# drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
-# mpo <- read_dta("tmp-global.dta")
-# unlink("tmp-global.dta")
+drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
+mpo <- read_dta("tmp-global.dta")
+unlink("tmp-global.dta")
 
 # Add population
 pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
@@ -950,13 +960,19 @@ household_risk <- macrofin %>%
          S_Household.risks_raw = M_Household.risks_raw)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
-phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
-                         sheet = "2. Harmonized Indicators")
-
-# drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
-# phone_data <- read_excel("tmp-Phone_surveys.xlsx",
-#                          sheet = "2. Harmonized Indicators")
-# unlink("tmp-Phone_surveys.xlsx")
+# If file exists locally, read locally; otherwise, use drive_download
+phone_data <- tryCatch(
+  {
+    read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
+               sheet = "2. Harmonized Indicators")
+  }, error = function(e) {
+    drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
+    data <- read_excel("tmp-Phone_surveys.xlsx",
+                             sheet = "2. Harmonized Indicators")
+    unlink("tmp-Phone_surveys.xlsx")
+    return(data)
+  }
+)
 
 phone_compile <- phone_data %>%
   filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
@@ -1416,16 +1432,35 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------—REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
+# reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
 
 month <- as.numeric(format(Sys.Date(),"%m"))
 year <- as.numeric(format(Sys.Date(),"%Y"))
-        
-test <- tryCatch(
-  read_csv(paste0("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_", year, "_", month, ".csv"), col_types = cols())
-  )
 
-?tryCatch
+l <- F
+i <- 0
+while(l == F & i < 20) {
+  tryCatch(
+    {
+      reign_data <- suppressMessages(read_csv(paste0("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_", year, "_", month, ".csv"),
+               col_types = cols()))
+      l <- T
+      print(paste0("Found REIGN csv at ", year, "-", month))
+    }, error = function(e) {
+      print(paste0("No REIGN csv for ", year, "-", month))
+    }, warning = function(w) {
+    }, finally = {
+    }
+    )
+  if(month > 1) {
+    month <- month - 1
+  } else {
+    month <- 12
+    year <- year - 1
+  }
+  i <- i + 1
+}
+
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
   group_by(country) %>%
