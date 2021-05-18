@@ -9,7 +9,7 @@
 # install.packages("librarian")     #Run if librarian is not already installed
 librarian::shelf(
   ggplot2, cowplot, lubridate, rvest, dplyr, compositions, viridis,
-   countrycode, clipr, sjmisc, awalker89 / openxlsx, EnvStats, 
+   countrycode, clipr, sjmisc, awalker89, openxlsx, EnvStats, 
   gsheet, tidyverse
 )
 {
@@ -685,7 +685,7 @@ reliable <- reliabilitysheet %>%
 globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
 # Save database of all risk indicators (+ reliability scores)
-write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
+write.csv(globalrisk, "Risk_sheets/Global_compound_risk_database.csv")
 
 #------------------------------—Combine the reliability sheet with the summary risk flag sheet-----------------------------
 reliable <- reliabilitysheet %>%
@@ -702,7 +702,7 @@ riskflags <- left_join(riskflags %>%
 
 # Write csv file of all risk flags (+reliability scores)
 
-write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
+write.csv(riskflags, "Risk_sheets/Compound_Risk_Flag_Sheets.csv")
 }
 # 
 # #
@@ -712,6 +712,8 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 # ### ********************************************************************************************
 # ##
 # #
+# 
+# librarian::shelf(openxlsx)
 # 
 # # dplyr::select relevant variables
 # riskset <- riskflags %>%
@@ -724,7 +726,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     EMERGING_RISK_MACRO_FISCAL,
 #     EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,
 #     TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE,
-#     TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, 
+#     TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED,TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED,
 #     TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ, TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ_MED,
 #     RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK
 #   )
@@ -790,7 +792,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     wrapText = TRUE,
 #     # textRotation = 90
 #   )
-#   
+# 
 #   addStyle(crxls,
 #            sheet = number,
 #            headerStyle,
@@ -798,14 +800,14 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #            cols = 1:57,
 #            gridExpand = TRUE
 #   )
-#   
+# 
 #   bodyStyle <- createStyle(
 #     fgFill = "white",
 #     border = "TopBottomLeftRight", # might drop Top to not over ride header black border
 #     borderColour = "white",
 #     halign = "center"
 #   )
-#   
+# 
 #   addStyle(crxls,
 #            sheet = number,
 #            bodyStyle,
@@ -813,10 +815,10 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #            cols = 1:57,
 #            gridExpand = TRUE
 #   )
-#   
+# 
 #   setColWidths(crxls, number, cols = 1, widths = 10) ## set column width for row names column
 #   setRowHeights(crxls, number, rows = 1, heights = 150) ## set column width for row names column
-#   
+# 
 #   modifyBaseFont(crxls,
 #                  fontSize = 12,
 #                  fontColour = "black",
@@ -893,7 +895,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     fontColour = "white",
 #     bgFill = "white"
 #   )
-#   
+# 
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, rule = "==10", style = negStyle)
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, type = "between", rule = c(0, 6.9999), style = posStyle)
