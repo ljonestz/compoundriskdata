@@ -22,31 +22,31 @@ librarian::shelf(
 #
  
 # Load risk sheets
-healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv") %>% dplyr::select(-X)
-foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv") %>% dplyr::select(-X)
-#debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
-fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv") %>% dplyr::select(-X)
-macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv") %>% dplyr::select(-X)
-Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv") %>% dplyr::select(-X)
-Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv") %>% dplyr::select(-X)
-#acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
+# healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv") %>% dplyr::select(-X)
+# foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv") %>% dplyr::select(-X)
+# #debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
+# fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv") %>% dplyr::select(-X)
+# macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv") %>% dplyr::select(-X)
+# Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv") %>% dplyr::select(-X)
+# Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv") %>% dplyr::select(-X)
+# #acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
+# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
 
-# # Load risk sheets
-# healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
-# foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
-# fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
-# macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
-# Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
-# Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
-# countrylist <- read.csv("Indicator_dataset/countrylist.csv")[,-1]
+# Load risk sheets
+healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
+foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
+fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
+macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
+Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
+Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
+countrylist <- read.csv("Indicator_dataset/countrylist.csv")[,-1]
 
 # Join datasets
 # — `globalrisk` ----
 globalrisk <- left_join(countrylist, healthsheet, by = c("Countryname", "Country")) %>%
   left_join(., foodsecurity, by = c("Countryname", "Country")) %>%
   # left_join(., debtsheet, by = c("Countryname", "Country")) %>%
-  left_join(., fragilitysheet, by = c("Countryname", "Country")) %>%
+  left_join(., fragilitysheet, by = c("Country")) %>%
   left_join(., macrosheet, by = c("Countryname", "Country")) %>%
   left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
   left_join(., Socioeconomic_sheet, by = c("Countryname", "Country")) %>%
