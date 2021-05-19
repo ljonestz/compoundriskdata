@@ -11,7 +11,8 @@ librarian::shelf(
   ggplot2, cowplot, lubridate, rvest, dplyr, viridis,
   countrycode, corrplot, cttobin / ggthemr, ggalt, gridExtra, ggcorrplot,
   ggExtra, ggrepel, knitr, kableExtra, grid, wppExplorer, alluvial, ggforce,
-  ggalluvial, ggparallel, styler, mapview, geojsonio, scales, tidyverse, ggpubr
+  ggalluvial, ggparallel, styler, mapview, geojsonio, scales, tidyverse, ggpubr,
+  emdbook
 )
 
 # Load themes
@@ -100,11 +101,11 @@ ggsave("Plots/globalmapthree.pdf", map3, width = 10, height = 5)
 # Draw map one
 mapcomb <- ggplot(data = filter(worldmap %>% 
                               mutate(
-                                TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM = case_when(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM >= 4 ~ TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+                                TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED = case_when(TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED >= 4 ~ TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED,
                                                                                          TRUE ~ NA_real_))),
               mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  geom_polygon(aes(fill = TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED)) +
   scale_fill_distiller(palette = "Blues", direction = 1) + # or direction=1
   theme_map() +
   labs(fill = "Total # of risks flags") +
@@ -113,11 +114,11 @@ mapcomb <- ggplot(data = filter(worldmap %>%
 # Draw map two
 map2comb <- ggplot(data = filter(worldmap %>% 
                                mutate(
-                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM = case_when(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM >= 3.5 ~ TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM,
+                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED = case_when(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED >= 3.5 ~ TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED,
                                                                                           TRUE ~ NA_real_))),
                mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)) +
+  geom_polygon(aes(fill = TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED)) +
   scale_fill_distiller(palette = "Reds", direction = 1) + # or direction=1
   theme_map() +
   labs(fill = "Total # of risk flags") +
@@ -279,7 +280,7 @@ theme_set(theme_classic())
 # Convert to continents
 riskflags$Continent <- countrycode(riskflags$Country, origin = "iso3c", destination = "continent")
 
-one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, color = Continent)) +
+one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED)) +
   geom_count() +
   geom_line(stat = "smooth", method = "lm", se = F, alpha = 0.6) +
   xlab("Risk score with max value flags") +
@@ -303,7 +304,7 @@ one <- ggplot(riskflags, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_
 # Add histogram
 one <- ggMarginal(one, type = "histogram", fill = "transparent")
 
-two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, color = Continent)) +
+two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED)) +
   geom_count() +
   geom_line(stat = "smooth", method = "lm", se = F, alpha = 0.6) +
   xlab("Risk score with max value flags") +
@@ -327,7 +328,23 @@ two <- ggplot(riskflags, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_
 two <- ggMarginal(two, type = "histogram", fill = "transparent")
 
 join <- cowplot::plot_grid(one, two, ncol = 2)
-ggsave("Plots/compareriskscore.pdf", join, width = 15, height = 6)
+
+# Save figures
+ggsave(
+  "Plots/compareriskscore.pdf",
+  join, 
+  width = 15, 
+  height = 6
+)
+
+ggsave(
+  "Plots/compareriskscore.tiff",
+  join, 
+  width = 15, 
+  height = 6,
+  device = "tiff",
+  dpi = 700
+)
 
 #--------------------Reliability test ------------------------------
 # Find continents
@@ -336,7 +353,7 @@ cont <- riskflags %>%
                                  origin = "iso3c",
                                  destination = "continent"))
 
-one <- ggplot(cont, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
+one <- ggplot(cont, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
   geom_point() +
   geom_line(
     stat = "smooth",
@@ -355,7 +372,7 @@ one <- ggplot(cont, aes(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILIT
 # Add histogram
 one <- ggMarginal(one, type = "histogram", fill = "transparent")
 
-two <- ggplot(cont, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
+two <- ggplot(cont, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED, RELIABILITY_SCORE_EMERGING_RISK, color = Continent)) +
   geom_point() +
   geom_line(stat = "smooth", 
             method = "lm",
@@ -374,7 +391,23 @@ two <- ggMarginal(two, type = "histogram", fill = "transparent")
 
 rel <- cowplot::plot_grid(two, one, align = "h")
 
-ggsave("Plots/reliabilescore.pdf", rel, width = 12, height = 6)
+# Print figures
+
+ggsave(
+  "Plots/reliabilescore.pdf", 
+  rel,
+  width = 12,
+  height = 6
+)
+
+ggsave(
+  "Plots/reliabilescore.tiff", 
+  rel,
+  width = 12,
+  height = 6,
+  device = "tiff",
+  dpi = 700
+)
 
 #------------------Comparison between current and future risk----------------------------------
 # Correlations of all source indicators that feed into the compound risk monitor
@@ -413,14 +446,29 @@ plot <- ggcorrplot(
     legend.title = element_blank()
   )
 
-ggsave("Plots/Riskcorr.pdf", plot, width = 10, height = 10)
+ggsave(
+  "Plots/Riskcorr.pdf",
+  plot,
+  width = 10, 
+  height = 10
+)
+
+ggsave(
+  "Plots/Riskcorr.tiff",
+  plot,
+  width = 10, 
+  height = 10,
+  device = 'tiff',
+  dpi = 700
+)
+
 
 #----------------Compare emerging and Underlying Vulnerability------------------------------------
 ggthemr_reset()
 theme_set(theme_classic(base_size = 16))
 
 comb <- riskflags %>%
-  dplyr::select(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM) %>%
+  dplyr::select(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED) %>%
   arrange(TOTAL_EXISTING_COMPOUND_RISK_SCORE)
 
 # Pick labels to show subset of countries
@@ -432,7 +480,7 @@ countrylab[-tennum] <- ""
 # Plot
 ploty <- ggplot(comb, aes(
   x = TOTAL_EXISTING_COMPOUND_RISK_SCORE, 
-  xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,
+  xend = TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED,
   y = reorder(Countryname, TOTAL_EXISTING_COMPOUND_RISK_SCORE), 
   group = Countryname
 )) +
@@ -539,7 +587,7 @@ ggsave("Plots/compareriskcalcs.pdf", comp, width = 14, height = 10)
 
 #-------Ranking exercise--------------------
 # Function to create top 20 ranked countries
-rankcountry <- lapply(riskset %>% dplyr::select(contains(c("EXISTING_", "EMERGING_"))), function(xx) {
+rankcountry<- lapply(riskflags %>% dplyr::select(contains(c("EXISTING_", "EMERGING_")), OVERALL_FLAGS_GEO_MED, OVERALL_SCORE_FILTER_7_5_MED, contains("RELIABILITY")), function(xx) {
   paste(riskset$Country[order(-xx)][1:28], round(xx[order(-xx)][1:28], 1))
 })
 
@@ -563,7 +611,7 @@ tab %>%
 
 # Draw table for Emerging threats
 tab <- rankcountry %>%
-  dplyr::select(contains("EMERGING"), -contains("_SQ"))
+  dplyr::select(contains("EMERGING"), -contains("MULTIDIMENSIONAL"), -contains("SQ"), -contains("AV"))
 colnames(tab) <- gsub("EXISTING_RISK_", "", colnames(tab))
 colnames(tab) <- gsub("EMERGING_RISK_", "", colnames(tab))
 colnames(tab) <- c(
@@ -578,15 +626,15 @@ tab %>%
 
 # Draw table for geometric risks
 sq <- c(
-  "EMERGING_RISK_HEALTH_SQ", "EMERGING_RISK_FOOD_SECURITY_SQ",
-  "EMERGING_RISK_MACRO_FISCAL_SQ", "EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY_SQ",
-  "EMERGING_RISK_NATURAL_HAZARDS_SQ", "EMERGING_RISK_FRAGILITY_INSTITUTIONS_SQ",
+  "OVERALL_HEALTH_GEO", "OVERALL_FOOD_SECURITY_GEO",
+  "OVERALL_MACRO_FISCAL_GEO", "OVERALL_SOCIOECONOMIC_VULNERABILITY_GEO",
+  "OVERALL_NATURAL_HAZARDS_GEO", "OVERALL_FRAGILITY_INSTITUTIONS_GEO",
   "OVERALL_FLAGS_GEO_MED"
 )
 
 # Function to create top 20 ranked countries
-rankcountry <- lapply(alt %>% dplyr::select(sq), function(xx) {
-  paste(alt$Country[order(-xx)][1:28], round(xx[order(-xx)][1:28], 1))
+rankcountry <- lapply(riskflags %>% dplyr::select(sq), function(xx) {
+  paste(riskflags$Country[order(-xx)][1:28], round(xx[order(-xx)][1:28], 1))
 })
 
 # Combine list
@@ -594,7 +642,7 @@ rankcountry <- bind_rows(rankcountry)
 
 # relabel
 tab <- rankcountry %>%
-  dplyr::select(contains("EMERGING"))
+  dplyr::select(contains("OVERAL"))
 colnames(tab) <- c(
   "HEALTH", "FOOD","SOCIO_VUL",  "MACRO",
    "NATURAL", "CONFLICT",
@@ -802,6 +850,10 @@ gtheme <- theme(
   title = element_text(size = 18, face = "bold")
 )
 
+# Palette
+colour <- c("#b3dfdf", "#66C1C1", "#3C89A1",  "#d95174","#B5284C","#761141", "#33071c") 
+colour6 <- c("#66C1C1", "#3C89A1",  "#d95174","#B5284C","#761141", "#33071c") 
+
 # Identify population at risk and merge
 pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
 pop$charcode <- suppressWarnings(countrycode(pop$charcode, origin = "iso2c", destination = "iso3c"))
@@ -811,9 +863,9 @@ risky <- left_join(riskflags, pop, by = "Country", keep = F)
 # Find regional values
 riskypop <- risky %>%
   mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
-  group_by(Region, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM) %>% 
+  group_by(Region, TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED) %>% 
   summarise(Riskpop = sum(Population, na.rm = T)) %>%
-  rename(Riskcat = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM) %>%
+  rename(Riskcat = TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED) %>%
   # Remove floor if what to compare high risk only
   mutate(Riskcat = as.factor(floor(Riskcat))) %>%
   filter(Riskcat != "0")
@@ -841,22 +893,22 @@ gtheme <- theme(
 # Number of people chart
 riskpopg <- riskypop %>%
   filter(Riskcat != "0") %>%
-  ggplot(aes(Region, Riskpop, fill = Riskcat)) +
+  ggplot(aes(Region, Riskpop/1000, fill = Riskcat)) +
   geom_histogram(position = "stack", stat = "identity") +
   coord_flip() +
-  ylab("Total population at risk (000s)") +
-  scale_fill_ordinal() +
+  ylab("Total population at risk (x1M)") +
   gtheme +
   labs(fill = "# Risk flags")+
   theme(legend.position = "none") + 
-  ggtitle("a) Emerging Threats")
+  ggtitle("a) Emerging Threats") +
+  scale_fill_manual(values = colour6)
 
 # Find regional values
 riskypop <- risky %>%
   mutate(Region = countrycode(Country, origin = "iso3c", destination = "region")) %>%
-  group_by(Region, TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM) %>% 
+  group_by(Region, TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED) %>% 
   summarise(Riskpop = sum(Population, na.rm = T)) %>%
-  rename(Riskcat = TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM) %>%
+  rename(Riskcat = TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED) %>%
   # Remove floor if what to compare high risk only
   mutate(Riskcat = as.factor(floor(Riskcat))) 
 
@@ -877,12 +929,11 @@ riskpopprop <- ggplot(riskypop, aes(Region, Riskprop, fill = Riskcat)) +
   geom_histogram(position = "stack", stat = "identity") +
   coord_flip() +
   ylab("Proportion of population at risk") +
-  scale_fill_ordinal() +
   gtheme +
   labs(fill = "# Risk flags") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  scale_fill_manual(values = colour)
   
-
 comb <- grid.arrange(riskpopg, riskpopprop, nrow = 2)
 
 # Identify population at risk and merge
@@ -924,16 +975,16 @@ gtheme <- theme(
 # Number of people chart
 riskpopg <- riskypop %>%
   filter(Riskcat != "0") %>%
-  ggplot(aes(Region, Riskpop, fill = Riskcat)) +
+  ggplot(aes(Region, Riskpop/1000, fill = Riskcat)) +
   geom_histogram(position = "stack", stat = "identity") +
   coord_flip() +
-  ylab("Total population at risk (000s)") +
-  scale_fill_ordinal() +
+  ylab("Total population at risk (x1M)") +
   gtheme +
   labs(fill = "# Risk flags") +
   theme(axis.text.y = element_blank(), 
         axis.title.y = element_blank()) +
-  ggtitle("b) Overall Alert Flags")
+  ggtitle("b) Overall Compound Risk") +
+  scale_fill_manual(values = colour6)
 
 # Find regional values
 riskypop <- risky %>%
@@ -961,11 +1012,11 @@ riskpopprop <- ggplot(riskypop, aes(Region, Riskprop, fill = Riskcat)) +
   geom_histogram(position = "stack", stat = "identity") +
   coord_flip() +
   ylab("Proportion of population at risk") +
-  scale_fill_ordinal() +
   gtheme +
   labs(fill = "# Risk flags") +
   theme(axis.text.y = element_blank(), 
-        axis.title.y = element_blank())
+        axis.title.y = element_blank()) +
+  scale_fill_manual(values = colour)
 
 comb_overall <- grid.arrange(riskpopg, riskpopprop, nrow = 2)
 
@@ -973,11 +1024,20 @@ comb_overall <- grid.arrange(riskpopg, riskpopprop, nrow = 2)
 combined_at_risk <- cowplot::plot_grid(comb, comb_overall, ncol = 2, align = "vh", rel_widths = c(1.2, 1))
 
 # Save plot
-ggsave("Plots/popatrisk.pdf", 
-       combined_at_risk, 
-       width = 14, 
-       height = 10,
-       )
+ggsave(
+  "Plots/popatrisk.pdf", 
+  combined_at_risk, 
+  width = 14, 
+  height = 10,
+)
+ggsave(
+  "Plots/popatrisk.tiff", 
+  combined_at_risk, 
+  width = 14, 
+  height = 10,
+  device='tiff',
+  dpi=700
+)
 
 #-----------------Compare emerging and Underlying Vulnerability---------------------------
 gtheme <- theme(
@@ -996,8 +1056,7 @@ complot_data <- riskflags %>%
                      destination = "continent"))
 # Plot
 complot <- ggplot(complot_data, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE,
-                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE,
-                                 color = Continent)) +
+                                 TOTAL_EMERGING_COMPOUND_RISK_SCORE)) +
   geom_count() +
   geom_smooth(method = "lm", se = F) +
   gtheme +
@@ -1006,21 +1065,34 @@ complot <- ggplot(complot_data, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE,
   ggrepel::geom_text_repel(
     data = as.data.frame(riskflags) %>%
       filter(TOTAL_EXISTING_COMPOUND_RISK_SCORE >= 3) %>%
-      sample_n(2),
+      sample_n(5),
     aes(label = Countryname),
     arrow = arrow(length = unit(0.01, "npc")),
     size = 6,
     box.padding = 3,
     color = "Black"
-  ) +
-  geom_smooth(complot_data, aes(TOTAL_EXISTING_COMPOUND_RISK_SCORE,
-                           TOTAL_EMERGING_COMPOUND_RISK_SCORE),
-              method = "lm", se = F)
+  ) 
 
 # Add histogram
 complot <- ggMarginal(complot, type = "histogram", fill = "transparent")
 
-ggsave("Plots/complot.pdf", complot, width = 8, height = 6)
+ggsave(
+  "Plots/complot.pdf", 
+  complot,
+  width = 8,
+  height = 6
+)
+
+ggsave(
+  "Plots/complot.tiff", 
+  complot,
+  width = 8,
+  height = 6,
+  device = "tiff",
+  dpi = 700
+)
+
+
 
 #----------Coefficient of variation plot------------------------------------
 gtheme <- theme(
@@ -1042,12 +1114,26 @@ three <- ggplot(riskflags, aes(EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY, S_coef
   geom_smooth(method = "lm") +
   gtheme +
   ylab("Coef. of Variation") +
-  xlab("S_Vul") +
+  xlab("Socio-economic Vul.") +
   xlim(5, 10)
 
 top <- cowplot::plot_grid(one, three, ncol = 2)
 
-ggsave("Plots/covar.pdf", top, width = 8, height = 4)
+ggsave(
+  "Plots/covar.pdf",
+  top, 
+  width = 8,
+  height = 4
+  )
+
+ggsave(
+  "Plots/covar.tiff",
+  top, 
+  width = 8,
+  height = 4,
+  device = "tiff",
+  dpi = 700
+)
 
 #------Polar Diagram---------------
 plot <- riskflags %>%
@@ -1058,17 +1144,17 @@ plot <- riskflags %>%
     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY
   )
 
-colnames(plot) <- c("Countryname", "Health", "Food", "Macro", "Natural", "Fragile", "Socio")
+colnames(plot) <- c("Countryname", "Health", "Food", "Macro", "Nat.", "Frag.", "Socio")
 
 plotone <- plot %>%
   gather(one, two, Health:Socio) %>%
   mutate(
     Risk_cat = as.factor(case_when(
-      two == 10 ~ "high",
-      two >= 7 & two < 10 ~ "med",
-      TRUE ~ "low"
+      two == 10 ~ "High",
+      two >= 7 & two < 10 ~ "Med",
+      TRUE ~ "Low"
     )),
-    Risk_cat = fct_relevel(Risk_cat, "high", "med", "low"),
+    Risk_cat = fct_relevel(Risk_cat, "High", "Med", "Low"),
     twona = case_when(
       two == 0 ~ NA_real_,
       TRUE ~ two
@@ -1089,17 +1175,17 @@ polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Ethiopia", "Spa
   facet_grid(cols = vars(Countryname)) +
   theme_gray() +
   theme(
-    axis.text = element_text(size = 14),
+    axis.text = element_text(size = 16),
     axis.text.y = element_blank(),
     axis.ticks = element_blank(),
     panel.border = element_blank(),
     panel.background = element_rect(fill = NA),
     panel.ontop = TRUE,
     axis.title = element_blank(),
-    legend.text = element_text(size = 16),
+    legend.text = element_text(size = 24),
     strip.text = element_text(size = 18, face = "bold"),
     strip.background = element_blank(),
-    title = element_text(size = 18, face = "bold"),
+    title = element_text(size = 24, face = "bold"),
     panel.grid.minor.x = element_line(colour = "white", size = 2),
     panel.grid.major.x = element_blank(),
     panel.grid.minor.y = element_line(colour = "white", size = 0.5),
@@ -1120,28 +1206,43 @@ polar <- ggplot(plotone %>% filter(Countryname %in% c("Brazil", "Ethiopia", "Spa
   size = 5.5
   )
 
-ggsave("Plots/polar.pdf", polar, width = 18, height = 9)
+ggsave(
+  "Plots/polar.pdf", 
+  polar,
+  width = 18,
+  height = 9
+)
+
+ggsave(
+  "Plots/polar.tiff", 
+  polar,
+  width = 18,
+  height = 9,
+  device = "tiff",
+  dpi = 700
+)
+
 
 #----------Sankey Diagram---------
 test <- risky %>%
-  group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+  group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, OVERALL_FLAGS_GEO_MED) %>%
   dplyr::count(Population)
 
 testing <- test %>%
-  mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE)) %>%
+  mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, OVERALL_FLAGS_GEO_MED)) %>%
   group_by(new) %>%
   summarise(tt = sum(Population, na.rm = T)) %>%
   ungroup()
 
-testing$Emerging_Threats <- str_sub(testing$new, 2, 3)
+testing$Overall_Compound_Risk <- str_sub(testing$new, 2, 3)
 testing$Underlying_Vulnerability <- str_sub(testing$new, 0, 1)
 
 dat <- testing %>%
-  dplyr::select(Underlying_Vulnerability, Emerging_Threats, tt)
+  dplyr::select(Underlying_Vulnerability, Overall_Compound_Risk, tt)
 
 dat_ggforce <- dat %>%
   gather_set_data(1:2) %>% # <- ggforce helper function
-  arrange(x, Underlying_Vulnerability, desc(Emerging_Threats)) %>%
+  arrange(x, Underlying_Vulnerability, desc(Overall_Compound_Risk)) %>%
   mutate(x = as.factor(x))
 
 alpha <- 0.7
@@ -1162,36 +1263,37 @@ glob <- ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     axis.text.y = element_blank(),
-    axis.text.x = element_text(size = 12, face = "bold"),
+    axis.text.x = element_text(size = 13, face = "bold"),
     axis.title.x = element_blank(),
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.margin = unit(c(0, -3, 0, -2), "cm")
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 22),
+    plot.margin = margin(l = -5, r = -5, unit = "cm")
   ) +
   scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
-  ggtitle("Global")
+  ggtitle("Global") +
+  scale_fill_manual(values = colour)
 
 sankyreg <- function(reg) {
   test <- risky %>%
     mutate(Continent = countrycode(Country, origin = "iso3c", destination = "continent")) %>%
     filter(Continent == reg) %>%
-    group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE) %>%
+    group_by(TOTAL_EXISTING_COMPOUND_RISK_SCORE, OVERALL_FLAGS_GEO_MED) %>%
     dplyr::count(Population)
   
   testing <- test %>%
-    mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE)) %>%
+    mutate(new = paste(TOTAL_EXISTING_COMPOUND_RISK_SCORE, OVERALL_FLAGS_GEO_MED)) %>%
     group_by(new) %>%
     summarise(tt = sum(Population, na.rm = T)) %>%
     ungroup()
   
-  testing$Emerging_Threats <- str_sub(testing$new, 2, 3)
+  testing$Overall_Compound_Risk <- str_sub(testing$new, 2, 3)
   testing$Underlying_Vulnerability <- str_sub(testing$new, 0, 1)
   
   dat <- testing %>%
-    dplyr::select(Underlying_Vulnerability, Emerging_Threats, tt)
+    dplyr::select(Underlying_Vulnerability, Overall_Compound_Risk, tt)
   
   dat_ggforce <- dat %>%
     gather_set_data(1:2) %>% # <- ggforce helper function
-    arrange(x, Underlying_Vulnerability, desc(Emerging_Threats)) %>%
+    arrange(x, Underlying_Vulnerability, desc(Overall_Compound_Risk)) %>%
     mutate(x = as.factor(x))
   
   ggplot(dat_ggforce, aes(x = x, id = id, split = y, value = tt)) +
@@ -1210,13 +1312,14 @@ sankyreg <- function(reg) {
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(size = 13, face = "bold"),
       axis.title.x = element_blank(),
-      plot.title = element_text(hjust = 0.5, face = "bold"),
-      plot.margin = unit(c(0, 0, 0, 0), "cm")
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 22),
+      plot.margin = margin(l = -5, r = -5, unit = "cm")
     ) +
     scale_x_discrete(limits = rev(levels(dat_ggforce$x))) +
-    ggtitle(paste(reg))
+    ggtitle(paste(reg)) +
+    scale_fill_manual(values = colour)
 }
 
 afr <- sankyreg("Africa") 
@@ -1225,12 +1328,27 @@ eur <- sankyreg("Europe")
 oce <- sankyreg("Oceania")  
 ame <- sankyreg("Americas") 
 
-one <- cowplot::plot_grid(afr, asia, ncol = 1) + theme(plot.margin = unit(c(0, -5, 0, -3), "cm"))
-two <- cowplot::plot_grid(ame, oce, ncol = 1)
+#one <- cowplot::plot_grid(afr, asia, ncol = 1) + theme(plot.margin = unit(c(0, -5, 0, -3), "cm"))
+#two <- cowplot::plot_grid(ame, oce, ncol = 1)
 
-sank <- cowplot::plot_grid(one, glob, nrow = 1, rel_widths = c(1, 2))
+#sank <- cowplot::plot_grid(one, glob, nrow = 1, rel_widths = c(1, 2))
+sank <- cowplot::plot_grid(glob, afr, ncol = 2)
 
-ggsave("Plots/sankey.pdf", sank, width = 16, height = 8)
+ggsave(
+  "Plots/sankey.pdf", 
+  sank, 
+  width = 16,
+  height = 8
+)
+
+ggsave(
+  "Plots/sankey.tiff", 
+  sank, 
+  width = 16,
+  height = 8,
+  device='tiff',
+  dpi=700
+)
 
 #----------------- Dynamic hazard plots-----------------------
 #tt <- geojson_sf("https://www.gdacs.org/contentdata/xml/gdacs.geojson")
@@ -1276,7 +1394,7 @@ worldmap$Region <- countrycode(worldmap$Country, origin = "iso3c", destination =
 globalmap <- worldmap  %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.factor(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.factor(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1286,7 +1404,7 @@ seamap <- worldmap %>%
   filter(Region == "South Asia") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.factor(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.factor(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1296,7 +1414,7 @@ menamap <- worldmap %>%
   filter(Region == "Middle East & North Africa") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1306,7 +1424,7 @@ ssamap <- worldmap %>%
   filter(Region == "Sub-Saharan Africa") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1316,7 +1434,7 @@ lacmap <- worldmap %>%
   filter(Region == "Latin America & Caribbean") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1326,7 +1444,7 @@ eapmap <- worldmap %>%
   filter(Region == "East Asia & Pacific") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -1337,19 +1455,19 @@ ecamap <- worldmap %>%
   filter(Region == "Europe & Central Asia") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(OVERALL_FLAGS_GEO_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_fill_manual(values = colour,  limits = as.character(c(0:6)))
 
-ggsave("Plots/Snapshots/Globalmap_high+med.jpeg", globalmap, width = 8, height = 5)
-ggsave("Plots/Snapshots/Seamap_high+med.jpeg", seamap, width = 8, height = 5)
-ggsave("Plots/Snapshots/Menamap_high+med.jpeg", menamap, width = 8, height = 5)
-ggsave("Plots/Snapshots/Ssaamap_high+med.jpeg", ssamap, width = 8, height = 5)
-ggsave("Plots/Snapshots/LACamap_high+med.jpeg", lacmap, width = 8, height = 5)
-ggsave("Plots/Snapshots/ECAmap_high+med.jpeg", ecamap, width = 14, height = 10)
-ggsave("Plots/Snapshots/EAPmap_high+med.jpeg", eapmap,  width = 8, height = 5)
+ggsave("Plots/Snapshots/Globalmap_high+med.jpeg", globalmap, width = 8, height = 5,  dpi = 700)
+ggsave("Plots/Snapshots/Seamap_high+med.jpeg", seamap, width = 8, height = 5, dpi = 700)
+ggsave("Plots/Snapshots/Menamap_high+med.jpeg", menamap, width = 8, height = 5, dpi = 700)
+ggsave("Plots/Snapshots/Ssaamap_high+med.jpeg", ssamap, width = 8, height = 5, dpi = 700)
+ggsave("Plots/Snapshots/LACamap_high+med.jpeg", lacmap, width = 8, height = 5, dpi = 700)
+ggsave("Plots/Snapshots/ECAmap_high+med.jpeg", ecamap, width = 14, height = 10,  dpi = 700)
+ggsave("Plots/Snapshots/EAPmap_high+med.jpeg", eapmap,  width = 8, height = 5,  dpi = 700)
 
 #------------------Overall compound risk score with med and high rounded down to the nearest integer---------------------------
 # colour <- c("#FDFEFE","#F0F3F4", "#E5E7E9", "#BDC3C7", "#EC7063",  "#922B21", "#641E16") # For grey colours
@@ -1520,7 +1638,7 @@ colour_full <- c("#FDFEFE", "#F7F9F9", "#F8F9F9", "#F0F3F4", "#E5E7E9", "#CACFD2
 globalmap <- worldmap %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.factor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))) +
+  geom_polygon(aes(fill = as.factor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))  +
@@ -1532,7 +1650,7 @@ seamap <- worldmap  %>%
   filter(Region == "South Asia") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.factor(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.factor(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))  +
@@ -1544,7 +1662,7 @@ menamap <- worldmap  %>%
   filter(Region == "Middle East & North Africa") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))  +
@@ -1556,7 +1674,7 @@ ssamap <- worldmap  %>%
   filter(Region == "Sub-Saharan Africa") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))  +
@@ -1568,7 +1686,7 @@ lacmap <- worldmap  %>%
   filter(Region == "Latin America & Caribbean") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))   +
@@ -1580,7 +1698,7 @@ eapmap <- worldmap  %>%
   filter(Region == "East Asia & Pacific") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM))), colour = "black", size = 0.1) +
+  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED))), colour = "black", size = 0.1) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))   +
@@ -1593,7 +1711,7 @@ ecamap <- worldmap  %>%
   filter(Region == "Europe & Central Asia") %>%
   ggplot(mapping = aes(x = long, y = lat, group = group)) +
   coord_fixed(1.3) +
-  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM)))) +
+  geom_polygon(aes(fill = as.character(floor(TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED)))) +
   theme_map() +
   labs(fill = "# of risks") +
   theme(plot.title = element_text(hjust = 0.5))   +
@@ -1619,6 +1737,17 @@ ggsave("Plots/Snapshots/ECAmap_high+med_full.pdf", ecamap, width = 14, height = 
 
 #-----------------------------Quadrant plot-------------------------------------------
 
+riskset <- riskflags %>%
+   dplyr::select(
+     Countryname, Country, EXISTING_RISK_HEALTH,
+     EXISTING_RISK_FOOD_SECURITY, EXISTING_RISK_MACRO_FISCAL, EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
+     EXISTING_RISK_NATURAL_HAZARDS, EXISTING_RISK_FRAGILITY_INSTITUTIONS,
+     EMERGING_RISK_HEALTH, EMERGING_RISK_FOOD_SECURITY,
+     EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,
+     EMERGING_RISK_MACRO_FISCAL,
+     EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS
+   )
+
 # Function to create geometric mean plots
 quadrant_plot_geo <- function(xname, yname) {
   
@@ -1637,8 +1766,7 @@ quadrant_plot_geo <- function(xname, yname) {
     sample_n(1)
   nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
     full_join(., two) %>%
-    full_join(., three) %>%
-    dplyr::select(-X) 
+    full_join(., three) 
   
   nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
   nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
@@ -1740,8 +1868,7 @@ quadrant_plot_arithmetic <- function(xname, yname) {
     sample_n(1)
   nams <- full_join(countrylist %>% dplyr::select(-Country), one) %>%
     full_join(., two) %>%
-    full_join(., three) %>%
-    dplyr::select(-X) 
+    full_join(., three)
   
   nams[2] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[2], ""))))
   nams[3] <- as.numeric(unlist(tidyr::replace_na(as.list(nams[3], ""))))
@@ -1893,7 +2020,21 @@ natural <- quadrant_plot_geo(
 # Arrange together
 ploty <- cowplot::plot_grid(covid, food, socio, macro, conflict, natural, ncol = 2, nrow = 3)
 
-ggsave("Plots/quad_plot.pdf", ploty, height = 12, width = 8)
+ggsave(
+  "Plots/quad_plot.pdf", 
+  ploty, 
+  height = 12, 
+  width = 8
+)
+
+ggsave(
+  "Plots/quad_plot.tiff", 
+  ploty, 
+  height = 12, 
+  width = 8,
+  device = "tiff",
+  dpi = 700
+)
 
 #------------------------------Highlight country-----------------------------------  
 
@@ -2051,98 +2192,4 @@ quad_plot <- function(country_plot){
     if ( !is.na(nams[xname]) & !is.na(nams[yname])) {
       
       plot <- plot  +
-        geom_count(aes(x = as.numeric(nams[xname]),
-                       y = as.numeric(nams[yname]))) +
-        ggrepel::geom_text_repel(
-          data = as.data.frame(nams),
-          aes(x = as.numeric(nams[xname]),
-              y = as.numeric(nams[yname]),
-              label = countrynam),
-          size = 4,
-          box.padding = 3,
-          fontface= "bold"
-        ) 
-    }
-    
-    plot
-    
-  }
-  
-  # Draw plots
-  covid <- quadrant_plot(riskset$EXISTING_RISK_HEALTH,
-                         riskset$EMERGING_RISK_HEALTH, 
-                         "EXISTING_RISK_HEALTH", 
-                         "EMERGING_RISK_HEALTH",
-                         country_name) +
-    ggtitle("a) HEALTH") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  food <- quadrant_plot(riskset$EXISTING_RISK_FOOD_SECURITY,
-                        riskset$EMERGING_RISK_FOOD_SECURITY, 
-                        "EXISTING_RISK_FOOD_SECURITY", 
-                        "EMERGING_RISK_FOOD_SECURITY",
-                        country_name) +
-    ggtitle("b) FOOD SECURITY") +
-    labs(x = "", y = "") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  socio <- quadrant_plot(riskset$EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY,
-                         riskset$EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,
-                         "EXISTING_RISK_SOCIOECONOMIC_VULNERABILITY",
-                         'EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY',
-                         country_name) +
-    ggtitle("c) SOCIO_VUL") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  macro <- quadrant_plot(riskset$EXISTING_RISK_MACRO_FISCAL, 
-                         riskset$EMERGING_RISK_MACRO_FISCAL,
-                         "EXISTING_RISK_MACRO_FISCAL", 
-                         "EMERGING_RISK_MACRO_FISCAL",
-                         country_name) +
-    labs(x = "", y = "") +
-    ggtitle("d) MACRO") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  conflict <- quadrant_plot_geo(riskset$EXISTING_RISK_FRAGILITY_INSTITUTIONS,
-                            riskset$EMERGING_RISK_FRAGILITY_INSTITUTIONS,
-                            "EXISTING_RISK_FRAGILITY_INSTITUTIONS",
-                            "EMERGING_RISK_FRAGILITY_INSTITUTIONS",
-                            country_name) +
-    ggtitle("e) CONFLICT") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  natural <- quadrant_plot(riskset$EXISTING_RISK_NATURAL_HAZARDS, 
-                           riskset$EMERGING_RISK_NATURAL_HAZARDS,
-                           "EXISTING_RISK_NATURAL_HAZARDS", 
-                           "EMERGING_RISK_NATURAL_HAZARDS",
-                           country_name) +
-    labs(x = "", y = "") +
-    ggtitle("f) NAT_HAZ") +
-    theme(plot.title = element_text(colour= "black",
-                                    size= 16,
-                                    face= "bold"))
-  
-  # Arrange together
-  ploty_country <- cowplot::plot_grid(covid, food, socio, macro, conflict, natural, ncol = 2, nrow = 3)
-  
-  ggsave(paste0("Plots/Heatmaps/quad_plot_", country_name, ".pdf"), ploty_country, height = 10, width = 8)
-  
-}
-
-# Run function with all the countries that work in the countrlist database and save graph
-get_data2 <- possibly(quad_plot, otherwise = NA)
-
-for(i in countrylist$Countryname) {
-  res <- get_data2(i)
-}
-
+        geom_count(aes(x = as.nume

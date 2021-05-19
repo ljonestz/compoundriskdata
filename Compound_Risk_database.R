@@ -737,7 +737,7 @@ eiu_latest_month <- eiu_data %>%
     values_from = Values
   ) %>%
   rename(Macroeconomic_risk = `Macroeconomic risk`) %>%
-  mutate(Macroeconomic_risk = (`Financial risk` + Macroeconomic_risk + `Foreign trade & payments risk`) / 2)
+  mutate(Macroeconomic_risk = (`Financial risk` + Macroeconomic_risk + `Foreign trade & payments risk`) / 3)
 
 eiu_one_year <- eiu_data %>%
   filter(MONTH %in% unique(eiu_data$MONTH)[-1]) %>%
@@ -760,7 +760,7 @@ eiu_one_year <- eiu_data %>%
     .fn  = ~ paste0(., "_12")
   ) %>%
   rename(Macroeconomic_risk_12 = `Macroeconomic risk_12`) %>%
-  mutate(Macroeconomic_risk_12 = (`Financial risk_12` + Macroeconomic_risk_12 + `Foreign trade & payments risk_12`) / 2)
+  mutate(Macroeconomic_risk_12 = (`Financial risk_12` + Macroeconomic_risk_12 + `Foreign trade & payments risk_12`) / 3)
 
 eiu_three_month <- eiu_data %>%
   filter(MONTH %in% head(unique(MONTH)[-1], 3)) %>%
@@ -784,7 +784,7 @@ eiu_three_month <- eiu_data %>%
     .fn  = ~ paste0(., "_3")
   ) %>%
   rename(Macroeconomic_risk_3 = `Macroeconomic risk_3`) %>%
-  mutate(Macroeconomic_risk_3 = (`Financial risk_3` + Macroeconomic_risk_3 + `Foreign trade & payments risk_3`) / 2)
+  mutate(Macroeconomic_risk_3 = (`Financial risk_3` + Macroeconomic_risk_3 + `Foreign trade & payments risk_3`) / 3)
 
 # Join datasets
 eiu_joint <- left_join(eiu_latest_month, eiu_three_month, by = "Country") %>%
@@ -917,8 +917,7 @@ mpo_data <- mpo_data %>%
   mutate(
     S_pov_comb_norm = rowMaxs(as.matrix(dplyr::select(.,
                                                       S_pov_prop_22_21_norm,
-                                                      S_pov_prop_21_20_norm, 
-                                                      S_pov_prop_20_19_norm))
+                                                      S_pov_prop_21_20_norm))
                               , na.rm = T)
   )
 
