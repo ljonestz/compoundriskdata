@@ -873,12 +873,17 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------—MPO: Poverty projections----------------------------------------------------
-mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
-
-# drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
-# mpo <- read_dta("tmp-global.dta")
-# unlink("tmp-global.dta")
-
+# If file exists locally, read locally; otherwise, use drive_download
+mpo <- tryCatch(
+  {
+    read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+  }, error = function(e) {
+    drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
+    data <- read_dta("tmp-global.dta")
+    unlink("tmp-global.dta")
+    return(data)
+  }
+)
 # Add population
 pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
 
@@ -950,18 +955,25 @@ household_risk <- macrofin %>%
          M_Household.risks = case_when(
            M_Household.risks == 0.5 ~ 7,
            M_Household.risks == 1 ~ 10,
-           TRUE ~ M_Household.risks
+           TRUE ~ M_Household.risks,
   )) %>%
-  rename(S_Household.risks = M_Household.risks)
+  rename(S_Household.risks = M_Household.risks
+         S_Household.risks_raw = M_Household.risks_raw)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
-phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
-                         sheet = "2. Harmonized Indicators")
-
-# drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
-# phone_data <- read_excel("tmp-Phone_surveys.xlsx",
-#                          sheet = "2. Harmonized Indicators")
-# unlink("tmp-Phone_surveys.xlsx")
+# If file exists locally, read locally; otherwise, use drive_download
+phone_data <- tryCatch(
+  {
+    read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
+               sheet = "2. Harmonized Indicators")
+  }, error = function(e) {
+    drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
+    data <- read_excel("tmp-Phone_surveys.xlsx",
+                       sheet = "2. Harmonized Indicators")
+    unlink("tmp-Phone_surveys.xlsx")
+    return(data)
+  }
+)
 
 phone_compile <- phone_data %>%
   filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
