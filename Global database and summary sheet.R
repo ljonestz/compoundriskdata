@@ -52,7 +52,7 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 globalrisk <- left_join(countrylist, healthsheet, by = c("Countryname", "Country")) %>%
   left_join(., foodsecurity, by = c("Countryname", "Country")) %>%
   # left_join(., debtsheet, by = c("Countryname", "Country")) %>%
-  left_join(., fragilitysheet, by = c("Countryname", "Country")) %>%
+  left_join(., fragilitysheet, by = c("Country")) %>%
   left_join(., macrosheet, by = c("Countryname", "Country")) %>%
   left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
   left_join(., Socioeconomic_sheet, by = c("Countryname", "Country")) %>%
@@ -320,7 +320,8 @@ altflag <- altflag %>%
       na.rm = T
     ),
     F_coefvar = cv(c(
-      F_fpv_rating,
+      F_fews_crm_norm,
+      F_fao_wfp_warning,
       F_fpv_rating),
       na.rm = T
     ),
@@ -531,14 +532,14 @@ riskflags <- riskflags %>%
     ),
     OVERALL_FOOD_SECURITY_FILTER_7_5 = case_when(
       EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
-      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 5 ~ 5,
-      EXISTING_RISK_FOOD_SECURITY >= 5 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
+      EXISTING_RISK_FOOD_SECURITY >= 7 & EMERGING_RISK_FOOD_SECURITY >= 7 ~ 10,
       TRUE ~ 0
     ),
     OVERALL_MACRO_FISCAL_FILTER_7_5 = case_when(
       EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
-      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 5 ~ 5,
-      EXISTING_RISK_MACRO_FISCAL >= 5 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
+      EXISTING_RISK_MACRO_FISCAL >= 7 & EMERGING_RISK_MACRO_FISCAL >= 7 ~ 10,
       TRUE ~ 0
     ),
     OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7_5 = case_when(
@@ -690,7 +691,7 @@ reliable <- reliabilitysheet %>%
 globalrisk <- left_join(globalrisk, reliable, by = c("Countryname", "Country"))
 
 # Save database of all risk indicators (+ reliability scores)
-write.csv(globalrisk, "Risk_Sheets/Global_compound_risk_database.csv")
+write.csv(globalrisk, "Risk_sheets/Global_compound_risk_database.csv")
 
 #------------------------------—Combine the reliability sheet with the summary risk flag sheet-----------------------------
 reliable <- reliabilitysheet %>%
@@ -707,7 +708,7 @@ riskflags <- left_join(riskflags %>%
 
 # Write csv file of all risk flags (+reliability scores)
 
-write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
+write.csv(riskflags, "Risk_sheets/Compound_Risk_Flag_Sheets.csv")
 }
 # 
 # #
@@ -717,6 +718,8 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 # ### ********************************************************************************************
 # ##
 # #
+# 
+# librarian::shelf(openxlsx)
 # 
 # # dplyr::select relevant variables
 # riskset <- riskflags %>%
@@ -729,7 +732,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     EMERGING_RISK_MACRO_FISCAL,
 #     EMERGING_RISK_NATURAL_HAZARDS, EMERGING_RISK_FRAGILITY_INSTITUTIONS,
 #     TOTAL_EXISTING_COMPOUND_RISK_SCORE, TOTAL_EMERGING_COMPOUND_RISK_SCORE,
-#     TOTAL_EXISTING_COMPOUND_RISK_SCORE_INCMEDIUM,TOTAL_EMERGING_COMPOUND_RISK_SCORE_INCMEDIUM, 
+#     TOTAL_EXISTING_COMPOUND_RISK_SCORE_MED,TOTAL_EMERGING_COMPOUND_RISK_SCORE_MED,
 #     TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ, TOTAL_EMERGING_COMPOUND_RISK_SCORE_SQ_MED,
 #     RELIABILITY_SCORE_EXISTING_RISK, RELIABILITY_SCORE_EMERGING_RISK
 #   )
@@ -795,7 +798,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     wrapText = TRUE,
 #     # textRotation = 90
 #   )
-#   
+# 
 #   addStyle(crxls,
 #            sheet = number,
 #            headerStyle,
@@ -803,14 +806,14 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #            cols = 1:57,
 #            gridExpand = TRUE
 #   )
-#   
+# 
 #   bodyStyle <- createStyle(
 #     fgFill = "white",
 #     border = "TopBottomLeftRight", # might drop Top to not over ride header black border
 #     borderColour = "white",
 #     halign = "center"
 #   )
-#   
+# 
 #   addStyle(crxls,
 #            sheet = number,
 #            bodyStyle,
@@ -818,10 +821,10 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #            cols = 1:57,
 #            gridExpand = TRUE
 #   )
-#   
+# 
 #   setColWidths(crxls, number, cols = 1, widths = 10) ## set column width for row names column
 #   setRowHeights(crxls, number, rows = 1, heights = 150) ## set column width for row names column
-#   
+# 
 #   modifyBaseFont(crxls,
 #                  fontSize = 12,
 #                  fontColour = "black",
@@ -898,7 +901,7 @@ write.csv(riskflags, "Risk_Sheets/Compound_Risk_Flag_Sheets.csv")
 #     fontColour = "white",
 #     bgFill = "white"
 #   )
-#   
+# 
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, rule = "==10", style = negStyle)
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, type = "between", rule = c(7.00, 9.99), style = medStyle)
 #   conditionalFormatting(crxls, sheet, cols = numhigh:numlow, rows = 1:191, type = "between", rule = c(0, 6.9999), style = posStyle)

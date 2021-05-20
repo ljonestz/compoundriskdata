@@ -718,8 +718,8 @@ print("Food sheet written")
 #
 
 #---------------------------—Economist Intelligence Unit---------------------------------
-url <- "https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/RBTracker.xls"
-destfile <- "RBTracker.xls"
+url <- "https://github.com/ljonestz/compoundriskdata/blob/master/Indicator_dataset/RBTracker%20(4).xls?raw=true"
+destfile <- "RBTracker(4).xls"
 curl::curl_download(url, destfile)
 eiu_data <- read_excel(destfile, sheet = "Data Values", skip = 3)
 
@@ -738,7 +738,9 @@ eiu_latest_month <- eiu_data %>%
   pivot_wider(
     names_from = `SERIES NAME`,
     values_from = Values
-  ) 
+  ) %>%
+  rename(Macroeconomic_risk = `Macroeconomic risk`) %>%
+  mutate(Macroeconomic_risk = (`Financial risk` + Macroeconomic_risk + `Foreign trade & payments risk`) / 3)
 
 eiu_one_year <- eiu_data %>%
   filter(MONTH %in% unique(eiu_data$MONTH)[-1]) %>%
@@ -759,7 +761,9 @@ eiu_one_year <- eiu_data %>%
   rename_with(
     .col = c(contains("risk"), contains("Overall")),
     .fn  = ~ paste0(., "_12")
-  ) 
+  ) %>%
+  rename(Macroeconomic_risk_12 = `Macroeconomic risk_12`) %>%
+  mutate(Macroeconomic_risk_12 = (`Financial risk_12` + Macroeconomic_risk_12 + `Foreign trade & payments risk_12`) / 3)
 
 eiu_three_month <- eiu_data %>%
   filter(MONTH %in% head(unique(MONTH)[-1], 3)) %>%
@@ -781,32 +785,35 @@ eiu_three_month <- eiu_data %>%
   rename_with(
     .col = c(contains("risk"), contains("Overall")),
     .fn  = ~ paste0(., "_3")
-  )
+  ) %>%
+  rename(Macroeconomic_risk_3 = `Macroeconomic risk_3`) %>%
+  mutate(Macroeconomic_risk_3 = (`Financial risk_3` + Macroeconomic_risk_3 + `Foreign trade & payments risk_3`) / 3)
 
 # Join datasets
 eiu_joint <- left_join(eiu_latest_month, eiu_three_month, by = "Country") %>%
   left_join(., eiu_one_year, by = "Country") %>%
   mutate(
-    EIU_3m_change = `Overall Evaluation` - `Overall Evaluation_3`,
-    EIU_12m_change = `Overall Evaluation` - `Overall Evaluation_12`) %>%
-  dplyr::select(contains("Country"), contains("Overall"), contains("EIU")) %>%
+    EIU_3m_change = Macroeconomic_risk - Macroeconomic_risk_3,
+    EIU_12m_change = Macroeconomic_risk - Macroeconomic_risk_12
+  ) %>%
+  dplyr::select(contains("Country"), contains("Macro"), contains("EIU")) %>%
   rename_with(
-    .col = c(contains("Overall"), contains("EIU")),
+    .col = c(contains("Macro"), contains("EIU")),
     .fn = ~ paste0("M_", .)
   ) %>%
-  rename(M_EIU_Score = `M_Overall Evaluation`,
-         M_EIU_Score_12m = `M_Overall Evaluation_12`) %>%
+  rename(M_EIU_Score = `M_Macroeconomic_risk`,
+         M_EIU_Score_12m = `M_Macroeconomic_risk_12`) %>%
   # Add Country name
   mutate(
     Country = suppressWarnings(countrycode(Country,
-                                      origin = "country.name",
-                                      destination = "iso3c",
-                                      nomatch = NULL))
-    )
-  
-eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score")
-eiu_joint <- normfuncpos(eiu_joint, 2, -2, "M_EIU_12m_change")
-eiu_joint <- normfuncpos(eiu_joint, 70, 15, "M_EIU_Score_12m")
+                                           origin = "country.name",
+                                           destination = "iso3c",
+                                           nomatch = NULL))
+  )
+
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_Score, 0.90), quantile(eiu_joint$M_EIU_Score, 0.10), "M_EIU_Score")
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_12m_change, 0.90), quantile(eiu_joint$M_EIU_12m_change, 0.10), "M_EIU_12m_change")
+eiu_joint <- normfuncpos(eiu_joint, quantile(eiu_joint$M_EIU_Score_12m, 0.90), quantile(eiu_joint$M_EIU_Score_12m, 0.10), "M_EIU_Score_12m")
 
 #-----------------------------—Create Combined Macro sheet-----------------------------------------
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
@@ -907,6 +914,7 @@ household_risk <- macrofin %>%
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
 phone_index_data <- read.csv("https://raw.githubusercontent.com/bennotkin/compoundriskdata/docker/Indicator_dataset/phone.csv")
+
 
 #------------------------------—IMF FORECASTED UNEMPLOYMENT-----------------------------------------
 imf_un <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/imf_unemployment.csv")
@@ -1270,7 +1278,7 @@ acled <- acled_data$data %>%
     month_yr = as.yearmon(date)
   ) %>%
   # Remove dates for the latest month (or month that falls under the prior 6 weeks)
-  filter(date <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
+  filter(as.Date(as.yearmon(date)) <= as.Date(as.yearmon(Sys.Date() - 45))) %>% 
   group_by(iso3, month_yr) %>%
   summarise(fatal_month = sum(fatalities, na.rm = T),
             fatal_month_log = log(fatal_month + 1)) %>%
@@ -1323,7 +1331,7 @@ while(l == F & i < 20) {
   tryCatch(
     {
       reign_data <- suppressMessages(read_csv(paste0("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_", year, "_", month, ".csv"),
-               col_types = cols()))
+                                              col_types = cols()))
       l <- T
       print(paste0("Found REIGN csv at ", year, "-", month))
     }, error = function(e) {
@@ -1331,7 +1339,8 @@ while(l == F & i < 20) {
     }, warning = function(w) {
     }, finally = {
     }
-    )
+  )
+
   if(month > 1) {
     month <- month - 1
   } else {
@@ -1407,7 +1416,7 @@ conflict_dataset <- conflict_dataset_raw %>%
   #   )) %>%
   rename(FCS_Normalised = FCV_normalised, REIGN_Normalised = pol_trigger_norm,
          Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm#,
-         #Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag
+         # Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag
          ) 
 
 #-------------------------------------—Create Fragility sheet--------------------------------------
@@ -1467,7 +1476,6 @@ writeSourceCSV <- function(i) {
   sheet_norm <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% indicators$indicator_slug))]
   sheet_raw <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% unlist(strsplit(indicators$indicator_raw_slug, ", "))))]
   colnames(sheet_raw) <- paste0(colnames(sheet_raw), "_raw")
-
   sheet <- left_join(sheet_norm, sheet_raw, by = c("Country" = "Country_raw"), suffix = c("", "_raw"))
   
   write_csv(sheet, paste0("crm-excel/", dimension, ".csv"))
