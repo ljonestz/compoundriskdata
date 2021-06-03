@@ -16,7 +16,7 @@ packages <- c("curl", "dplyr", "EnvStats", "stats", "countrycode", "ggplot2",
               "sjmisc", "stringr", "tidyr", "xml2", "zoo")
 invisible(lapply(packages, require, quietly = TRUE, character.only = TRUE))
 
-
+{
 #--------------------FUNCTION TO CALCULATE NORMALISED SCORES-----------------
 # Function to normalise with upper and lower bounds (when low score = high vulnerability)
 normfuncneg <- function(df, upperrisk, lowerrisk, col1) {
@@ -1466,8 +1466,10 @@ sheetList <- list("Health" = health_sheet,
 # Make directory from within script to enable volume sharing with docker
 # (All contents are emptied when volume is shared)
 dir.create("Risk_sheets/crm-excel")
+dir.create("Risk_sheets/dashboard-inputs")
 
 # —Write function to apply to each sheet ----
+used_indicators <- countrylist
 writeSourceCSV <- function(i) {
   # headerOffset <- 2 # current output has two header rows # VARIABLE
   
@@ -1482,7 +1484,24 @@ writeSourceCSV <- function(i) {
   colnames(sheet_raw) <- paste0(colnames(sheet_raw), "_raw")
   sheet <- left_join(sheet_norm, sheet_raw, by = c("Country" = "Country_raw"), suffix = c("", "_raw"))
   
+  # write_csv(sheet_norm, paste0("Risk_sheets/indicators-normalised/", dimension, ".csv"))
   write_csv(sheet, paste0("Risk_sheets/crm-excel/", dimension, ".csv"))
+  
+  # Write csvs with readable variable names
+  ## Order sheet columns to match indicators.csv
+  inds <- indicators[which(indicators$Dimension == dimension), "indicator_slug"]
+  sheet_norm <- sheet_norm[c("Country", inds)]
+  
+  ## Rename columns
+  pairs <- subset(indicators, Timeframe == "Emerging" & Dimension == dimension, c(Indicator, indicator_slug))
+  names(sheet_norm)[match(pairs[ ,"indicator_slug"], names(sheet_norm))] <- paste0("Emerging_", dimension, "_", pairs$Indicator)
+  
+  pairs <- subset(indicators, Timeframe == "Underlying" & Dimension == dimension, c(Indicator, indicator_slug))
+  names(sheet_norm)[match(pairs[ ,"indicator_slug"], names(sheet_norm))] <- paste0("Underlying_", dimension, "_", pairs$Indicator)  
+
+  # write_csv(sheet_norm, paste0("Risk_sheets/pretty-names/", dimension, ".csv") )
+  # Join sheets together (<<- hoists variable to parent environment)
+  used_indicators <<- left_join(used_indicators, sheet_norm, by = "Country")
   
   # Check if any sheets have empty columns
   empties <- empty_cols(sheet) %>% names()
@@ -1491,3 +1510,5 @@ writeSourceCSV <- function(i) {
 
 # —Run -----
 Map(writeSourceCSV, 1:length(sheetList))
+write_csv(used_indicators, "Risk_sheets/dashboard-inputs/crm-indicators.csv")
+}

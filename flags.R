@@ -10,7 +10,7 @@ packages <- c("curl", "dplyr", "EnvStats", "stats", "countrycode", "ggplot2",
               "jsonlite","lubridate", "matrixStats", "readr", "readxl", "rvest",   
               "sjmisc", "stringr", "tidyr", "xml2", "zoo")
 invisible(lapply(packages, require, character.only = TRUE))
-
+{
 #
 ##
 ### ********************************************************************************************
@@ -702,3 +702,9 @@ riskflags <- left_join(riskflags %>%
 # Write csv file of all risk flags (+reliability scores)
 
 write.csv(riskflags, "Risk_sheets/Compound_Risk_Flag_Sheets.csv")
+
+names <- read_csv("riskflags-dashboard-names.csv")
+riskflags_select <- riskflags[,names$old_name]
+names(riskflags_select) <- names$new_name
+write_csv(riskflags_select, "Risk_sheets/dashboard-inputs/crm-aggregated.csv")
+}
