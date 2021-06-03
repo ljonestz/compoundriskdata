@@ -1,6 +1,3 @@
-acknowledgments
-table-of-contents
-executive-summary
 introduction
 background
 objectives-and-vision-of-the-crm
@@ -14,12 +11,19 @@ risk-outlooks-within-the-crm
 steps-in-designing-the-crm
 results
 overview-of-underlying-vulnerability-emerging-threats-and-overall-alert-flags
+global-overview
+population-under-high-alert
+disaggregated-view-of-risk
 areas-for-further-consideration
 indicator-selection
 outputs-and-user-interface
 opportunities-and-next-steps
 annex
+supplementary-text-1
 supplementary-text-2
 filtering-methodology-for-calculating-overall-compound-risk
 supplementary-text-3
 diagnostics-and-comparisons
+annex-figure-3-early-warning-heatmaps-using-an-arithmetic-mean-to-calculate-overall-alert-flags
+annex-figure-4-early-warning-heatmaps-using-a-quadrant-system-to-calculate-overall-alert-flags
+annex-figure-5-early-warning-heatmap-showing-risk-profile-for-a-single-country
