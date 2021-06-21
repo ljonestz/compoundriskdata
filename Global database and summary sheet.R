@@ -46,7 +46,7 @@ countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundrisk
 globalrisk <- left_join(countrylist, healthsheet, by = c("Countryname", "Country")) %>%
   left_join(., foodsecurity, by = c("Countryname", "Country")) %>%
   # left_join(., debtsheet, by = c("Countryname", "Country")) %>%
-  left_join(., fragilitysheet, by = c("Countryname", "Country")) %>%
+  left_join(., fragilitysheet, by = c("Country")) %>%
   left_join(., macrosheet, by = c("Countryname", "Country")) %>%
   left_join(., Naturalhazardsheet, by = c("Countryname", "Country")) %>%
   left_join(., Socioeconomic_sheet, by = c("Countryname", "Country")) %>%

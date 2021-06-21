@@ -873,12 +873,17 @@ socio_forward <- inform_covid_warning %>%
     ))
 
 #--------------------------—MPO: Poverty projections----------------------------------------------------
-mpo <- read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
-
-# drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
-# mpo <- read_dta("tmp-global.dta")
-# unlink("tmp-global.dta")
-
+# If file exists locally, read locally; otherwise, use drive_download
+mpo <- tryCatch(
+  {
+    read_dta("~/Google Drive/PhD/R code/Compound Risk/global.dta")
+  }, error = function(e) {
+    drive_download("Restricted_Data/global.dta", path = "tmp-global.dta", overwrite = T, verbose = F)
+    data <- read_dta("tmp-global.dta")
+    unlink("tmp-global.dta")
+    return(data)
+  }
+)
 # Add population
 pop <- wpp.by.year(wpp.indicator("tpop"), 2020)
 
@@ -946,21 +951,29 @@ macrofin <- normfuncpos(macrofin, 2.1, 0, "M_macrofin_risk")
 
 household_risk <- macrofin %>%
   dplyr::select(Country, M_Household.risks) %>%
-  mutate(M_Household.risks = case_when(
-    M_Household.risks == 0.5 ~ 7,
-    M_Household.risks == 1 ~ 10,
-    TRUE ~ M_Household.risks
+  mutate(M_Household.risks_raw = M_Household.risks,
+         M_Household.risks = case_when(
+           M_Household.risks == 0.5 ~ 7,
+           M_Household.risks == 1 ~ 10,
+           TRUE ~ M_Household.risks,
   )) %>%
-  rename(S_Household.risks = M_Household.risks)
+  rename(S_Household.risks = M_Household.risks
+         S_Household.risks_raw = M_Household.risks_raw)
 
 #----------------------------—WB PHONE SURVEYS-----------------------------------------------------
-phone_data <- read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
-                         sheet = "2. Harmonized Indicators")
-
-# drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
-# phone_data <- read_excel("tmp-Phone_surveys.xlsx",
-#                          sheet = "2. Harmonized Indicators")
-# unlink("tmp-Phone_surveys.xlsx")
+# If file exists locally, read locally; otherwise, use drive_download
+phone_data <- tryCatch(
+  {
+    read_excel("~/Google Drive/PhD/R code/Compound Risk/Restricted_Data/Phone_surveys_Mar.xlsx",
+               sheet = "2. Harmonized Indicators")
+  }, error = function(e) {
+    drive_download("Restricted_Data/Phone_surveys_Mar.xlsx", path = "tmp-Phone_surveys.xlsx", overwrite = T, verbose = F)
+    data <- read_excel("tmp-Phone_surveys.xlsx",
+                       sheet = "2. Harmonized Indicators")
+    unlink("tmp-Phone_surveys.xlsx")
+    return(data)
+  }
+)
 
 phone_compile <- phone_data %>%
   filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
@@ -1211,7 +1224,9 @@ gdac <- gdac %>%
   mutate(NH_GDAC_Hazard_Score_Norm = case_when(
     NH_GDAC_Hazard_Status == "active" & NH_GDAC_Hazard_Severity == "orange" ~ 10,
     TRUE ~ 0
-  )) %>%
+  ),
+  NH_GDAC_Hazard_Score = paste(NH_GDAC_Hazard_Status, NH_GDAC_Hazard_Severity, sep = " - ")
+  ) %>%
   drop_na(Country)
 
 write.csv(gdac, "Indicator_dataset/gdaclistnormalised.csv")
@@ -1418,7 +1433,34 @@ acled <- acled %>%
   dplyr::select(-iso3)
 
 #--------------------------—REIGN--------------------------------------------
-reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
+# reign_data <- suppressMessages(read_csv("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_2021_5.csv", col_types = cols()))
+
+month <- as.numeric(format(Sys.Date(),"%m"))
+year <- as.numeric(format(Sys.Date(),"%Y"))
+
+l <- F
+i <- 0
+while(l == F & i < 20) {
+  tryCatch(
+    {
+      reign_data <- suppressMessages(read_csv(paste0("https://cdn.rawgit.com/OEFDataScience/REIGN.github.io/gh-pages/data_sets/REIGN_", year, "_", month, ".csv"),
+                                              col_types = cols()))
+      l <- T
+      print(paste0("Found REIGN csv at ", year, "-", month))
+    }, error = function(e) {
+      print(paste0("No REIGN csv for ", year, "-", month))
+    }, warning = function(w) {
+    }, finally = {
+    }
+  )
+  if(month > 1) {
+    month <- month - 1
+  } else {
+    month <- 12
+    year <- year - 1
+  }
+  i <- i + 1
+}
 
 reign_start <- reign_data %>%
   filter(year == max(year, na.rm= T)) %>%
@@ -1462,38 +1504,40 @@ reign <- left_join(reign_start, fcv %>% dplyr::select(Country, FCV_normalised), 
 #-----------------—Join all dataset-----------------------------------
 conflict_dataset_raw <- left_join(fcv, reign, by = "Country") %>%
   left_join(., idp, by = "Country") %>%
-  left_join(., acled, by = "Country") %>%
-  dplyr::select(Countryname, FCV_normalised, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
+  left_join(., acled, by = "Country") #%>%
+  #dplyr::select(Countryname, FCV_normalised, pol_trigger_norm, z_idps_norm, fatal_z_norm) 
 
 conflict_dataset <- conflict_dataset_raw %>%
-  mutate(
-    flag_count = as.numeric(unlist(row_count(
-      .,
-      pol_trigger_norm:fatal_z_norm,
-      count = 10,
-      append = F
-    ))),
-    fragile_1_flag = case_when(
-      flag_count >= 1 ~ 10,
-      TRUE ~ suppressWarnings(apply(conflict_dataset_raw %>% dplyr::select(pol_trigger_norm:fatal_z_norm), 
-                   1,
-                   FUN = max,
-                   na.rm = T)
-    )),
-    fragile_1_flag = case_when(
-      fragile_1_flag == -Inf ~ NA_real_,
-      TRUE ~ fragile_1_flag
-    )) %>%
+  # mutate(
+  #   flag_count = as.numeric(unlist(row_count(
+  #     .,
+  #     pol_trigger_norm:fatal_z_norm,
+  #     count = 10,
+  #     append = F
+  #   ))),
+  #   fragile_1_flag = case_when(
+  #     flag_count >= 1 ~ 10,
+  #     TRUE ~ suppressWarnings(apply(conflict_dataset_raw %>% dplyr::select(pol_trigger_norm:fatal_z_norm), 
+  #                  1,
+  #                  FUN = max,
+  #                  na.rm = T)
+  #   )),
+  #   fragile_1_flag = case_when(
+  #     fragile_1_flag == -Inf ~ NA_real_,
+  #     TRUE ~ fragile_1_flag
+  #   )) %>%
   rename(FCS_Normalised = FCV_normalised, REIGN_Normalised = pol_trigger_norm,
-         Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm,
-         Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag) 
+         Displaced_UNHCR_Normalised = z_idps_norm, BRD_Normalised = fatal_z_norm#,
+         # Number_of_High_Risk_Flags = flag_count, Overall_Conflict_Risk_Score = fragile_1_flag
+         ) 
 
 #-------------------------------------—Create Fragility sheet--------------------------------------
 # Compile joint database
 countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")
 
-fragility_sheet <- left_join(countrylist, conflict_dataset, by = "Countryname") %>%
-  dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
+fragility_sheet <- left_join(countrylist, conflict_dataset, by = "Country") %>%
+  dplyr::select(-X) %>%
+  # dplyr::select(-X, -Number_of_High_Risk_Flags) %>%
   rename_with(
     .fn = ~ paste0("Fr_", .), 
     .cols = colnames(.)[!colnames(.) %in% c("Country", "Countryname") ]
@@ -1537,11 +1581,15 @@ writeSourceCSV <- function(i) {
   
   # Define sheet and dimension name
   sheet <- sheetList[[i]]
-  dimension <- names(sheetList)[i]
-  
-  sheet <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% indicators$indicator_slug))]
   sheet <- sheet[!duplicated(sheet$Country),]
   sheet <- arrange(sheet, Country)
+  dimension <- names(sheetList)[i]
+  
+  sheet_norm <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% indicators$indicator_slug))]
+  sheet_raw <- sheet[,c(which(colnames(sheet) == "Country"),which(colnames(sheet) %in% unlist(strsplit(indicators$indicator_raw_slug, ", "))))]
+  colnames(sheet_raw) <- paste0(colnames(sheet_raw), "_raw")
+  
+  sheet <- left_join(sheet_norm, sheet_raw, by = c("Country" = "Country_raw"), suffix = c("", "_raw"))
   
   write_csv(sheet, paste0("crm-excel/", dimension, ".csv"))
   
