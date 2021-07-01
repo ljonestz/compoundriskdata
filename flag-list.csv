@@ -1,59 +1,59 @@
-Outlook,Method,Aggregation,Count_Medium_Values,Dimension,Default,Name
-Emerging,Max,Dimensional Value,Ð,Health,Yes,EMERGING_RISK_HEALTH
-Emerging,Max,Dimensional Value,Ð,Food,Yes,EMERGING_RISK_FOOD_SECURITY
-Emerging,Max,Dimensional Value,Ð,Socioeconomic,Yes,EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY
-Emerging,Max,Dimensional Value,Ð,Macro,Yes,EMERGING_RISK_MACRO_FISCAL
-Emerging,Max,Dimensional Value,Ð,Natural,Yes,EMERGING_RISK_NATURAL_HAZARDS
-Emerging,Max,Dimensional Value,Ð,Fragility,Yes,EMERGING_RISK_FRAGILITY_INSTITUTIONS
-Emerging,Max,Flag Count,No,All,No,EMERGING_FLAGS
-Emerging,Max,Flag Count,Yes,All,Yes,EMERGING_FLAGS_MED
-Underlying,Max,Dimensional Value,Ð,Health,Yes,UNDERLYING_RISK_HEALTH
-Underlying,Max,Dimensional Value,Ð,Food,Yes,UNDERLYING_RISK_FOOD_SECURITY
-Underlying,Max,Dimensional Value,Ð,Macro,Yes,UNDERLYING_RISK_MACRO_FISCAL
-Underlying,Max,Dimensional Value,Ð,Socioeconomic,Yes,UNDERLYING_RISK_SOCIOECONOMIC_VULNERABILITY
-Underlying,Max,Dimensional Value,Ð,Natural,Yes,UNDERLYING_RISK_NATURAL_HAZARDS
-Underlying,Max,Dimensional Value,Ð,Fragility,Yes,UNDERLYING_RISK_FRAGILITY_INSTITUTIONS
-Underlying,Max,Flag Count,No,All,No,UNDERLYING_FLAGS
-Underlying,Max,Flag Count,Yes,All,Yes,UNDERLYING_FLAGS_MED
-Overall,Arithmetic Mean,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_AV
-Overall,Arithmetic Mean,Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_AV
-Overall,Arithmetic Mean,Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_AV
-Overall,Arithmetic Mean,Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_AV
-Overall,Arithmetic Mean,Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_AV
-Overall,Arithmetic Mean,Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_AV
-Overall,Arithmetic Mean,Flag Count,No,All,No,OVERALL_FLAGS_AV
-Overall,Arithmetic Mean,Flag Count,Yes,All,No,OVERALL_FLAGS_AV_MED
-Overall,Filter: both = 10,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_10
-Overall,Filter: both = 10,Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_10
-Overall,Filter: both = 10,Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_10
-Overall,Filter: both = 10,Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_10
-Overall,Filter: both = 10,Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_10
-Overall,Filter: both = 10,Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_10
-Overall,Filter: both = 10,Flag Count,No,All,No,OVERALL_FLAGS_FILTER_10
-Overall,Filter: both = 10,Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_10_MED
-Overall,Filter: both >= 7,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_7
-Overall,Filter: both >= 7,Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_7
-Overall,Filter: both >= 7,Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_7
-Overall,Filter: both >= 7,Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7
-Overall,Filter: both >= 7,Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_7
-Overall,Filter: both >= 7,Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7
-Overall,Filter: both >= 7,Flag Count,No,All,No,OVERALL_FLAGS_FILTER_7
-Overall,Filter: both >= 7,Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_7_MED
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 10",Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 11",Flag Count,No,All,No,OVERALL_FLAGS_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 12",Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_7_5_MED
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 5",Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 6",Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 7",Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 8",Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7_5
-Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 9",Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_7_5
-Overall,Geometric Mean,Dimensional Value,Ð,Health,Yes,OVERALL_HEALTH_GEO
-Overall,Geometric Mean,Dimensional Value,Ð,Food,Yes,OVERALL_FOOD_SECURITY_GEO
-Overall,Geometric Mean,Dimensional Value,Ð,Macro,Yes,OVERALL_MACRO_FISCAL_GEO
-Overall,Geometric Mean,Dimensional Value,Ð,Socioeconomic,Yes,OVERALL_SOCIOECONOMIC_VULNERABILITY_GEO
-Overall,Geometric Mean,Dimensional Value,Ð,Natural,Yes,OVERALL_NATURAL_HAZARDS_GEO
-Overall,Geometric Mean,Dimensional Value,Ð,Fragility,Yes,OVERALL_FRAGILITY_INSTITUTIONS_GEO
-Overall,Geometric Mean,Flag Count,No,All,No,OVERALL_FLAGS_GEO
-Overall,Geometric Mean,Flag Count,Yes,All,Yes,OVERALL_FLAGS_GEO_MED
-Underlying,Ð,Reliability,Ð,Ð,No,RELIABILITY_SCORE_UNDERLYING_RISK
-Emerging,Ð,Reliability,Ð,Ð,No,RELIABILITY_SCORE_EMERGING_RISK
+Outlook,Method,Aggregation,Count_Medium_Values,Dimension,Default,Name,,,,
+Emerging,Max,Dimensional Value,Ð,Health,Yes,EMERGING_RISK_HEALTH,,,,
+Emerging,Max,Dimensional Value,Ð,Food Security,Yes,EMERGING_RISK_FOOD_SECURITY,,,,
+Emerging,Max,Dimensional Value,Ð,Socioeconomic Vulnerability,Yes,EMERGING_RISK_SOCIOECONOMIC_VULNERABILITY,,,,
+Emerging,Max,Dimensional Value,Ð,Macro Fiscal,Yes,EMERGING_RISK_MACRO_FISCAL,,,,
+Emerging,Max,Dimensional Value,Ð,Natural Hazard,Yes,EMERGING_RISK_NATURAL_HAZARDS,,,,
+Emerging,Max,Dimensional Value,Ð,Conflict and Fragility,Yes,EMERGING_RISK_FRAGILITY_INSTITUTIONS,,,,
+Emerging,Max,Flag Count,No,All,No,EMERGING_FLAGS,,,,
+Emerging,Max,Flag Count,Yes,All,Yes,EMERGING_FLAGS_MED,,,,
+Underlying,Max,Dimensional Value,Ð,Health,Yes,UNDERLYING_RISK_HEALTH,,,,
+Underlying,Max,Dimensional Value,Ð,Food Security,Yes,UNDERLYING_RISK_FOOD_SECURITY,,,,
+Underlying,Max,Dimensional Value,Ð,Maco Fiscal,Yes,UNDERLYING_RISK_MACRO_FISCAL,,,,
+Underlying,Max,Dimensional Value,Ð,Socioeconomic Vulnerability,Yes,UNDERLYING_RISK_SOCIOECONOMIC_VULNERABILITY,,,,
+Underlying,Max,Dimensional Value,Ð,Natural Hazard,Yes,UNDERLYING_RISK_NATURAL_HAZARDS,,,,
+Underlying,Max,Dimensional Value,Ð,Conflict and Fragility,Yes,UNDERLYING_RISK_FRAGILITY_INSTITUTIONS,,,,
+Underlying,Max,Flag Count,No,All,No,UNDERLYING_FLAGS,,,,
+Underlying,Max,Flag Count,Yes,All,Yes,UNDERLYING_FLAGS_MED,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_AV,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Food Security,No,OVERALL_FOOD_SECURITY_AV,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Maco Fiscal,No,OVERALL_MACRO_FISCAL_AV,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Socioeconomic Vulnerability,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_AV,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Natural Hazard,No,OVERALL_NATURAL_HAZARDS_AV,,,,
+Overall,Arithmetic Mean,Dimensional Value,Ð,Conflict and Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_AV,,,,
+Overall,Arithmetic Mean,Flag Count,No,All,No,OVERALL_FLAGS_AV,,,,
+Overall,Arithmetic Mean,Flag Count,Yes,All,No,OVERALL_FLAGS_AV_MED,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_10,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_10,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_10,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_10,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_10,,,,
+Overall,Filter: both = 10,Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_10,,,,
+Overall,Filter: both = 10,Flag Count,No,All,No,OVERALL_FLAGS_FILTER_10,,,,
+Overall,Filter: both = 10,Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_10_MED,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_7,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_7,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_7,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_7,,,,
+Overall,Filter: both >= 7,Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7,,,,
+Overall,Filter: both >= 7,Flag Count,No,All,No,OVERALL_FLAGS_FILTER_7,,,,
+Overall,Filter: both >= 7,Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_7_MED,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 10",Dimensional Value,Ð,Fragility,No,OVERALL_FRAGILITY_INSTITUTIONS_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 11",Flag Count,No,All,No,OVERALL_FLAGS_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 12",Flag Count,Yes,All,No,OVERALL_FLAGS_FILTER_7_5_MED,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 5",Dimensional Value,Ð,Health,No,OVERALL_HEALTH_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 6",Dimensional Value,Ð,Food,No,OVERALL_FOOD_SECURITY_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 7",Dimensional Value,Ð,Macro,No,OVERALL_MACRO_FISCAL_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 8",Dimensional Value,Ð,Socioeconomic,No,OVERALL_SOCIOECONOMIC_VULNERABILITY_FILTER_7_5,,,,
+Overall,"Filter: high if both >= 7, medium if  one is >= 7 and one is >= 9",Dimensional Value,Ð,Natural,No,OVERALL_NATURAL_HAZARDS_FILTER_7_5,,,,
+Overall,Geometric Mean,Dimensional Value,Ð,Health,Yes,OVERALL_HEALTH_GEO,,,,Overall_Health
+Overall,Geometric Mean,Dimensional Value,Ð,Food Security,Yes,OVERALL_FOOD_SECURITY_GEO,,,,Overall_Food Security
+Overall,Geometric Mean,Dimensional Value,Ð,Macro Fiscal,Yes,OVERALL_MACRO_FISCAL_GEO,,,,Overall_Macro Fiscal
+Overall,Geometric Mean,Dimensional Value,Ð,Socioeconomic Vulnerability,Yes,OVERALL_SOCIOECONOMIC_VULNERABILITY_GEO,,,,Overall_Socioeconomic Vulnerability
+Overall,Geometric Mean,Dimensional Value,Ð,Natural Hazard,Yes,OVERALL_NATURAL_HAZARDS_GEO,,,,Overall_Natural Hazard
+Overall,Geometric Mean,Dimensional Value,Ð,Conflict and Fragility,Yes,OVERALL_FRAGILITY_INSTITUTIONS_GEO,,,,Overall_Conflict and Fragility
+Overall,Geometric Mean,Flag Count,No,All,No,OVERALL_FLAGS_GEO,,,,
+Overall,Geometric Mean,Flag Count,Yes,All,Yes,OVERALL_FLAGS_GEO_MED,,,,Overall_Number of Overall Alert Flags
+Underlying,Ð,Reliability,Ð,Ð,No,RELIABILITY_SCORE_UNDERLYING_RISK,,,,Underlying_Indicator Reliability
+Emerging,Ð,Reliability,Ð,Ð,No,RELIABILITY_SCORE_EMERGING_RISK,,,,Emerging_Indicator Reliability
