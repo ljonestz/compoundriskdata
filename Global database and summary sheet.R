@@ -7,8 +7,8 @@
 
 # LOAD PACKAGES ----
 packages <- c("curl", "dplyr", "EnvStats", "stats", "countrycode", "ggplot2", 
-              "jsonlite","lubridate", "matrixStats", "readr", "readxl", "rvest",   
-              "sjmisc", "stringr", "tidyr", "xml2", "zoo")
+              "jsonlite","lubridate", "matrixStats", "readr", "readxl",   
+              "rmarkdown", "rvest", "sjmisc", "stringr", "tidyr", "xml2", "zoo")
 invisible(lapply(packages, require, character.only = TRUE))
 {
 #
@@ -848,27 +848,34 @@ write_csv(updateLogCombined, "external/updates-log.csv")
 # outputPrevious <- read_csv("external/crm-output-latest.csv")
 write_csv(long, "external/crm-output-latest.csv")
 
+outputAll <- read_csv("external/crm-output-all.csv")
+
+
 long <- long %>%
   mutate(
     Date = Sys.Date(),
-    Record_ID = if(!is.null(prev$Record_ID)) {
-      max(prev$Record_ID) + long$Index
+    Record_ID = if(!is.null(outputAll$Record_ID)) {
+      max(outputAll$Record_ID) + long$Index
     } else {Index}
-    )
+    ) %>%
+  relocate(Record_ID, .before = 1)
 
-outputAll <- read_csv("external/crm-output-all.csv")
-outputAll <- rbind(long, outputAll)
+outputAll <- rbind(outputAll, long)
 
 write_csv(outputAll, "external/crm-output-all.csv")
 
 # Country changes ----
 # List countries that changed 
-flagChanges  <- merge(subset(long, Dimension == "Flag")[,c("Index", "Countryname", "Country", "Outlook", "Value", "Risk Label")],
-      subset(prev, Dimension == "Flag")[,c("Index", "Value", "Risk Label")],
+flagChanges  <- merge(subset(long, Dimension == "Flag")[,c("Index", "Countryname", "Country", "Outlook", "Value")],
+      subset(prev, Dimension == "Flag")[,c("Index", "Value")],
       by = "Index") %>%
        rename(Count = Value.x,
-              `Previous Count` = Value.y,
-              Risk = `Risk Label.x`,
-              `Previous Risk` = `Risk Label.y`) %>%
-  mutate(`Flag Change` = Count - `Previous Count`,
-         `Risk Change` = as.numeric(Risk) - as.numeric(`Previous Risk`))
+              `Previous Count` = Value.y) %>%
+              # Risk = `Risk Label.x`,
+              # `Previous Risk` = `Risk Label.y`) %>%
+  mutate(`Flag Change` = Count - `Previous Count`
+         # `Risk Change` = as.numeric(Risk) - as.numeric(`Previous Risk`)
+         )
+
+rmarkdown::render('output-report.Rmd', output_format = c("html_document", "pdf_document"), output_file = paste0(Sys.Date(), "-report") %>% rep(2))
+
