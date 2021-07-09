@@ -17,7 +17,7 @@ phone_data <- read_excel("/Users/bennotkin/Downloads/Phone_surveys_June.xlsx",
                          sheet = "2. Harmonized Indicators")
 
 phone_compile <- phone_data %>%
-  filter(level_data == "Gender=All, Urb_rur=National. sector=All") %>%
+  filter(level_data == "Gender=All, urban_rural=National. sector=All") %>%
   mutate(survey_no = as.numeric(as.character(str_replace(wave, "WAVE", "")))) %>%
   group_by(code) %>%
   mutate(last_survey = max(survey_no, na.rm=T)) %>%
@@ -30,16 +30,18 @@ phone_data <- phone_compile %>%
 
 phone_index <-phone_data %>%
   dplyr::select(
-    "code", "% of respondents currently employed/working",  "% of respondents who have stopped working since COVID-19 outbreak", 
+    "code", #"% of respondents currently employed/working",  
+    "% of respondents who have stopped working since COVID-19 outbreak", 
     "% able to access [staple food item] in the past 7 days when needed? - any staple food" ,
-    "% of HHs that saw reduced their remittances" , "% of HHs not able to perform normal farming activities (crop, livestock, fishing)" ,
-    "% of HHs able to pay rent for the next month",
-    "% of respondents who were not able to work as usual last week","Experienced decrease in wage income (% HHs with wage income as a source of livelihood in the past 12 months)",
-    "% of HHs that experienced change in total income - decrease"  ,"% of HHs used money saved for emergencies to cover basic living expenses" ,
+    # "% of HHs that saw reduced their remittances" , "% of HHs not able to perform normal farming activities (crop, livestock, fishing)" ,
+    # "% of HHs able to pay rent for the next month",
+    # "% of respondents who were not able to work as usual last week","Experienced decrease in wage income (% HHs with wage income as a source of livelihood in the past 12 months)",
+    # "% of HHs that experienced change in total income - decrease"  ,
+    "% of HHs used money saved for emergencies to cover basic living expenses" ,
     "% of respondents received government assistance when experiencing labor income/job loss" ,   
-    "% of HHs sold assets such as property during the pandemic in order to pay for basic living expenses" ,
+    # "% of HHs sold assets such as property during the pandemic in order to pay for basic living expenses" ,
     "In the last 30 days, you skipped a meal because there was not enough money or other resources for food?(%)"   ,
-    "In the last 30 days, your household worried about running out of food because of a lack of money or other resources?(%)" ,
+    # "In the last 30 days, your household worried about running out of food because of a lack of money or other resources?(%)" ,
   )
 
 # Normalised values
