@@ -20,24 +20,24 @@ invisible(lapply(packages, require, character.only = TRUE))
 #
 
 # Load risk sheets
-# healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv") %>% dplyr::select(-X)
-# foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv") %>% dplyr::select(-X)
-# #debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
-# fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv") %>% dplyr::select(-X)
-# macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv") %>% dplyr::select(-X)
-# Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv") %>% dplyr::select(-X)
-# Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv") %>% dplyr::select(-X)
-# #acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
-# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
+healthsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/healthsheet.csv") %>% dplyr::select(-X)
+foodsecurity <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/foodsecuritysheet.csv") %>% dplyr::select(-X)
+#debtsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/debtsheet.csv") %>% dplyr::select(-X)
+fragilitysheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/fragilitysheet.csv") %>% dplyr::select(-X)
+macrosheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/macrosheet.csv") %>% dplyr::select(-X)
+Naturalhazardsheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Naturalhazards.csv") %>% dplyr::select(-X)
+Socioeconomic_sheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/Socioeconomic_sheet.csv") %>% dplyr::select(-X)
+#acapssheet <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Risk_sheets/acapssheet.csv") %>% dplyr::select(-X)
+countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv") %>% dplyr::select(-X)
 
 # # Load risk sheets
-healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
-foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
-fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
-macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
-Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
-Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
-countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")[,-1]
+# healthsheet <- read.csv("Risk_sheets/healthsheet.csv")[,-1] # drops first column, X, which is row number
+# foodsecurity <- read.csv("Risk_sheets/foodsecuritysheet.csv")[,-1]
+# fragilitysheet <- read.csv("Risk_sheets/fragilitysheet.csv")[,-1]
+# macrosheet <- read.csv("Risk_sheets/macrosheet.csv")[,-1]
+# Naturalhazardsheet <- read.csv("Risk_sheets/Naturalhazards.csv")[,-1]
+# Socioeconomic_sheet <- read.csv("Risk_sheets/Socioeconomic_sheet.csv")[,-1]
+# countrylist <- read.csv("https://raw.githubusercontent.com/ljonestz/compoundriskdata/master/Indicator_dataset/countrylist.csv")[,-1]
 
 # Join datasets
 # — `globalrisk` ----
@@ -786,37 +786,8 @@ long <- rbind(indicators_long, flags_long) %>%
   subset(Key != "Indicator Reliability") %>%
   mutate(Index = row_number(), .before = 1)
 
-
-
-
-# Compare to previous version (updates-log.csv) ----
-# Problem with this is that some countries will stay the same even the file updates.
-# We want to see which indicators have updated, not how many countries
-# previous <- read_csv("Risk_sheets/dashboard-inputs/crm-long.csv")
-
-# length(which(subset(long, `Data Level` == "Indicator")[, 'Value'] != subset(prev, `Data Level` == "Indicator")[, 'Value']))
-# 
-# long[which(subset(long)[, 'Value'] != subset(prev)[, 'Value']),]
-# prev[which(subset(long)[, 'Value'] != subset(prev)[, 'Value']),]
-# 
-# subset(long, Country == "AFG" & Dimension == "Health" & Outlook == "Emerging")
-# subset(prev, Country == "AFG" & Dimension == "Health" & Outlook == "Emerging")
-# 
-# summary(subset(long, `Data Level` == "Indicator")[,"Value"])
-# summary(subset(prev, `Data Level` == "Indicator")[,"Value"])
-# 
-# summary(previous$Value)
-# 
-# long %>% group_by(`Data Level`) %>% summary()
-# 
-# View(previous)
-# Sys.Date()
-# 
-# subset(long, Key == "FEWS NET Score")
-# 
-# sum(c(F, F, F))
-
-# Compare, attempt 2
+# Compare most recent update to previous
+# Not ideal, because running multiple times in a day obscures changes from first run through in a day
 prev <- read_csv("external/crm-output-latest.csv")
 
 indicatorChanges <- function(indicator) {
@@ -852,7 +823,6 @@ write_csv(long, "external/crm-output-latest.csv")
 
 outputAll <- read_csv("external/crm-output-all.csv")
 
-
 long <- long %>%
   mutate(
     Date = Sys.Date(),
@@ -880,4 +850,3 @@ flagChanges  <- merge(subset(long, Dimension == "Flag")[,c("Index", "Countryname
          )
 
 rmarkdown::render('output-report.Rmd', output_format = c("html_document", "pdf_document"), output_file = paste0(Sys.Date(), "-report") %>% rep(2))
-
