@@ -805,7 +805,7 @@ indicatorChanges <- function(indicator) {
   return(length(changes))
 }
 
-indicators <- as.data.frame(read.csv("indicators-list.csv"))
+indicators <- as.data.frame(read.csv("indicators.csv"))
 
 updateLog <- data.frame(Indicator = indicators$Indicator, Changed_Countries = sapply(indicators$Indicator, indicatorChanges)) %>%
   mutate(

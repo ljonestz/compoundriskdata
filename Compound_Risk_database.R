@@ -1438,4 +1438,3 @@ write.csv(fragility_sheet, "Risk_sheets/fragilitysheet.csv")
 print("Fragility sheet written")
 
 }
-

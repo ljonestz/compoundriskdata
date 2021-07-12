@@ -36,7 +36,7 @@ dplyr::select(-X) %>%
 arrange(Country)
 
 # Load dimension / data dictionary
-indicators <- as.data.frame(read.csv("indicators-list.csv"))
+indicators <- as.data.frame(read.csv("indicators.csv"))
 
 # Compile list of all dimension data for Map function
 # List names should match dimension names in `indicator` data frame
