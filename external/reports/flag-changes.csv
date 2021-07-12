@@ -26,9 +26,9 @@
 "25",417,"Austria","AUT","Overall",0,0,0
 "26",424,"Austria","AUT","Underlying",0,0,0
 "27",438,"Austria","AUT","Emerging",1,1,0
-"28",469,"Azerbaijan","AZE","Overall",2,2,0
+"28",469,"Azerbaijan","AZE","Overall",2.5,2,0.5
 "29",476,"Azerbaijan","AZE","Underlying",1,1,0
-"30",490,"Azerbaijan","AZE","Emerging",2,2,0
+"30",490,"Azerbaijan","AZE","Emerging",2.5,2,0.5
 "31",521,"Burundi","BDI","Overall",4,4,0
 "32",528,"Burundi","BDI","Underlying",4.5,4.5,0
 "33",542,"Burundi","BDI","Emerging",1,1,0
@@ -40,35 +40,35 @@
 "39",646,"Benin","BEN","Emerging",1.5,1.5,0
 "40",677,"Burkina Faso","BFA","Overall",4,4,0
 "41",684,"Burkina Faso","BFA","Underlying",3,3,0
-"42",698,"Burkina Faso","BFA","Emerging",3.5,3.5,0
+"42",698,"Burkina Faso","BFA","Emerging",2.5,2.5,0
 "43",729,"Bangladesh","BGD","Overall",2.5,2.5,0
 "44",736,"Bangladesh","BGD","Underlying",2,2,0
 "45",750,"Bangladesh","BGD","Emerging",3,3,0
-"46",781,"Bulgaria","BGR","Overall",1,1,0
+"46",781,"Bulgaria","BGR","Overall",0.5,0.5,0
 "47",788,"Bulgaria","BGR","Underlying",0,0,0
-"48",802,"Bulgaria","BGR","Emerging",1.5,1.5,0
+"48",802,"Bulgaria","BGR","Emerging",0.5,0.5,0
 "49",833,"Bahrain","BHR","Overall",2,2,0
 "50",840,"Bahrain","BHR","Underlying",0,0,0
 "51",854,"Bahrain","BHR","Emerging",1.5,1.5,0
-"52",885,"Bahamas","BHS","Overall",1,0.5,0.5
+"52",885,"Bahamas","BHS","Overall",1.5,1,0.5
 "53",892,"Bahamas","BHS","Underlying",0.5,0.5,0
-"54",906,"Bahamas","BHS","Emerging",1,1,0
+"54",906,"Bahamas","BHS","Emerging",1.5,1,0.5
 "55",937,"Bosnia and Herzegovina","BIH","Overall",1.5,1.5,0
 "56",944,"Bosnia and Herzegovina","BIH","Underlying",0,0,0
 "57",958,"Bosnia and Herzegovina","BIH","Emerging",2.5,2.5,0
 "58",989,"Belarus","BLR","Overall",1.5,1.5,0
 "59",996,"Belarus","BLR","Underlying",0.5,0.5,0
 "60",1010,"Belarus","BLR","Emerging",1.5,1.5,0
-"61",1041,"Belize","BLZ","Overall",2,1.5,0.5
+"61",1041,"Belize","BLZ","Overall",1.5,1.5,0
 "62",1048,"Belize","BLZ","Underlying",1,1,0
-"63",1062,"Belize","BLZ","Emerging",2.5,2,0.5
+"63",1062,"Belize","BLZ","Emerging",2,2,0
 "64",1093,"Bolivia","BOL","Overall",2.5,2.5,0
 "65",1100,"Bolivia","BOL","Underlying",1,1,0
-"66",1114,"Bolivia","BOL","Emerging",2,2.5,-0.5
-"67",1145,"Brazil","BRA","Overall",2,3,-1
+"66",1114,"Bolivia","BOL","Emerging",2,2,0
+"67",1145,"Brazil","BRA","Overall",2,2,0
 "68",1152,"Brazil","BRA","Underlying",0,0,0
-"69",1166,"Brazil","BRA","Emerging",2.5,3.5,-1
-"70",1197,"Barbados","BRB","Overall",2,1.5,0.5
+"69",1166,"Brazil","BRA","Emerging",2.5,2.5,0
+"70",1197,"Barbados","BRB","Overall",2,2,0
 "71",1204,"Barbados","BRB","Underlying",0.5,0.5,0
 "72",1218,"Barbados","BRB","Emerging",1.5,1.5,0
 "73",1249,"Brunei Darussalam","BRN","Overall",0.5,0.5,0
@@ -79,10 +79,10 @@
 "78",1322,"Bhutan","BTN","Emerging",1.5,1.5,0
 "79",1353,"Botswana","BWA","Overall",2,2,0
 "80",1360,"Botswana","BWA","Underlying",0.5,0.5,0
-"81",1374,"Botswana","BWA","Emerging",2,2,0
+"81",1374,"Botswana","BWA","Emerging",1.5,2,-0.5
 "82",1405,"Central African Republic","CAF","Overall",5,5,0
 "83",1412,"Central African Republic","CAF","Underlying",4,4,0
-"84",1426,"Central African Republic","CAF","Emerging",3.5,3.5,0
+"84",1426,"Central African Republic","CAF","Emerging",3,3,0
 "85",1457,"Canada","CAN","Overall",0,0,0
 "86",1464,"Canada","CAN","Underlying",0,0,0
 "87",1478,"Canada","CAN","Emerging",1.5,1.5,0
@@ -97,14 +97,14 @@
 "96",1634,"China","CHN","Emerging",2,2,0
 "97",1665,"Côte d'Ivoire","CIV","Overall",3,3,0
 "98",1672,"Côte d'Ivoire","CIV","Underlying",1.5,1.5,0
-"99",1686,"Côte d'Ivoire","CIV","Emerging",2,1.5,0.5
+"99",1686,"Côte d'Ivoire","CIV","Emerging",1.5,2.5,-1
 "100",1717,"Cameroon","CMR","Overall",4.5,4.5,0
 "101",1724,"Cameroon","CMR","Underlying",2.5,2.5,0
 "102",1738,"Cameroon","CMR","Emerging",3,3,0
 "103",1769,"Congo DR","COD","Overall",5,5,0
 "104",1776,"Congo DR","COD","Underlying",4.5,4.5,0
 "105",1790,"Congo DR","COD","Emerging",4.5,4.5,0
-"106",1821,"Congo","COG","Overall",3.5,3.5,0
+"106",1821,"Congo","COG","Overall",4,3.5,0.5
 "107",1828,"Congo","COG","Underlying",3.5,3.5,0
 "108",1842,"Congo","COG","Emerging",2.5,2.5,0
 "109",1873,"Colombia","COL","Overall",3.5,3.5,0
@@ -121,7 +121,7 @@
 "120",2050,"Costa Rica","CRI","Emerging",2.5,2.5,0
 "121",2081,"Cuba","CUB","Overall",2,2,0
 "122",2088,"Cuba","CUB","Underlying",1.5,1.5,0
-"123",2102,"Cuba","CUB","Emerging",2,1.5,0.5
+"123",2102,"Cuba","CUB","Emerging",2,2,0
 "124",2133,"Cyprus","CYP","Overall",1,1,0
 "125",2140,"Cyprus","CYP","Underlying",0,0,0
 "126",2154,"Cyprus","CYP","Emerging",1,1,0
@@ -157,7 +157,7 @@
 "156",2674,"Eritrea","ERI","Emerging",0.5,0.5,0
 "157",2705,"Spain","ESP","Overall",0,0,0
 "158",2712,"Spain","ESP","Underlying",0,0,0
-"159",2726,"Spain","ESP","Emerging",1.5,1,0.5
+"159",2726,"Spain","ESP","Emerging",2,2,0
 "160",2757,"Estonia","EST","Overall",0.5,0.5,0
 "161",2764,"Estonia","EST","Underlying",0,0,0
 "162",2778,"Estonia","EST","Emerging",2,2,0
@@ -166,7 +166,7 @@
 "165",2830,"Ethiopia","ETH","Emerging",2.5,2.5,0
 "166",2861,"Finland","FIN","Overall",0,0,0
 "167",2868,"Finland","FIN","Underlying",0,0,0
-"168",2882,"Finland","FIN","Emerging",2,1.5,0.5
+"168",2882,"Finland","FIN","Emerging",2,2.5,-0.5
 "169",2913,"Fiji","FJI","Overall",1.5,1.5,0
 "170",2920,"Fiji","FJI","Underlying",0.5,0.5,0
 "171",2934,"Fiji","FJI","Emerging",2,2,0
@@ -182,33 +182,33 @@
 "181",3121,"United Kingdom","GBR","Overall",0,0,0
 "182",3128,"United Kingdom","GBR","Underlying",0,0,0
 "183",3142,"United Kingdom","GBR","Emerging",2,2,0
-"184",3173,"Georgia","GEO","Overall",1,1,0
+"184",3173,"Georgia","GEO","Overall",1.5,1,0.5
 "185",3180,"Georgia","GEO","Underlying",0,0,0
-"186",3194,"Georgia","GEO","Emerging",2.5,2.5,0
-"187",3225,"Ghana","GHA","Overall",2.5,2.5,0
+"186",3194,"Georgia","GEO","Emerging",3,2.5,0.5
+"187",3225,"Ghana","GHA","Overall",3,3,0
 "188",3232,"Ghana","GHA","Underlying",1,1,0
-"189",3246,"Ghana","GHA","Emerging",2,2,0
+"189",3246,"Ghana","GHA","Emerging",2.5,2.5,0
 "190",3277,"Guinea","GIN","Overall",3.5,3.5,0
 "191",3284,"Guinea","GIN","Underlying",2.5,2.5,0
 "192",3298,"Guinea","GIN","Emerging",1.5,1.5,0
 "193",3329,"Gambia","GMB","Overall",3.5,3.5,0
 "194",3336,"Gambia","GMB","Underlying",2,2,0
-"195",3350,"Gambia","GMB","Emerging",1.5,1.5,0
-"196",3381,"Guinea-Bissau","GNB","Overall",1.5,1,0.5
+"195",3350,"Gambia","GMB","Emerging",2.5,1.5,1
+"196",3381,"Guinea-Bissau","GNB","Overall",1,1,0
 "197",3388,"Guinea-Bissau","GNB","Underlying",3,3,0
 "198",3402,"Guinea-Bissau","GNB","Emerging",0.5,0.5,0
 "199",3433,"Equatorial Guinea","GNQ","Overall",1.5,1.5,0
 "200",3440,"Equatorial Guinea","GNQ","Underlying",1.5,1.5,0
 "201",3454,"Equatorial Guinea","GNQ","Emerging",0,0,0
-"202",3485,"Greece","GRC","Overall",0.5,0.5,0
+"202",3485,"Greece","GRC","Overall",1,0.5,0.5
 "203",3492,"Greece","GRC","Underlying",0.5,0.5,0
-"204",3506,"Greece","GRC","Emerging",0.5,0.5,0
+"204",3506,"Greece","GRC","Emerging",1.5,0.5,1
 "205",3537,"Grenada","GRD","Overall",0,0,0
 "206",3544,"Grenada","GRD","Underlying",0.5,0.5,0
 "207",3558,"Grenada","GRD","Emerging",0,0,0
-"208",3589,"Guatemala","GTM","Overall",3,3.5,-0.5
+"208",3589,"Guatemala","GTM","Overall",3,3,0
 "209",3596,"Guatemala","GTM","Underlying",1.5,1.5,0
-"210",3610,"Guatemala","GTM","Emerging",1.5,2,-0.5
+"210",3610,"Guatemala","GTM","Emerging",1.5,1.5,0
 "211",3641,"Guyana","GUY","Overall",1,1,0
 "212",3648,"Guyana","GUY","Underlying",0.5,0.5,0
 "213",3662,"Guyana","GUY","Emerging",0.5,0.5,0
@@ -226,19 +226,19 @@
 "225",3870,"Hungary","HUN","Emerging",1,1,0
 "226",3901,"Indonesia","IDN","Overall",2,2,0
 "227",3908,"Indonesia","IDN","Underlying",1,1,0
-"228",3922,"Indonesia","IDN","Emerging",2,2,0
+"228",3922,"Indonesia","IDN","Emerging",2,1.5,0.5
 "229",3953,"India","IND","Overall",1.5,1.5,0
 "230",3960,"India","IND","Underlying",1.5,1.5,0
 "231",3974,"India","IND","Emerging",0.5,0.5,0
 "232",4005,"Ireland","IRL","Overall",0,0,0
 "233",4012,"Ireland","IRL","Underlying",0,0,0
 "234",4026,"Ireland","IRL","Emerging",1.5,1.5,0
-"235",4057,"Iran","IRN","Overall",2.5,2.5,0
+"235",4057,"Iran","IRN","Overall",3,2.5,0.5
 "236",4064,"Iran","IRN","Underlying",1.5,1.5,0
-"237",4078,"Iran","IRN","Emerging",1.5,1.5,0
+"237",4078,"Iran","IRN","Emerging",2,1.5,0.5
 "238",4109,"Iraq","IRQ","Overall",3,3,0
 "239",4116,"Iraq","IRQ","Underlying",2.5,2.5,0
-"240",4130,"Iraq","IRQ","Emerging",2,1.5,0.5
+"240",4130,"Iraq","IRQ","Emerging",2,2,0
 "241",4161,"Iceland","ISL","Overall",0,0,0
 "242",4168,"Iceland","ISL","Underlying",0,0,0
 "243",4182,"Iceland","ISL","Emerging",0.5,0.5,0
@@ -259,23 +259,23 @@
 "258",4442,"Japan","JPN","Emerging",0,0,0
 "259",4473,"Kazakhstan","KAZ","Overall",1.5,1.5,0
 "260",4480,"Kazakhstan","KAZ","Underlying",0,0,0
-"261",4494,"Kazakhstan","KAZ","Emerging",1,1,0
+"261",4494,"Kazakhstan","KAZ","Emerging",1.5,1,0.5
 "262",4525,"Kenya","KEN","Overall",4,4,0
 "263",4532,"Kenya","KEN","Underlying",2.5,2.5,0
 "264",4546,"Kenya","KEN","Emerging",3.5,3.5,0
 "265",4577,"Kyrgyzstan","KGZ","Overall",0.5,0.5,0
 "266",4584,"Kyrgyzstan","KGZ","Underlying",0,0,0
-"267",4598,"Kyrgyzstan","KGZ","Emerging",1.5,1,0.5
+"267",4598,"Kyrgyzstan","KGZ","Emerging",1.5,1.5,0
 "268",4629,"Cambodia","KHM","Overall",1,1,0
 "269",4636,"Cambodia","KHM","Underlying",2,2,0
 "270",4650,"Cambodia","KHM","Emerging",1,1,0
 "271",4681,"Kiribati","KIR","Overall",1.5,1.5,0
 "272",4688,"Kiribati","KIR","Underlying",2.5,2.5,0
 "273",4702,"Kiribati","KIR","Emerging",1,1,0
-"274",4733,"Saint Kitts and Nevis","KNA","Overall",1,0.5,0.5
+"274",4733,"Saint Kitts and Nevis","KNA","Overall",0.5,1,-0.5
 "275",4740,"Saint Kitts and Nevis","KNA","Underlying",0.5,0.5,0
-"276",4754,"Saint Kitts and Nevis","KNA","Emerging",0.5,0,0.5
-"277",4785,"Korea Republic of","KOR","Overall",0.5,0.5,0
+"276",4754,"Saint Kitts and Nevis","KNA","Emerging",0,0.5,-0.5
+"277",4785,"Korea Republic of","KOR","Overall",1,0.5,0.5
 "278",4792,"Korea Republic of","KOR","Underlying",1.5,1.5,0
 "279",4806,"Korea Republic of","KOR","Emerging",0,0,0
 "280",4837,"Kuwait","KWT","Overall",0.5,0.5,0
@@ -287,24 +287,24 @@
 "286",4941,"Lebanon","LBN","Overall",3.5,3.5,0
 "287",4948,"Lebanon","LBN","Underlying",3,3,0
 "288",4962,"Lebanon","LBN","Emerging",3.5,3.5,0
-"289",4993,"Liberia","LBR","Overall",4,4,0
+"289",4993,"Liberia","LBR","Overall",3.5,4,-0.5
 "290",5000,"Liberia","LBR","Underlying",3,3,0
-"291",5014,"Liberia","LBR","Emerging",2,3,-1
+"291",5014,"Liberia","LBR","Emerging",2,2.5,-0.5
 "292",5045,"Libya","LBY","Overall",3,3,0
 "293",5052,"Libya","LBY","Underlying",2,2,0
-"294",5066,"Libya","LBY","Emerging",1.5,1.5,0
+"294",5066,"Libya","LBY","Emerging",2.5,2,0.5
 "295",5097,"Saint Lucia","LCA","Overall",0.5,0.5,0
 "296",5104,"Saint Lucia","LCA","Underlying",0,0,0
-"297",5118,"Saint Lucia","LCA","Emerging",0.5,0.5,0
-"298",5149,"Liechtenstein","LIE","Overall",0.5,0,0.5
+"297",5118,"Saint Lucia","LCA","Emerging",0,0,0
+"298",5149,"Liechtenstein","LIE","Overall",0,0,0
 "299",5156,"Liechtenstein","LIE","Underlying",0,0,0
-"300",5170,"Liechtenstein","LIE","Emerging",0.5,0,0.5
+"300",5170,"Liechtenstein","LIE","Emerging",0,0,0
 "301",5201,"Sri Lanka","LKA","Overall",1.5,1.5,0
 "302",5208,"Sri Lanka","LKA","Underlying",1,1,0
 "303",5222,"Sri Lanka","LKA","Emerging",0.5,0.5,0
-"304",5253,"Lesotho","LSO","Overall",2.5,2.5,0
+"304",5253,"Lesotho","LSO","Overall",3,3,0
 "305",5260,"Lesotho","LSO","Underlying",2,2,0
-"306",5274,"Lesotho","LSO","Emerging",0.5,0.5,0
+"306",5274,"Lesotho","LSO","Emerging",1,0.5,0.5
 "307",5305,"Lithuania","LTU","Overall",0.5,0.5,0
 "308",5312,"Lithuania","LTU","Underlying",0,0,0
 "309",5326,"Lithuania","LTU","Emerging",1.5,1.5,0
@@ -314,18 +314,18 @@
 "313",5409,"Latvia","LVA","Overall",0.5,0.5,0
 "314",5416,"Latvia","LVA","Underlying",0,0,0
 "315",5430,"Latvia","LVA","Emerging",1,1,0
-"316",5461,"Morocco","MAR","Overall",1.5,1.5,0
+"316",5461,"Morocco","MAR","Overall",2,1.5,0.5
 "317",5468,"Morocco","MAR","Underlying",0,0,0
-"318",5482,"Morocco","MAR","Emerging",2,2,0
+"318",5482,"Morocco","MAR","Emerging",2.5,2,0.5
 "319",5513,"Moldova Republic of","MDA","Overall",2,2,0
 "320",5520,"Moldova Republic of","MDA","Underlying",0,0,0
 "321",5534,"Moldova Republic of","MDA","Emerging",1.5,1.5,0
-"322",5565,"Madagascar","MDG","Overall",4,4,0
+"322",5565,"Madagascar","MDG","Overall",4.5,4,0.5
 "323",5572,"Madagascar","MDG","Underlying",3.5,3.5,0
 "324",5586,"Madagascar","MDG","Emerging",2.5,2.5,0
 "325",5617,"Maldives","MDV","Overall",1,1,0
 "326",5624,"Maldives","MDV","Underlying",0.5,0.5,0
-"327",5638,"Maldives","MDV","Emerging",0.5,1,-0.5
+"327",5638,"Maldives","MDV","Emerging",0.5,0.5,0
 "328",5669,"Mexico","MEX","Overall",1,1,0
 "329",5676,"Mexico","MEX","Underlying",0.5,0.5,0
 "330",5690,"Mexico","MEX","Emerging",0.5,0.5,0
@@ -359,12 +359,12 @@
 "358",6189,"Mauritius","MUS","Overall",1,1,0
 "359",6196,"Mauritius","MUS","Underlying",0.5,0.5,0
 "360",6210,"Mauritius","MUS","Emerging",2,2,0
-"361",6241,"Malawi","MWI","Overall",2.5,2.5,0
+"361",6241,"Malawi","MWI","Overall",3,3,0
 "362",6248,"Malawi","MWI","Underlying",2.5,2.5,0
-"363",6262,"Malawi","MWI","Emerging",1,1,0
-"364",6293,"Malaysia","MYS","Overall",0.5,0.5,0
+"363",6262,"Malawi","MWI","Emerging",2,2,0
+"364",6293,"Malaysia","MYS","Overall",1,1,0
 "365",6300,"Malaysia","MYS","Underlying",0,0,0
-"366",6314,"Malaysia","MYS","Emerging",2.5,2.5,0
+"366",6314,"Malaysia","MYS","Emerging",3,2.5,0.5
 "367",6345,"Namibia","NAM","Overall",2.5,2.5,0
 "368",6352,"Namibia","NAM","Underlying",1.5,1.5,0
 "369",6366,"Namibia","NAM","Emerging",2,2,0
@@ -373,13 +373,13 @@
 "372",6418,"Niger","NER","Emerging",3,3,0
 "373",6449,"Nigeria","NGA","Overall",5,5,0
 "374",6456,"Nigeria","NGA","Underlying",3.5,3.5,0
-"375",6470,"Nigeria","NGA","Emerging",4.5,3.5,1
+"375",6470,"Nigeria","NGA","Emerging",4.5,4,0.5
 "376",6501,"Nicaragua","NIC","Overall",2,2,0
 "377",6508,"Nicaragua","NIC","Underlying",1,1,0
 "378",6522,"Nicaragua","NIC","Emerging",2,2,0
 "379",6553,"Netherlands","NLD","Overall",0,0,0
 "380",6560,"Netherlands","NLD","Underlying",0,0,0
-"381",6574,"Netherlands","NLD","Emerging",1.5,1.5,0
+"381",6574,"Netherlands","NLD","Emerging",2,1.5,0.5
 "382",6605,"Norway","NOR","Overall",0,0,0
 "383",6612,"Norway","NOR","Underlying",0,0,0
 "384",6626,"Norway","NOR","Emerging",0,0,0
@@ -404,13 +404,13 @@
 "403",6969,"Peru","PER","Overall",1.5,1.5,0
 "404",6976,"Peru","PER","Underlying",1,1,0
 "405",6990,"Peru","PER","Emerging",4,4,0
-"406",7021,"Philippines","PHL","Overall",1.5,1.5,0
+"406",7021,"Philippines","PHL","Overall",1.5,2.5,-1
 "407",7028,"Philippines","PHL","Underlying",1.5,1.5,0
-"408",7042,"Philippines","PHL","Emerging",1,1,0
+"408",7042,"Philippines","PHL","Emerging",1,2,-1
 "409",7073,"Palau","PLW","Overall",0,0,0
 "410",7080,"Palau","PLW","Underlying",0.5,0.5,0
 "411",7094,"Palau","PLW","Emerging",0,0,0
-"412",7125,"Papua New Guinea","PNG","Overall",3.5,4,-0.5
+"412",7125,"Papua New Guinea","PNG","Overall",3.5,3.5,0
 "413",7132,"Papua New Guinea","PNG","Underlying",3.5,3.5,0
 "414",7146,"Papua New Guinea","PNG","Emerging",1.5,1.5,0
 "415",7177,"Poland","POL","Overall",0.5,0.5,0
@@ -421,7 +421,7 @@
 "420",7250,"Korea DPR","PRK","Emerging",1,1,0
 "421",7281,"Portugal","PRT","Overall",0.5,0.5,0
 "422",7288,"Portugal","PRT","Underlying",0,0,0
-"423",7302,"Portugal","PRT","Emerging",2,1.5,0.5
+"423",7302,"Portugal","PRT","Emerging",2.5,2,0.5
 "424",7333,"Paraguay","PRY","Overall",1.5,1.5,0
 "425",7340,"Paraguay","PRY","Underlying",0,0,0
 "426",7354,"Paraguay","PRY","Emerging",1.5,1.5,0
@@ -430,8 +430,8 @@
 "429",7406,"Qatar","QAT","Emerging",1.5,1.5,0
 "430",7437,"Romania","ROU","Overall",0.5,0.5,0
 "431",7444,"Romania","ROU","Underlying",0,0,0
-"432",7458,"Romania","ROU","Emerging",0.5,1.5,-1
-"433",7489,"Russian Federation","RUS","Overall",1,1,0
+"432",7458,"Romania","ROU","Emerging",0.5,0.5,0
+"433",7489,"Russian Federation","RUS","Overall",1.5,1,0.5
 "434",7496,"Russian Federation","RUS","Underlying",0.5,0.5,0
 "435",7510,"Russian Federation","RUS","Emerging",1,1,0
 "436",7541,"Rwanda","RWA","Overall",2,2,0
@@ -448,19 +448,19 @@
 "447",7718,"Senegal","SEN","Emerging",3.5,3.5,0
 "448",7749,"Singapore","SGP","Overall",0,0,0
 "449",7756,"Singapore","SGP","Underlying",0,0,0
-"450",7770,"Singapore","SGP","Emerging",1,1.5,-0.5
+"450",7770,"Singapore","SGP","Emerging",1,1,0
 "451",7801,"Solomon Islands","SLB","Overall",2,2,0
 "452",7808,"Solomon Islands","SLB","Underlying",3,3,0
 "453",7822,"Solomon Islands","SLB","Emerging",1,1,0
-"454",7853,"Sierra Leone","SLE","Overall",3.5,3.5,0
+"454",7853,"Sierra Leone","SLE","Overall",3,3.5,-0.5
 "455",7860,"Sierra Leone","SLE","Underlying",2.5,2.5,0
-"456",7874,"Sierra Leone","SLE","Emerging",3,3,0
+"456",7874,"Sierra Leone","SLE","Emerging",2,3,-1
 "457",7905,"El Salvador","SLV","Overall",2,2,0
 "458",7912,"El Salvador","SLV","Underlying",0.5,0.5,0
 "459",7926,"El Salvador","SLV","Emerging",2,2,0
-"460",7957,"Somalia","SOM","Overall",4,4,0
+"460",7957,"Somalia","SOM","Overall",5,5,0
 "461",7964,"Somalia","SOM","Underlying",4,4,0
-"462",7978,"Somalia","SOM","Emerging",3.5,3.5,0
+"462",7978,"Somalia","SOM","Emerging",4.5,4.5,0
 "463",8009,"Serbia","SRB","Overall",0.5,0.5,0
 "464",8016,"Serbia","SRB","Underlying",0,0,0
 "465",8030,"Serbia","SRB","Emerging",2,2,0
@@ -484,7 +484,7 @@
 "483",8342,"Sweden","SWE","Emerging",0.5,0.5,0
 "484",8373,"Eswatini","SWZ","Overall",2,2,0
 "485",8380,"Eswatini","SWZ","Underlying",1.5,1.5,0
-"486",8394,"Eswatini","SWZ","Emerging",1.5,0.5,1
+"486",8394,"Eswatini","SWZ","Emerging",1.5,1.5,0
 "487",8425,"Seychelles","SYC","Overall",1.5,1.5,0
 "488",8432,"Seychelles","SYC","Underlying",0.5,0.5,0
 "489",8446,"Seychelles","SYC","Emerging",1.5,1.5,0
@@ -493,28 +493,28 @@
 "492",8498,"Syria","SYR","Emerging",3,3,0
 "493",8529,"Chad","TCD","Overall",4.5,4.5,0
 "494",8536,"Chad","TCD","Underlying",4,4,0
-"495",8550,"Chad","TCD","Emerging",3,3,0
+"495",8550,"Chad","TCD","Emerging",2.5,2.5,0
 "496",8581,"Togo","TGO","Overall",1.5,1.5,0
 "497",8588,"Togo","TGO","Underlying",1.5,1.5,0
 "498",8602,"Togo","TGO","Emerging",1,1,0
-"499",8633,"Thailand","THA","Overall",0,0,0
+"499",8633,"Thailand","THA","Overall",0.5,0,0.5
 "500",8640,"Thailand","THA","Underlying",0.5,0.5,0
 "501",8654,"Thailand","THA","Emerging",0,0,0
-"502",8685,"Tajikistan","TJK","Overall",2.5,2.5,0
+"502",8685,"Tajikistan","TJK","Overall",3,3,0
 "503",8692,"Tajikistan","TJK","Underlying",2,2,0
 "504",8706,"Tajikistan","TJK","Emerging",1.5,1.5,0
-"505",8737,"Turkmenistan","TKM","Overall",1,1.5,-0.5
+"505",8737,"Turkmenistan","TKM","Overall",1,1,0
 "506",8744,"Turkmenistan","TKM","Underlying",1.5,1.5,0
 "507",8758,"Turkmenistan","TKM","Emerging",1,1,0
-"508",8789,"Timor-Leste","TLS","Overall",2,1.5,0.5
+"508",8789,"Timor-Leste","TLS","Overall",2,2,0
 "509",8796,"Timor-Leste","TLS","Underlying",2.5,2.5,0
-"510",8810,"Timor-Leste","TLS","Emerging",1.5,0.5,1
+"510",8810,"Timor-Leste","TLS","Emerging",1,1.5,-0.5
 "511",8841,"Tonga","TON","Overall",3,3,0
 "512",8848,"Tonga","TON","Underlying",1.5,1.5,0
 "513",8862,"Tonga","TON","Emerging",1.5,1.5,0
 "514",8893,"Trinidad and Tobago","TTO","Overall",1,1,0
 "515",8900,"Trinidad and Tobago","TTO","Underlying",0,0,0
-"516",8914,"Trinidad and Tobago","TTO","Emerging",1,1,0
+"516",8914,"Trinidad and Tobago","TTO","Emerging",0.5,1,-0.5
 "517",8945,"Tunisia","TUN","Overall",2.5,2.5,0
 "518",8952,"Tunisia","TUN","Underlying",0.5,0.5,0
 "519",8966,"Tunisia","TUN","Emerging",3.5,3.5,0
@@ -529,7 +529,7 @@
 "528",9122,"Tanzania","TZA","Emerging",1,1,0
 "529",9153,"Uganda","UGA","Overall",3,3,0
 "530",9160,"Uganda","UGA","Underlying",3,3,0
-"531",9174,"Uganda","UGA","Emerging",3.5,3.5,0
+"531",9174,"Uganda","UGA","Emerging",2.5,3,-0.5
 "532",9205,"Ukraine","UKR","Overall",1.5,1.5,0
 "533",9212,"Ukraine","UKR","Underlying",0.5,0.5,0
 "534",9226,"Ukraine","UKR","Emerging",1,1,0
@@ -541,16 +541,16 @@
 "540",9330,"United States of America","USA","Emerging",3.5,3.5,0
 "541",9361,"Uzbekistan","UZB","Overall",3,3,0
 "542",9368,"Uzbekistan","UZB","Underlying",2,2,0
-"543",9382,"Uzbekistan","UZB","Emerging",1.5,1.5,0
+"543",9382,"Uzbekistan","UZB","Emerging",1,1,0
 "544",9413,"Saint Vincent and the Grenadines","VCT","Overall",0,0,0
 "545",9420,"Saint Vincent and the Grenadines","VCT","Underlying",0.5,0.5,0
 "546",9434,"Saint Vincent and the Grenadines","VCT","Emerging",0,0,0
 "547",9465,"Venezuela","VEN","Overall",4,4,0
 "548",9472,"Venezuela","VEN","Underlying",3,3,0
 "549",9486,"Venezuela","VEN","Emerging",2,2,0
-"550",9517,"Viet Nam","VNM","Overall",1.5,1,0.5
+"550",9517,"Viet Nam","VNM","Overall",1.5,1.5,0
 "551",9524,"Viet Nam","VNM","Underlying",1,1,0
-"552",9538,"Viet Nam","VNM","Emerging",0.5,0,0.5
+"552",9538,"Viet Nam","VNM","Emerging",1,0.5,0.5
 "553",9569,"Vanuatu","VUT","Overall",2,2,0
 "554",9576,"Vanuatu","VUT","Underlying",2,2,0
 "555",9590,"Vanuatu","VUT","Emerging",1,1,0
@@ -565,7 +565,7 @@
 "564",9746,"South Africa","ZAF","Emerging",3.5,3.5,0
 "565",9777,"Zambia","ZMB","Overall",3.5,3.5,0
 "566",9784,"Zambia","ZMB","Underlying",2.5,2.5,0
-"567",9798,"Zambia","ZMB","Emerging",2.5,3,-0.5
+"567",9798,"Zambia","ZMB","Emerging",2.5,2.5,0
 "568",9829,"Zimbabwe","ZWE","Overall",5,5,0
 "569",9836,"Zimbabwe","ZWE","Underlying",4,4,0
 "570",9850,"Zimbabwe","ZWE","Emerging",4,4,0

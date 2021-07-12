@@ -1,11 +1,20 @@
 Indicator,Changed_Countries,Update_Date
-FCS,8,2021-07-07
-Political Disturbance,2,2021-07-07
-GDACS Live Hazard Tracker,1,2021-07-07
-Locust Threat Level,12,2021-07-07
-INFORM Severity,1,2021-07-07
-"Unemployment Rate, % Change",54,2021-07-07
-MFRI Household Level Risk,7,2021-07-07
+Political Fatalities,1,2021-07-12
+"Covid Growth, Cases (biweekly)",62,2021-07-12
+"Covid Growth, Deaths (biweekly)",52,2021-07-12
+Oxford Gov Response Index,23,2021-07-12
+New Covid Cases per 1M,45,2021-07-12
+New Covid Deaths per 1M,28,2021-07-12
+GDACS Live Hazard Tracker,1,2021-07-12
+COVID Phone Survey Index,13,2021-07-09
+"Covid Growth, Cases (biweekly)",46,2021-07-09
+"Covid Growth, Deaths (biweekly)",34,2021-07-09
+Oxford Gov Response Index,1,2021-07-09
+New Covid Cases per 1M,18,2021-07-09
+New Covid Deaths per 1M,13,2021-07-09
+WHO Disease Outbreak News,1,2021-07-09
+GDACS Live Hazard Tracker,1,2021-07-09
+INFORM Severity,1,2021-07-09
 Political Fatalities,1,2021-07-07
 Political Disturbance,1,2021-07-07
 "Covid Growth, Cases (biweekly)",58,2021-07-07
