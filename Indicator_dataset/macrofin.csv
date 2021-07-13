@@ -1,45 +1,45 @@
 Country Name,ISO3,Spillover risks from the external environment outside the region,Macroeconomic risks,Banking risks,Public sector risks,Corporate sector risks,Household risks,Market and liquidity risks,Monetary and financial conditions,Risk appetite
-China,CHN,Low,Low,Medium,High,Low,Low,Low,Low,Low
-Indonesia,IDN,Low,Medium,Low,Low,Medium,Low,Medium,Medium,Medium
-Malaysia,MYS,Low,Medium,Low,High,Medium,Low,Low,Medium,Low
-Philippines,PHL,Low,High,Low,Medium,Low,Medium,Low,Low,Low
-Thailand,THA,Low,Low,Low,Low,Medium,Low,Low,Medium,Low
-Viet Nam,VNM,Low,Low,Low,Low,High,Low,Low,Low,Low
-Azerbaijan,AZE,Low,Low,Medium,Low,Low,Low,Medium,Medium,Low
-Belarus,BLR,High,High,Low,Low,Low,Low,Low,Low,Medium
-Bulgaria,BGR,Low,Low,Low,Low,Low,High,Low,Low,Low
-Croatia,HRV,Low,Low,Low,Medium,Low,High,Low,Low,Low
-Georgia,GEO,Low,Low,High,Low,Medium,High,High,Low,Medium
-Hungary,HUN,Medium,Medium,Low,High,Low,Low,Low,Low,Low
-Kazakhstan,KAZ,Medium,Low,Low,Low,Low,Low,Low,Low,Low
+China,CHN,Low,Low,High,High,Medium,Low,Low,Low,Low
+Indonesia,IDN,Low,Low,Low,High,Medium,Low,Low,Medium,Low
+Malaysia,MYS,Low,Low,Low,High,Medium,Medium,Low,Medium,Low
+Philippines,PHL,Low,Medium,Low,High,Medium,High,Low,Medium,Low
+Thailand,THA,Low,Low,Low,Low,High,Low,Low,Low,Low
+Viet Nam,VNM,Medium,Low,Low,Low,High,Low,Low,Medium,Low
+Azerbaijan,AZE,Low,Low,Medium,Low,High,Low,Medium,Medium,Low
+Belarus,BLR,Low,Low,Low,Low,Low,Low,Low,Low,High
+Bulgaria,BGR,Low,Low,Low,Low,Low,Low,Low,Low,Low
+Croatia,HRV,Low,Low,Medium,High,Medium,High,Low,Low,Low
+Georgia,GEO,Low,Low,High,High,Medium,High,High,Low,Low
+Hungary,HUN,Low,Low,Low,High,Low,Low,Low,Low,Low
+Kazakhstan,KAZ,Low,Low,Low,Low,Low,Low,Low,Low,Low
 Poland,POL,Low,Low,Low,Low,Low,Low,Low,Low,Low
 Romania,ROU,Low,Low,Low,Low,Low,Low,Low,Low,Low
 Russia,,Low,Low,Low,Low,Low,Low,Low,Low,Low
-Serbia,SRB,Low,Medium,Low,High,High,High,Low,Low,Low
-Turkey,TUR,High,High,Low,Low,Low,Low,Low,Low,High
-Ukraine,UKR,Low,High,Low,High,Low,Low,Low,Medium,High
+Serbia,SRB,Low,Low,Low,High,High,High,Low,Low,Low
+Turkey,TUR,Low,High,Low,Low,Medium,Low,Low,Low,High
+Ukraine,UKR,Low,Medium,Low,High,Medium,Low,Low,Medium,Medium
 Argentina,ARG,Medium,High,Low,High,Low,Low,Low,Low,High
-Brazil,BRA,Low,High,Medium,High,Low,High,Low,Low,High
-Chile,CHL,Low,Low,Medium,Low,Low,High,High,Low,Low
-Colombia,COL,Low,High,Low,Low,Low,High,High,Low,Low
-Costa Rica,CRI,Low,High,Low,High,Low,High,Medium,Medium,High
-Ecuador,ECU,Medium,High,Low,High,Low,Low,Medium,Medium,High
-Mexico,MEX,Low,High,Low,Low,Medium,Low,Low,Low,High
-Peru,PER,Low,Medium,Low,Low,Low,Low,High,Low,Low
-Uruguay,URY,Low,Low,Low,Low,Medium,Low,Low,Low,Low
-Egypt,EGY,Low,High,Low,High,Low,Medium,Low,Low,High
-Jordan,JOR,Low,Medium,Low,High,Medium,High,Low,Medium,Medium
-Morocco,MAR,Low,Low,High,Low,Low,High,Low,Low,Medium
-Saudi Arabia,SAU,Low,Low,Low,Low,High,Medium,Low,Medium,Low
-Tunisia,TUN,High,High,High,Low,Medium,High,High,Low,High
+Brazil,BRA,Low,Medium,Medium,High,Low,High,Low,Low,Medium
+Chile,CHL,Low,Low,High,High,High,High,High,Low,Low
+Colombia,COL,Low,Medium,Low,High,Low,High,Medium,Low,Low
+Costa Rica,CRI,Medium,High,Medium,High,Low,High,Low,Low,Low
+Ecuador,ECU,Low,Medium,Low,High,Low,Low,Low,High,Medium
+Mexico,MEX,Low,Low,Low,Low,High,Low,Low,Low,Medium
+Peru,PER,Low,Low,Medium,Low,Medium,Low,Medium,Low,Low
+Uruguay,URY,Low,Low,Low,High,Medium,Low,Low,Low,Low
+Egypt,EGY,Low,High,Low,High,Medium,Low,Low,Low,Medium
+Jordan,JOR,Low,Medium,Medium,High,High,High,Low,Medium,Low
+Morocco,MAR,Low,Low,High,High,Low,High,Low,Low,Low
+Saudi Arabia,SAU,Low,Low,Low,Medium,High,Medium,Low,Medium,Low
+Tunisia,TUN,Medium,High,High,High,Medium,High,High,Low,Medium
 Qatar,QAT,Low,Low,Medium,Low,Low,High,High,Low,Low
-India,IND,Low,Medium,High,High,Low,Medium,Low,Low,Low
-Pakistan,PAK,Medium,High,Low,High,Low,Low,Low,Low,High
-Sri Lanka,LKA,Medium,High,Medium,High,High,Medium,Low,Low,High
-Bangladesh,BGD,Low,Medium,Medium,Low,High,Low,Low,Low,High
-Angola,AGO,Low,High,Low,Medium,Low,Low,Medium,Low,High
-Ghana,GHA,Low,High,Low,High,Low,Low,Low,Low,Medium
-Kenya,KEN,Low,Low,Low,High,Low,Low,Low,Low,Low
-Nigeria,NGA,Low,Low,Low,Low,Low,High,Low,Low,High
-South Africa,ZAF,Low,High,Medium,High,Low,High,Medium,Low,High
-Uganda,UGA,Low,Low,Low,Low,Low,Low,Low,Low,Low
+India,IND,Low,Low,High,High,Low,Low,Low,Low,Low
+Pakistan,PAK,Low,Medium,Low,High,Low,Low,Low,Low,Medium
+Sri Lanka,LKA,Low,Medium,Medium,High,Medium,Low,Low,Low,High
+Bangladesh,BGD,Low,Low,Medium,Low,High,Low,Low,Low,Low
+Angola,AGO,Low,Medium,Low,High,Low,Low,Low,Low,High
+Ghana,GHA,Low,Medium,Low,High,Low,Low,Low,Medium,Low
+Kenya,KEN,Low,Medium,Low,High,Low,Low,Low,High,Low
+Nigeria,NGA,Low,High,Low,Low,Low,Low,Low,Low,High
+South Africa,ZAF,Low,High,High,High,Low,High,Low,Medium,Medium
+Uganda,UGA,Low,Medium,Low,Medium,Low,Low,Low,Low,Medium

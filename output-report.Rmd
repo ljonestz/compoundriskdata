@@ -1,0 +1,56 @@
+---
+title: "CRM Output Report"
+output: html_notebook
+---
+
+`r Sys.Date()`
+
+## Indicators
+
+**`r nrow(updateLog)`** of `r nrow(indicators)` indicators updated.
+
+```{r, echo=FALSE}
+ggplot(data = updateLogCombined, aes(x = Update_Date, y = Indicator, alpha = Changed_Countries)) +
+  geom_point() +
+  theme(legend.position="bottom") +
+  labs(x = "Date", alpha='Num. of Updated Countries') 
+```
+
+## Flags 
+
+### Overall Flags
+
+```{r, echo=FALSE}
+overallFlagChanges <- subset(flagChanges, `Flag Change` != 0 & Outlook == "Overall") %>%
+  arrange(desc(Count), desc(`Flag Change`))
+```
+
+**`r nrow(overallFlagChanges)`** countries' overall flag count has changed.
+
+```{r, echo=FALSE}
+overallFlagChanges
+```
+
+### Underlying Flags
+```{r, echo=FALSE}
+underlyingFlagChanges <- subset(flagChanges, `Flag Change` != 0 & Outlook == "Underlying") %>%
+  arrange(desc(Count), desc(`Flag Change`))
+```
+
+**`r nrow(underlyingFlagChanges)`** countries' underlying flag count has changed.
+
+```{r echo=FALSE, paged.print=TRUE}
+underlyingFlagChanges
+```
+
+### Emerging Flags
+```{r, echo=FALSE}
+emergingFlagChanges <- subset(flagChanges, `Flag Change` != 0 & Outlook == "Emerging") %>%
+  arrange(desc(Count), desc(`Flag Change`))
+```
+
+**`r nrow(emergingFlagChanges)`** countries' emerging flag count has changed.
+
+```{r, echo=FALSE}
+emergingFlagChanges
+```

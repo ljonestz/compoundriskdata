@@ -1,6 +1,24 @@
 introduction
 methods
 dimensions
+<<<<<<< HEAD
+natural-hazards
+underlying-vulnerability
+emerging-threats
+food-security
+underlying-vulnerability-1
+emerging-threat
+conflict-and-fragility
+underlying-vulnerability-2
+emerging-threat-1
+macro-fiscal-dynamics
+underlying-vulnerability-3
+emerging-threat-2
+socio-economic-vulnerability
+underlying-vulnerability-4
+emerging-threat-3
+health
+=======
 food-security
 underlying-vulnerability
 emerging-threat
@@ -17,6 +35,7 @@ natural-hazards
 underlying-vulnerability-4
 emerging-threats
 socio-economic-vulnerability
+>>>>>>> master
 underlying-vulnerability-5
 emerging-threat-4
 acknowledgments

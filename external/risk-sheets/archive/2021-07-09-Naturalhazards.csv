@@ -1,0 +1,191 @@
+"","Countryname","Country","NH_GDAC_Date","NH_GDAC_Hazard_Status","NH_GDAC_Hazard_Severity","NH_GDAC_Hazard_Type","NH_GDAC_Hazard_Score_Norm","NH_GDAC_Hazard_Score","NH_Hazard_Score","NH_Hazard_Score_norm","NH_seasonal_risk_norm","NH_locust_norm","NH_natural_acaps"
+"1","Afghanistan","AFG",NA,NA,NA,NA,NA,NA,6.7,9.5,7,0,0
+"2","Angola","AGO","2020","active","orange","drought",10,"active - orange",3.1,3.5,0,0,0
+"3","Albania","ALB",NA,NA,NA,NA,NA,NA,6.4,9,0,0,0
+"4","United Arab Emirates","ARE",NA,NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
+"5","Argentina","ARG",NA,NA,NA,NA,NA,NA,4,5,0,0,0
+"6","Armenia","ARM",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"7","Antigua and Barbuda","ATG",NA,NA,NA,NA,NA,NA,3.7,4.5,0,0,0
+"8","Australia","AUS",NA,NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
+"9","Austria","AUT",NA,NA,NA,NA,NA,NA,2.5,2.5,7,0,0
+"10","Azerbaijan","AZE",NA,NA,NA,NA,NA,NA,4.9,6.5,7,0,0
+"11","Burundi","BDI",NA,NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
+"12","Belgium","BEL",NA,NA,NA,NA,NA,NA,1.8,1.33333333333333,7,0,0
+"13","Benin","BEN",NA,NA,NA,NA,NA,NA,2.9,3.16666666666667,7,0,0
+"14","Burkina Faso","BFA",NA,NA,NA,NA,NA,NA,3.7,4.5,0,0,0
+"15","Bangladesh","BGD",NA,NA,NA,NA,NA,NA,8.2,10,0,0,0
+"16","Bulgaria","BGR",NA,NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
+"17","Bahrain","BHR",NA,NA,NA,NA,NA,NA,0.9,0,0,0,0
+"18","Bahamas","BHS",NA,NA,NA,NA,NA,NA,3.4,4,0,0,0
+"19","Bosnia and Herzegovina","BIH",NA,NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
+"20","Belarus","BLR",NA,NA,NA,NA,NA,NA,2.2,2,0,0,0
+"21","Belize","BLZ",NA,NA,NA,NA,NA,NA,5.5,7.5,0,0,0
+"22","Bolivia","BOL",NA,NA,NA,NA,NA,NA,4.7,6.16666666666667,7,0,0
+"23","Brazil","BRA","2019","past","orange","drought",0,"past - orange",4,5,0,0,0
+"24","Barbados","BRB",NA,NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
+"25","Brunei Darussalam","BRN",NA,NA,NA,NA,NA,NA,2.8,3,7,0,0
+"26","Bhutan","BTN",NA,NA,NA,NA,NA,NA,3.5,4.16666666666667,0,0,0
+"27","Botswana","BWA",NA,NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
+"28","Central African Republic","CAF",NA,NA,NA,NA,NA,NA,3.1,3.5,0,0,0
+"29","Canada","CAN",NA,NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
+"30","Switzerland","CHE",NA,NA,NA,NA,NA,NA,2.3,2.16666666666667,7,0,0
+"31","Chile","CHL","2021-07-04","past","green","earthquake",0,"past - green",6.2,8.66666666666667,7,0,0
+"32","China","CHN","2021-07-08","active","green","flood",0,"active - green",7.5,10,0,0,0
+"33","Côte d'Ivoire","CIV","2021-06-23","past","green","flood",0,"past - green",3.8,4.66666666666667,7,0,0
+"34","Cameroon","CMR",NA,NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
+"35","Congo DR","COD","2021","past","green","drought",0,"past - green",4.5,5.83333333333333,0,0,0
+"36","Congo","COG",NA,NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
+"37","Colombia","COL",NA,NA,NA,NA,NA,NA,6.7,9.5,7,0,0
+"38","Comoros","COM",NA,NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
+"39","Cabo Verde","CPV",NA,NA,NA,NA,NA,NA,1.5,0.833333333333334,0,0,0
+"40","Costa Rica","CRI",NA,NA,NA,NA,NA,NA,6,8.33333333333333,7,0,0
+"41","Cuba","CUB",NA,NA,NA,NA,NA,NA,5.6,7.66666666666667,0,0,0
+"42","Cyprus","CYP",NA,NA,NA,NA,NA,NA,4.3,5.5,0,0,0
+"43","Czech Republic","CZE",NA,NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
+"44","Germany","DEU","2021-07-05","past","green","flood",0,"past - green",2.5,2.5,0,0,0
+"45","Djibouti","DJI",NA,NA,NA,NA,NA,NA,5.4,7.33333333333333,0,0,0
+"46","Dominica","DMA",NA,NA,NA,NA,NA,NA,4.9,6.5,0,0,0
+"47","Denmark","DNK",NA,NA,NA,NA,NA,NA,1.3,0.5,0,0,0
+"48","Dominican Republic","DOM",NA,NA,NA,NA,NA,NA,6.7,9.5,0,0,0
+"49","Algeria","DZA",NA,NA,NA,NA,NA,NA,4.7,6.16666666666667,0,0,0
+"50","Ecuador","ECU",NA,NA,NA,NA,NA,NA,6.9,9.83333333333333,7,0,0
+"51","Egypt","EGY",NA,NA,NA,NA,NA,NA,4.9,6.5,0,0,0
+"52","Eritrea","ERI",NA,NA,NA,NA,NA,NA,3.7,4.5,0,0,0
+"53","Spain","ESP",NA,NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
+"54","Estonia","EST",NA,NA,NA,NA,NA,NA,0.9,0,0,0,0
+"55","Ethiopia","ETH",NA,NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
+"56","Finland","FIN",NA,NA,NA,NA,NA,NA,0.6,0,0,0,0
+"57","Fiji","FJI","2021-07-07","active","green","earthquake",0,"active - green",3.9,4.83333333333333,0,0,0
+"58","France","FRA",NA,NA,NA,NA,NA,NA,3.4,4,0,0,0
+"59","Micronesia","FSM",NA,NA,NA,NA,NA,NA,4.2,5.33333333333333,7,0,0
+"60","Gabon","GAB",NA,NA,NA,NA,NA,NA,2.5,2.5,0,0,0
+"61","United Kingdom","GBR",NA,NA,NA,NA,NA,NA,2.4,2.33333333333333,0,0,0
+"62","Georgia","GEO",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"63","Ghana","GHA","2021-06-25","past","green","flood",0,"past - green",3.7,4.5,0,0,0
+"64","Guinea","GIN",NA,NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
+"65","Gambia","GMB",NA,NA,NA,NA,NA,NA,3.1,3.5,7,0,0
+"66","Guinea-Bissau","GNB",NA,NA,NA,NA,NA,NA,2.7,2.83333333333333,0,0,0
+"67","Equatorial Guinea","GNQ",NA,NA,NA,NA,NA,NA,2.9,3.16666666666667,0,0,0
+"68","Greece","GRC","2021-06-21","past","green","earthquake",0,"past - green",5.9,8.16666666666667,0,0,0
+"69","Grenada","GRD",NA,NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
+"70","Guatemala","GTM","2021-06-21","past","green","volcano",0,"past - green",6.7,9.5,0,0,0
+"71","Guyana","GUY",NA,NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
+"72","Honduras","HND",NA,NA,NA,NA,NA,NA,6.5,9.16666666666667,0,0,0
+"73","Croatia","HRV",NA,NA,NA,NA,NA,NA,4.8,6.33333333333333,0,0,0
+"74","Haiti","HTI",NA,NA,NA,NA,NA,NA,7,10,0,0,0
+"75","Hungary","HUN",NA,NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
+"76","Indonesia","IDN","2021-06-24","past","green","earthquake",0,"past - green",7.7,10,7,0,0
+"77","India","IND","2021-07-03","past","green","earthquake",0,"past - green",7.8,10,0,0,0
+"78","Ireland","IRL",NA,NA,NA,NA,NA,NA,2.2,2,0,0,0
+"79","Iran","IRN",NA,NA,NA,NA,NA,NA,6.8,9.66666666666667,7,0,0
+"80","Iraq","IRQ",NA,NA,NA,NA,NA,NA,5.6,7.66666666666667,0,0,0
+"81","Iceland","ISL","2021-03-20","past","green","volcano",0,"past - green",2.2,2,0,0,0
+"82","Israel","ISR",NA,NA,NA,NA,NA,NA,4.6,6,0,0,0
+"83","Italy","ITA","2021-07-07","active","green","volcano",0,"active - green",5.1,6.83333333333333,7,0,0
+"84","Jamaica","JAM",NA,NA,NA,NA,NA,NA,5.4,7.33333333333333,0,0,0
+"85","Jordan","JOR",NA,NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
+"86","Japan","JPN","2021-06-24","past","green","volcano",0,"past - green",8.1,10,0,0,0
+"87","Kazakhstan","KAZ","2021","past","green","drought",0,"past - green",4,5,0,0,0
+"88","Kenya","KEN","2021","past","green","drought",0,"past - green",5.1,6.83333333333333,0,0,0
+"89","Kyrgyzstan","KGZ",NA,NA,NA,NA,NA,NA,5.1,6.83333333333333,0,0,0
+"90","Cambodia","KHM",NA,NA,NA,NA,NA,NA,5.8,8,0,0,0
+"91","Kiribati","KIR",NA,NA,NA,NA,NA,NA,3.8,4.66666666666667,7,0,0
+"92","Saint Kitts and Nevis","KNA",NA,NA,NA,NA,NA,NA,2.8,3,0,0,0
+"93","Korea Republic of","KOR","2021-07-07","active","green","flood",0,"active - green",5.9,8.16666666666667,0,0,0
+"94","Kuwait","KWT",NA,NA,NA,NA,NA,NA,1.6,1,0,0,0
+"95","Lao PDR","LAO",NA,NA,NA,NA,NA,NA,4.9,6.5,0,0,0
+"96","Lebanon","LBN",NA,NA,NA,NA,NA,NA,5.2,7,10,0,0
+"97","Liberia","LBR",NA,NA,NA,NA,NA,NA,4,5,0,0,0
+"98","Libya","LBY",NA,NA,NA,NA,NA,NA,3.7,4.5,0,0,0
+"99","Saint Lucia","LCA",NA,NA,NA,NA,NA,NA,2.6,2.66666666666667,0,0,0
+"100","Liechtenstein","LIE",NA,NA,NA,NA,NA,NA,1.3,0.5,0,0,0
+"101","Sri Lanka","LKA",NA,NA,NA,NA,NA,NA,5.2,7,0,0,0
+"102","Lesotho","LSO",NA,NA,NA,NA,NA,NA,2.5,2.5,0,0,0
+"103","Lithuania","LTU",NA,NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
+"104","Luxembourg","LUX",NA,NA,NA,NA,NA,NA,0.8,0,0,0,0
+"105","Latvia","LVA",NA,NA,NA,NA,NA,NA,2.1,1.83333333333333,0,0,0
+"106","Morocco","MAR",NA,NA,NA,NA,NA,NA,4.7,6.16666666666667,0,0,0
+"107","Moldova Republic of","MDA",NA,NA,NA,NA,NA,NA,4.1,5.16666666666667,0,0,0
+"108","Madagascar","MDG",NA,NA,NA,NA,NA,NA,6.1,8.5,0,0,10
+"109","Maldives","MDV",NA,NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
+"110","Mexico","MEX","2021-07-04","past","green","earthquake",0,"past - green",6.7,9.5,0,0,0
+"111","Marshall Islands","MHL",NA,NA,NA,NA,NA,NA,3.6,4.33333333333333,0,0,0
+"112","North Macedonia","MKD",NA,NA,NA,NA,NA,NA,3.8,4.66666666666667,0,0,0
+"113","Mali","MLI",NA,NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
+"114","Malta","MLT",NA,NA,NA,NA,NA,NA,2.5,2.5,0,0,0
+"115","Myanmar","MMR",NA,NA,NA,NA,NA,NA,7.8,10,0,0,0
+"116","Montenegro","MNE",NA,NA,NA,NA,NA,NA,4.3,5.5,0,0,0
+"117","Mongolia","MNG",NA,NA,NA,NA,NA,NA,2.9,3.16666666666667,0,0,0
+"118","Mozambique","MOZ",NA,NA,NA,NA,NA,NA,5.8,8,0,0,0
+"119","Mauritania","MRT",NA,NA,NA,NA,NA,NA,5.6,7.66666666666667,0,0,0
+"120","Mauritius","MUS",NA,NA,NA,NA,NA,NA,3.7,4.5,10,0,0
+"121","Malawi","MWI",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"122","Malaysia","MYS",NA,NA,NA,NA,NA,NA,4.9,6.5,7,0,0
+"123","Namibia","NAM",NA,NA,NA,NA,NA,NA,4.3,5.5,0,0,0
+"124","Niger","NER",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"125","Nigeria","NGA",NA,NA,NA,NA,NA,NA,4,5,0,0,0
+"126","Nicaragua","NIC",NA,NA,NA,NA,NA,NA,6.6,9.33333333333333,0,0,0
+"127","Netherlands","NLD",NA,NA,NA,NA,NA,NA,2,1.66666666666667,0,0,0
+"128","Norway","NOR",NA,NA,NA,NA,NA,NA,0.7,0,0,0,0
+"129","Nepal","NPL","2021-07-04","past","green","flood",0,"past - green",5.8,8,0,0,0
+"130","Nauru","NRU",NA,NA,NA,NA,NA,NA,2.8,3,0,0,0
+"131","New Zealand","NZL","2021-06-21","past","green","earthquake",0,"past - green",4.5,5.83333333333333,0,0,0
+"132","Oman","OMN",NA,NA,NA,NA,NA,NA,5,6.66666666666667,7,0,0
+"133","Pakistan","PAK",NA,NA,NA,NA,NA,NA,7.4,10,7,0,0
+"134","Panama","PAN",NA,NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
+"135","Peru","PER","2021-06-23","past","green","earthquake",0,"past - green",7.1,10,0,0,0
+"136","Philippines","PHL","2021-07-08","active","orange","volcano",10,"active - orange",8.4,10,0,0,0
+"137","Palau","PLW",NA,NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
+"138","Papua New Guinea","PNG",NA,NA,NA,NA,NA,NA,6.7,9.5,7,0,0
+"139","Poland","POL",NA,NA,NA,NA,NA,NA,2.3,2.16666666666667,0,0,0
+"140","Korea DPR","PRK",NA,NA,NA,NA,NA,NA,5.2,7,0,0,0
+"141","Portugal","PRT",NA,NA,NA,NA,NA,NA,3.4,4,0,0,0
+"142","Paraguay","PRY",NA,NA,NA,NA,NA,NA,2.6,2.66666666666667,0,0,0
+"143","Qatar","QAT",NA,NA,NA,NA,NA,NA,1.5,0.833333333333334,0,0,0
+"144","Romania","ROU","2021-06-28","past","green","flood",0,"past - green",4.1,5.16666666666667,0,0,0
+"145","Russian Federation","RUS","2021-07-06","active","green","flood",0,"active - green",5.7,7.83333333333333,0,0,0
+"146","Rwanda","RWA",NA,NA,NA,NA,NA,NA,3.5,4.16666666666667,0,0,0
+"147","Saudi Arabia","SAU",NA,NA,NA,NA,NA,NA,3.1,3.5,0,0,0
+"148","Sudan","SDN",NA,NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
+"149","Senegal","SEN",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"150","Singapore","SGP",NA,NA,NA,NA,NA,NA,0.9,0,10,0,0
+"151","Solomon Islands","SLB",NA,NA,NA,NA,NA,NA,5.8,8,0,0,0
+"152","Sierra Leone","SLE",NA,NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
+"153","El Salvador","SLV",NA,NA,NA,NA,NA,NA,6.5,9.16666666666667,0,0,0
+"154","Somalia","SOM",NA,NA,NA,NA,NA,NA,6.9,9.83333333333333,0,0,10
+"155","Serbia","SRB",NA,NA,NA,NA,NA,NA,4.5,5.83333333333333,0,0,0
+"156","South Sudan","SSD",NA,NA,NA,NA,NA,NA,4,5,NA,0,0
+"157","Sao Tome and Principe","STP",NA,NA,NA,NA,NA,NA,1.3,0.5,0,0,0
+"158","Suriname","SUR",NA,NA,NA,NA,NA,NA,3.9,4.83333333333333,0,0,0
+"159","Slovakia","SVK",NA,NA,NA,NA,NA,NA,2.8,3,0,0,0
+"160","Slovenia","SVN",NA,NA,NA,NA,NA,NA,3.4,4,7,0,0
+"161","Sweden","SWE",NA,NA,NA,NA,NA,NA,1.1,0.166666666666666,0,0,0
+"162","Eswatini","SWZ",NA,NA,NA,NA,NA,NA,2.5,2.5,0,0,0
+"163","Seychelles","SYC",NA,NA,NA,NA,NA,NA,2.8,3,0,0,0
+"164","Syria","SYR",NA,NA,NA,NA,NA,NA,5.7,7.83333333333333,7,0,0
+"165","Chad","TCD",NA,NA,NA,NA,NA,NA,4.2,5.33333333333333,0,0,0
+"166","Togo","TGO",NA,NA,NA,NA,NA,NA,3,3.33333333333333,0,0,0
+"167","Thailand","THA",NA,NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
+"168","Tajikistan","TJK",NA,NA,NA,NA,NA,NA,5.8,8,0,0,0
+"169","Turkmenistan","TKM",NA,NA,NA,NA,NA,NA,3.7,4.5,7,0,0
+"170","Timor-Leste","TLS",NA,NA,NA,NA,NA,NA,4.6,6,0,0,0
+"171","Tonga","TON",NA,NA,NA,NA,NA,NA,5.2,7,7,0,0
+"172","Trinidad and Tobago","TTO",NA,NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
+"173","Tunisia","TUN",NA,NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
+"174","Turkey","TUR",NA,NA,NA,NA,NA,NA,6.2,8.66666666666667,0,0,0
+"175","Tuvalu","TUV",NA,NA,NA,NA,NA,NA,3,3.33333333333333,10,0,0
+"176","Tanzania","TZA",NA,NA,NA,NA,NA,NA,5.1,6.83333333333333,0,0,0
+"177","Uganda","UGA",NA,NA,NA,NA,NA,NA,4.4,5.66666666666667,0,0,0
+"178","Ukraine","UKR",NA,NA,NA,NA,NA,NA,3.2,3.66666666666667,0,0,0
+"179","Uruguay","URY",NA,NA,NA,NA,NA,NA,1.7,1.16666666666667,0,0,0
+"180","United States of America","USA","2021-07-04","past","green","flood",0,"past - green",6.6,9.33333333333333,7,0,0
+"181","Uzbekistan","UZB",NA,NA,NA,NA,NA,NA,5.2,7,7,0,0
+"182","Saint Vincent and the Grenadines","VCT","2021-04-23","past","orange","volcano",0,"past - orange",2.6,2.66666666666667,0,0,0
+"183","Venezuela","VEN",NA,NA,NA,NA,NA,NA,6.1,8.5,7,0,0
+"184","Viet Nam","VNM",NA,NA,NA,NA,NA,NA,7.4,10,0,0,0
+"185","Vanuatu","VUT","2021-06-23","past","green","earthquake",0,"past - green",5.6,7.66666666666667,0,0,0
+"186","Samoa","WSM",NA,NA,NA,NA,NA,NA,3.5,4.16666666666667,0,0,0
+"187","Yemen","YEM","2021-07-03","past","green","earthquake",0,"past - green",4.3,5.5,0,0,0
+"188","South Africa","ZAF",NA,NA,NA,NA,NA,NA,4.9,6.5,0,0,0
+"189","Zambia","ZMB",NA,NA,NA,NA,NA,NA,3.5,4.16666666666667,0,0,0
+"190","Zimbabwe","ZWE",NA,NA,NA,NA,NA,NA,4.7,6.16666666666667,0,0,0
